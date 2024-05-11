@@ -18,7 +18,6 @@ const locale = {
 	'2 layers':'2層',
 	'3 layers':'3層',
 	'Days and score settings':'日数とスコアの設定',
-	'Medical practice':'医療行為',
 	'Injury and disease name':'怪我や病名',
 	'Receipt':'レシート',
 	'ICD Code':'ICDコード',
@@ -34,6 +33,24 @@ const locale = {
 	'Invalid File':'無効なファイル',
 	'Data replacement':'データの置き換え',
 	'Loading':'読み込み中',
+
+	'Medical practice name':'医療行為名',
+	'Score':'スコア',
+	'Classification':'分類',
+	'Search : Write & press Enter':'',
+	'Write classification/class/receipt & press Enter':'分類/クラス/領収書を入力して Enter を押します',
+	'Pharmaceutical name':'医薬品名',
+	'Medicinal efficacy classification':'薬効分類',
+	'Unit':'ユニット',
+	'Price':'価格',
+	'Medicinal efficacy classification code':'薬効分類コード',
+	'Medicinal efficacy classification name':'薬効分類名',
+
+	'Write Medicinal efficacy classification name/code & press Enter':'薬効分類名/コードを入力してEnterを押します',
+	'Write classification/medical practice name/receipt code & press Enter':'分類/診療行為名/レセプトコードを書いてEnterを押してください',
+
+
+
 };
 export default locale;
 

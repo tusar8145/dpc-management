@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
-const Table = lazy(() => import('../../shared-components/table/TableDisease'));
+const Table = lazy(() => import('../../shared-components/table/TableMedicinalEfficacy'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -26,7 +26,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
  
-function InjuryIllness() {
+function MedicinalEfficacy() {
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {
@@ -53,7 +53,7 @@ function InjuryIllness() {
 
 		try {
 			//if(type=='replace'){
-					const illnessClear = await axios.post(apiConfig.illnessClear, {});
+					const medicinalEfClear = await axios.post(apiConfig.medicinalEfClear, {});
 			//	}
 			
 
@@ -65,12 +65,15 @@ function InjuryIllness() {
 				let len = data.length
 				for (var i = 0; i < len; i++) {
 					let this_ = data[i]
-					
-					if(this_['＊＊　未コード化傷病名　＊＊'] || this_['Recipt code'] || this_['ICD code']){
+
+
+					console.log(this_)
+
+
+					if(this_['receipt'] || this_['name']){
 						obj.push({
-							"name": this_['＊＊　未コード化傷病名　＊＊'],
-							"receipt": this_['Recipt code'],
-							"icd": this_['ICD code'],
+							"receipt": this_['receipt'],
+							"name": this_['name'],
 							"created_by": 1
 						})				
 					}else{
@@ -81,13 +84,13 @@ function InjuryIllness() {
 					done++
 
 					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						console.log(counts, i, len)
+						console.log(counts, obj)
 						var cal_per = parseInt((done / len) * 100)
 						setProgress(cal_per)
 
 						obj_col[done]=obj
 
-						const response = await axios.post(apiConfig.illnessCreate, obj);
+						const response = await axios.post(apiConfig.medicinalEfCreate, obj);
 						obj = []
 						counts = 0
 					}
@@ -150,13 +153,13 @@ function InjuryIllness() {
 	const { theme, toggleTheme } = useTheme();
 	const { hospital, toggleHospital } = useTheme();
 	
-	useEffect(() => {  toggleTheme(t('Injury/illness name'))  }, [t('Injury/illness name')]);
+	useEffect(() => {  toggleTheme(t('Medicinal efficacy category'))  }, [t('Medicinal efficacy category')]);
 
 	return (
 		<Root
 			header={
 				<div className="p-24 hidden-on-large">
-					<h4>{t('Injury/illness name')} </h4>
+					<h4>{t('Medicinal efficacy category')} </h4>
 				</div>
 			}
 			content={
@@ -198,7 +201,7 @@ function InjuryIllness() {
 
 					{showUpload == 0 &&
 						<>{/*Table*/}
-							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write ICD code or illness name or receipt code & press Enter"}/>
+							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write Medicinal efficacy classification name/code & press Enter"}/>
 							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter} />
 						</>
 					}
@@ -211,4 +214,4 @@ function InjuryIllness() {
 	);
 }
 
-export default InjuryIllness;
+export default MedicinalEfficacy;

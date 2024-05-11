@@ -8,8 +8,11 @@ import SignOutConfig from '../main/sign-out/SignOutConfig';
 import Error404Page from '../main/404/Error404Page';
 import ExampleConfig from '../main/example/ExampleConfig';
 import InjuryIllnessConfig from '../main/injury-illness/InjuryIllnessConfig';
+import MedicalPracticeConfig from '../main/medical-practice/MedicalPracticeConfig';
+import MedicineConfig from '../main/medicine/MedicineConfig';
+import MedicinalEfficacyConfig from '../main/medicinal-efficacy/MedicinalEfficacyConfig';
 
-const routeConfigs = [ExampleConfig, InjuryIllnessConfig, SignOutConfig, SignInConfig, SignUpConfig];
+const routeConfigs = [ExampleConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig];
 /**
  * The routes of the application.
  */

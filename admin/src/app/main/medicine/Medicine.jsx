@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
-const Table = lazy(() => import('../../shared-components/table/TableDisease'));
+const Table = lazy(() => import('../../shared-components/table/TableMedicine'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -26,7 +26,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
  
-function InjuryIllness() {
+function Medicine() {
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {
@@ -53,10 +53,11 @@ function InjuryIllness() {
 
 		try {
 			//if(type=='replace'){
-					const illnessClear = await axios.post(apiConfig.illnessClear, {});
+					const medicineClear = await axios.post(apiConfig.medicineClear, {});
 			//	}
 			
-
+	 
+			
 				let fail_count=0
 				let obj = []
 				let obj_col=[]
@@ -66,11 +67,13 @@ function InjuryIllness() {
 				for (var i = 0; i < len; i++) {
 					let this_ = data[i]
 					
-					if(this_['＊＊　未コード化傷病名　＊＊'] || this_['Recipt code'] || this_['ICD code']){
+					if(this_['medicine name'] || this_['recipt code'] || this_['薬効区分'] || this_['unit'] || this_['price']){
 						obj.push({
-							"name": this_['＊＊　未コード化傷病名　＊＊'],
-							"receipt": this_['Recipt code'],
-							"icd": this_['ICD code'],
+							"name": this_['medicine name'],
+							"receipt": this_['recipt code'],
+							"class": this_['薬効区分'],
+							"unit": this_['unit'], 
+							"price": this_['price'],
 							"created_by": 1
 						})				
 					}else{
@@ -80,14 +83,14 @@ function InjuryIllness() {
 
 					done++
 
-					if ((counts == 1000) || (i == parseInt(len) - 1)) {
+					if ((counts == 500) || (i == parseInt(len) - 1)) {
 						console.log(counts, i, len)
 						var cal_per = parseInt((done / len) * 100)
 						setProgress(cal_per)
 
 						obj_col[done]=obj
 
-						const response = await axios.post(apiConfig.illnessCreate, obj);
+						const response = await axios.post(apiConfig.medicineCreate, obj);
 						obj = []
 						counts = 0
 					}
@@ -150,13 +153,13 @@ function InjuryIllness() {
 	const { theme, toggleTheme } = useTheme();
 	const { hospital, toggleHospital } = useTheme();
 	
-	useEffect(() => {  toggleTheme(t('Injury/illness name'))  }, [t('Injury/illness name')]);
+	useEffect(() => {  toggleTheme(t('Medicine'))  }, [t('Medicine')]);
 
 	return (
 		<Root
 			header={
 				<div className="p-24 hidden-on-large">
-					<h4>{t('Injury/illness name')} </h4>
+					<h4>{t('Medicine')} </h4>
 				</div>
 			}
 			content={
@@ -198,7 +201,7 @@ function InjuryIllness() {
 
 					{showUpload == 0 &&
 						<>{/*Table*/}
-							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write ICD code or illness name or receipt code & press Enter"}/>
+							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write classification/class/receipt & press Enter"}/>
 							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter} />
 						</>
 					}
@@ -211,4 +214,4 @@ function InjuryIllness() {
 	);
 }
 
-export default InjuryIllness;
+export default Medicine;

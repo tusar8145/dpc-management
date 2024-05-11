@@ -60,7 +60,7 @@ model hospitals {
 
 model injuries {
   id                           Int         @id @default(autoincrement())
-  receipt                      Int
+  receipt                      Int         @unique
   icd                          String      
   name                         String      @db.VarChar(300)
   hospital_id                  Int?
@@ -69,4 +69,41 @@ model injuries {
   updated_at                   DateTime?   @db.Timestamp(0)
 }
 
+//     score   
+model medical_practices {
+  id                           Int         @id @default(autoincrement())
+  receipt                      Int         @unique
+  name                         String      @db.VarChar(300)
+  class                        String
+  score                        Int      
+  hospital_id                  Int?
+  created_by                   Int            
+  created_at                   DateTime?   @db.Timestamp(0)
+  updated_at                   DateTime?   @db.Timestamp(0)
+}
+
+      
+model medicines {
+  id                           Int         @id @default(autoincrement())
+  receipt                      Int         @unique
+  name                         String      @db.VarChar(300)
+  class                        String
+  unit                         String      
+  price                        Int
+  hospital_id                  Int?
+  created_by                   Int            
+  created_at                   DateTime?   @db.Timestamp(0)
+  updated_at                   DateTime?   @db.Timestamp(0)
+}
+
+  
+model medicinal_efficacy {
+  id                           Int         @id @default(autoincrement())
+  receipt                      Int         @unique
+  name                         String       
+  hospital_id                  Int?
+  created_by                   Int            
+  created_at                   DateTime?   @db.Timestamp(0)
+  updated_at                   DateTime?   @db.Timestamp(0)
+}
 

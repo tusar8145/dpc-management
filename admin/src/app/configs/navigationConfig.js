@@ -42,7 +42,7 @@ const navigationConfig = [
 			    translate: 'medicalPractice',
 				type: 'item',
 				icon: 'feather:activity',
-				url: 'apps/e-commerce/products/1/a-walk-amongst-friends-canvas-print'
+				url: 'data-registration/medical-practice'
 			},
 			{
 				id: 'e-commerce-new-product',
@@ -50,7 +50,7 @@ const navigationConfig = [
 				translate: 'Medicine',
 				type: 'item',
 				icon: 'material-outline:card_travel',
-				url: 'apps/e-commerce/products/new'
+				url: 'data-registration/medicine'
 			},
 			{
 				id: 'e-commerce-orders',
@@ -58,7 +58,7 @@ const navigationConfig = [
 				translate: 'MedicinalEfficacyCategory',
 				type: 'item',
 				icon: 'material-twotone:medical_services',
-				url: 'apps/e-commerce/orders',
+				url: 'data-registration/medicinal-efficacy',
 				end: true
 			},
 		]

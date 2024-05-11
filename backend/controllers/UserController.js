@@ -94,6 +94,7 @@ console.log(req);
 
 export const login = async (req, res, next) => {
     try {
+        
         const req_data = req.body
 
         const email = req.body.email;

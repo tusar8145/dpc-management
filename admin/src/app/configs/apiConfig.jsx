@@ -1,10 +1,30 @@
 let base_url= import.meta.env.VITE_BASE_URL
 const apiConfig = {
-	illnessList:base_url+'crud/injuries/list',
+    hospitalList:base_url+'crud/hospitals/list',
+
+    illnessCreate:base_url+'crud/injuries/create',
     illnessUpdate:base_url+'crud/injuries/update',
     illnessCount:base_url+'crud/injuries/count',
-    illnessCreate:base_url+'crud/injuries/create',
-    hospitalList:base_url+'crud/hospitals/list',
+	illnessList:base_url+'crud/injuries/list',
     illnessClear:base_url+'crud/injuries/remove-all',
+        
+    medicalPrCreate:base_url+'crud/medical_practices/create',
+    medicalPrUpdate:base_url+'crud/medical_practices/update',
+    medicalPrCount:base_url+'crud/medical_practices/count',
+	medicalPrList:base_url+'crud/medical_practices/list',
+    medicalPrClear:base_url+'crud/medical_practices/remove-all',
+
+    medicineCreate:base_url+'crud/medicines/create',
+    medicineUpdate:base_url+'crud/medicines/update',
+    medicineCount:base_url+'crud/medicines/count',
+	medicineList:base_url+'crud/medicines/list',
+    medicineClear:base_url+'crud/medicines/remove-all',
+
+    medicinalEfCreate:base_url+'crud/medicinal_efficacy/create',
+    medicinalEfUpdate:base_url+'crud/medicinal_efficacy/update',
+    medicinalEfCount:base_url+'crud/medicinal_efficacy/count',
+	medicinalEfList:base_url+'crud/medicinal_efficacy/list',
+    medicinalEfClear:base_url+'crud/medicinal_efficacy/remove-all',
+    
 }
 export default apiConfig;

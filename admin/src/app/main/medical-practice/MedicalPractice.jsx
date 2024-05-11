@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
-const Table = lazy(() => import('../../shared-components/table/TableDisease'));
+const Table = lazy(() => import('../../shared-components/table/TableMedicalPractice'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -26,7 +26,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
  
-function InjuryIllness() {
+function MedicalPractice() {
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {
@@ -52,11 +52,12 @@ function InjuryIllness() {
 	async function server(type) {
 
 		try {
-			//if(type=='replace'){
-					const illnessClear = await axios.post(apiConfig.illnessClear, {});
-			//	}
-			
 
+				//if(type=='replace'){
+					const medicalPrClear = await axios.post(apiConfig.medicalPrClear, {});
+				//}
+			
+ 
 				let fail_count=0
 				let obj = []
 				let obj_col=[]
@@ -66,28 +67,30 @@ function InjuryIllness() {
 				for (var i = 0; i < len; i++) {
 					let this_ = data[i]
 					
-					if(this_['＊＊　未コード化傷病名　＊＊'] || this_['Recipt code'] || this_['ICD code']){
+					if(this_['nama'] || this_['receipt code'] || this_['class'] || this_['score']){
 						obj.push({
-							"name": this_['＊＊　未コード化傷病名　＊＊'],
-							"receipt": this_['Recipt code'],
-							"icd": this_['ICD code'],
+							"name": this_['nama'],
+							"receipt": this_['receipt code'],
+							"class": this_['class'],
+							"score": this_['score'],
 							"created_by": 1
 						})				
 					}else{
 						fail_count++
 					}
-
+					console.log(2)
 
 					done++
 
-					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						console.log(counts, i, len)
+					if ((counts == 500) || (i == parseInt(len) - 1)) {
+
+						console.log(obj)
 						var cal_per = parseInt((done / len) * 100)
 						setProgress(cal_per)
 
 						obj_col[done]=obj
 
-						const response = await axios.post(apiConfig.illnessCreate, obj);
+						const response = await axios.post(apiConfig.medicalPrCreate, obj);
 						obj = []
 						counts = 0
 					}
@@ -96,13 +99,14 @@ function InjuryIllness() {
 
 
 
-				console.log(obj_col)
+				//console.log(obj_col)
 
 
 				if(fail_count==0){setSuccessAlert("Data uploaded successfully")}else{setFailAlert(fail_count+ " Data upload failed")}
 				
 				setShowUpload(0)
-				setProgress(0)			
+				setProgress(0)		
+
 		} catch (error) {
 			setProgress(0)	
 			setFailAlert("Invalid File")
@@ -150,13 +154,13 @@ function InjuryIllness() {
 	const { theme, toggleTheme } = useTheme();
 	const { hospital, toggleHospital } = useTheme();
 	
-	useEffect(() => {  toggleTheme(t('Injury/illness name'))  }, [t('Injury/illness name')]);
+	useEffect(() => {  toggleTheme(t('Medical practice'))  }, [t('Medical practice')]);
 
 	return (
 		<Root
 			header={
 				<div className="p-24 hidden-on-large">
-					<h4>{t('Injury/illness name')} </h4>
+					<h4>{t('Medical practice')} </h4>
 				</div>
 			}
 			content={
@@ -198,7 +202,7 @@ function InjuryIllness() {
 
 					{showUpload == 0 &&
 						<>{/*Table*/}
-							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write ICD code or illness name or receipt code & press Enter"}/>
+							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write classification/medical practice name/receipt code & press Enter"}/>
 							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter} />
 						</>
 					}
@@ -211,4 +215,4 @@ function InjuryIllness() {
 	);
 }
 
-export default InjuryIllness;
+export default MedicalPractice;
