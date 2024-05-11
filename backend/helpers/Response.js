@@ -1,0 +1,122 @@
+export const create = (result,res) => {
+  try {   
+      let success=true
+      let message="Created Successful"
+      if(result.count==0){
+          success=false
+          message="Unable to create"
+      }
+      const gg=1
+      //gg=8
+      return res.status(200).json({
+        success:success, message:message
+      });
+    
+     }catch(error){
+       return error
+     }
+};
+
+export const update = (result,res) => {
+  try {   
+      let success=true
+      let message="Update Successful"
+      if(result.count==0){
+          success=false
+          message="Unable to create"
+      }
+      return res.status(200).json({
+        success:success, message:message
+      });
+
+     }catch(error){
+       return false
+     }
+};
+
+export const list = (data,res) => {
+  try {   
+      let success=true
+      let message="Data Fetch Successful"
+      if(data.count==0){
+          success=false
+          message="Unable to Fetch"
+      }
+      return res.status(200).json({
+        success:success, message:message, data:data,
+      });
+
+     }catch(error){
+       return false
+     }
+};
+
+export const count = (data,res) => {
+  try {   
+      let success=true
+      let message="Data Count Successful"
+      if(data.count==0){
+          success=false
+          message="Unable to Count"
+      }
+      return res.status(200).json({
+        success:success, message:message, count:data,
+      });
+
+     }catch(error){
+       return false
+     }
+};
+
+
+export const remove = (data,res) => {
+  try {   
+      let success=true
+      let message="Data Delete Successful"
+      if(data.count==0){
+          success=false
+          message="Unable to Delete"
+      }
+      return res.status(200).json({
+        success:success, message:message, data:data,
+      });
+
+     }catch(error){
+       return false
+     }
+};
+
+export const error = (error,res,next) => {
+  try {   
+      next(error)
+      let message="Something Went Wrong"
+      //log_report(error)
+      return res.status(200).json({
+        success:false, message:message
+      });
+     }catch(error){
+       return false
+     }
+};
+
+
+export const list_paginate =(req,res) => {
+  return {
+  ...(req.query.skip ? { skip: parseInt(req.query.skip) } : {}),
+  ...(req.query.take ? { take: parseInt(req.query.take) } : {}),
+  orderBy: {  
+    id: 'asc',  
+  },}
+}
+
+export const log_report = (error,res) => {
+  try {   
+
+      //write exception
+      
+      return true
+    
+     }catch(error){
+       return false
+     }
+};
