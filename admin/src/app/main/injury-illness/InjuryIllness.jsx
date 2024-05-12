@@ -132,10 +132,11 @@ function InjuryIllness() {
 
 
 	function handleActionFromSearch(action) {
-		console.log(action,'action')
+		console.log(action,'actionx')
 		setShowUpload(action)
 		setSuccessAlert(null)
 		setFailAlert(null)
+		setAllowUpload(false)
 		//setResetComponents(true)
 	}
 

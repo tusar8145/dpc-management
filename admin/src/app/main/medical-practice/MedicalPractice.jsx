@@ -141,6 +141,7 @@ function MedicalPractice() {
 		setSuccessAlert(null)
 		setFailAlert(null)
 		//setResetComponents(true)
+		setAllowUpload(false)
 	}
 
 	function handleSetGlobalFilter(data) {
