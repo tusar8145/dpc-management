@@ -37,7 +37,7 @@ const Example = (props) => {
 
   const [data, setData] = useState([]);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
   const [rowCount, setRowCount] = useState(0);
 
@@ -224,24 +224,7 @@ const Example = (props) => {
     [validationErrors],
   );
 
-  //call CREATE hook
-  //const { mutateAsync: createUser, isPending: isCreatingUser } =
-    //useCreateUser();
-  //call READ hook
-  const {
-    data: fetchedUsers = [],
-    isError: isLoadingUsersError,
-    isFetching: isFetchingUsers,
-    isLoading: isLoadingUsers,
-  } = useGetUsers();
-  //call UPDATE hook
-  const { mutateAsync: updateUser, isPending: isUpdatingUser } =
-    useUpdateUser();
-  //call DELETE hook
-  const { mutateAsync: deleteUser, isPending: isDeletingUser } =
-    useDeleteUser();
-
-  //CREATE action
+ 
   
 
   //UPDATE action

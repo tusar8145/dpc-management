@@ -37,7 +37,7 @@ const Example = (props) => {
 
   const [data, setData] = useState([]);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
   const [rowCount, setRowCount] = useState(0);
 
