@@ -2,7 +2,7 @@ input#upload {
     display: none;
 }
 
-label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.muiltr-1lha7y1-MuiButtonBase-root-MuiButton-root {
+label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium {
     width: 600px;
     height: 400px;
     background: white;
@@ -15,7 +15,7 @@ label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedS
     padding: 30px;
 }
 
-button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconButton-sizeMedium.muiltr-1skg6ny-MuiButtonBase-root-MuiIconButton-root {
+button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconButton-sizeMedium {
     display: none;
 }
 
@@ -27,7 +27,7 @@ button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconBut
         
     }
 
-    .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation2.muiltr-1jvhnvu-MuiPaper-root {
+    .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation2 {
         box-shadow: none;
         background: white;
         width: 100%;
@@ -48,7 +48,7 @@ button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconBut
     }
 
 
-    th.MuiTableCell-root.MuiTableCell-head.MuiTableCell-alignLeft.MuiTableCell-sizeMedium.muiltr-16glnxh-MuiTableCell-root {
+    th.MuiTableCell-root.MuiTableCell-head.MuiTableCell-alignLeft.MuiTableCell-sizeMedium {
         width: 120px;
     }
 
@@ -83,10 +83,10 @@ background-color: unset !important;
 
     }
 
-    th.MuiTableCell-root.MuiTableCell-head.MuiTableCell-alignLeft.MuiTableCell-sizeMedium.muiltr-s6vrq2-MuiTableCell-root {
+    th.MuiTableCell-root.MuiTableCell-head.MuiTableCell-alignLeft.MuiTableCell-sizeMedium {
         width: 105px;
     }
 
-    td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-alignLeft.MuiTableCell-sizeMedium.muiltr-1f5sybi-MuiTableCell-root {
+    td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-alignLeft.MuiTableCell-sizeMedium {
         width: 105px;
     }
