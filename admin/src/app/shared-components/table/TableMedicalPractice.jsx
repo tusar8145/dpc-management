@@ -414,6 +414,7 @@ return (
 export default TableDisease;
 
 const validateRequired = (value) => !!value.length;
+const validateRequiredInt = (value) => value>0;
 const validatereceipt = (receipt) =>
   !!receipt.length &&
   receipt
@@ -424,9 +425,10 @@ const validatereceipt = (receipt) =>
 
 function validateUser(illness) {
  let data= {
-    class: !validateRequired(illness.class)
-      ? 'Classification is Required'
-      : '',
-    name: !validateRequired(illness.name) ? 'Medical practice name is Required' : ''  };
-  return data
+    class: !validateRequired(illness.class) ? 'This field is Required' : '',
+    name: !validateRequired(illness.name) ? 'This field is Required' : '',
+    score: !validateRequiredInt(illness.score) ? 'This field is Required' : ''};
+
+  
+    return data
 }

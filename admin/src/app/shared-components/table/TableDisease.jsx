@@ -225,7 +225,22 @@ const Example = (props) => {
   );
 
  
-  
+    //call CREATE hook
+  //const { mutateAsync: createUser, isPending: isCreatingUser } =
+    //useCreateUser();
+  //call READ hook
+  const {
+    data: fetchedUsers = [],
+    isError: isLoadingUsersError,
+    isFetching: isFetchingUsers,
+    isLoading: isLoadingUsers,
+  } = useGetUsers();
+  //call UPDATE hook
+  const { mutateAsync: updateUser, isPending: isUpdatingUser } =
+    useUpdateUser();
+  //call DELETE hook
+  const { mutateAsync: deleteUser, isPending: isDeletingUser } =
+    useDeleteUser();
 
   //UPDATE action
   const handleSaveUser = async ({ values, table }) => {
@@ -376,6 +391,7 @@ return (
 export default TableDisease;
 
 const validateRequired = (value) => !!value.length;
+const validateRequiredInt = (value) => value>0;
 const validatereceipt = (receipt) =>
   !!receipt.length &&
   receipt
@@ -387,8 +403,8 @@ const validatereceipt = (receipt) =>
 function validateUser(illness) {
  let data= {
     icd: !validateRequired(illness.icd)
-      ? 'ICD Code is Required'
+      ? 'This field is Required'
       : '',
-    name: !validateRequired(illness.name) ? 'Injury and disease name is Required' : ''  };
+    name: !validateRequired(illness.name) ? 'This field is Required' : ''  };
   return data
 }

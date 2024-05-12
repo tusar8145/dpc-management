@@ -437,6 +437,7 @@ return (
 export default TableDisease;
 
 const validateRequired = (value) => !!value.length;
+const validateRequiredInt = (value) => value>0;
 const validatereceipt = (receipt) =>
   !!receipt.length &&
   receipt
@@ -447,9 +448,10 @@ const validatereceipt = (receipt) =>
 
 function validateUser(illness) {
  let data= {
-    icd: !validateRequired(illness.icd)
-      ? 'ICD Code is Required'
-      : '',
-    name: !validateRequired(illness.name) ? 'Injury and disease name is Required' : ''  };
+    price: !validateRequiredInt(illness.price) ? 'This field is Required' : ''  ,
+    class: !validateRequired(illness.class) ? 'This field is Required' : '',
+    name: !validateRequired(illness.name) ? 'This field is Required' : ''  ,
+    unit: !validateRequired(illness.unit) ? 'This field is Required' : ''  ,
+    };
   return data
 }

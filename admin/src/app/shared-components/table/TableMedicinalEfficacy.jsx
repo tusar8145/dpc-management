@@ -51,7 +51,9 @@ const Example = (props) => {
   });
   
   const { hospital, toggleHospital } = useTheme();
+  const { t } = useTranslation('shared-components');
 
+  
   useEffect(() => {
     const fetchData = async () => {
       if (!data?.length) {
@@ -160,7 +162,7 @@ const Example = (props) => {
     props.globalFilter
   ]);
 
-   const { t } = useTranslation('shared-components');
+   
   const [validationErrors, setValidationErrors] = useState({});
  
   const columns = useMemo(
@@ -374,6 +376,7 @@ return (
 export default TableDisease;
 
 const validateRequired = (value) => !!value.length;
+const validateRequiredInt = (value) => value>0;
 const validatereceipt = (receipt) =>
   !!receipt.length &&
   receipt
@@ -385,8 +388,8 @@ const validatereceipt = (receipt) =>
 function validateUser(illness) {
  let data= {
     receipt: !validateRequired(illness.receipt)
-      ? 'ICD Code is Required'
+      ? 'This field is Required'
       : '',
-    name: !validateRequired(illness.name) ? 'Injury and disease name is Required' : ''  };
+    name: !validateRequired(illness.name) ? 'This field is Required' : ''  };
   return data
 }
