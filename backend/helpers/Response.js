@@ -101,12 +101,23 @@ export const error = (error,res,next) => {
 
 
 export const list_paginate =(req,res) => {
+  let order =req.query?.order  || ""
+
   return {
   ...(req.query.skip ? { skip: parseInt(req.query.skip) } : {}),
   ...(req.query.take ? { take: parseInt(req.query.take) } : {}),
-  orderBy: {  
-    id: 'asc',  
-  },}
+
+  ...order.length>0?{
+    orderBy: {  
+      [`${order}`]: 'asc',  
+    },
+  }:{
+      orderBy: {  
+      id: 'asc',  
+    },
+  }  
+  }
+
 }
 
 export const log_report = (error,res) => {

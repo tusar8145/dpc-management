@@ -199,8 +199,8 @@ const Example = (props) => {
 
   //DELETE action
   const openDeleteConfirmModal = (row) => {
-    if (window.confirm('Are you sure you want to delete this illness?')) {
-      deleteUser(row.original.id);
+    if (window.confirm(t('Are you sure you want to delete this?'))) {
+      deleteUser(row.original);
     }
   };
 

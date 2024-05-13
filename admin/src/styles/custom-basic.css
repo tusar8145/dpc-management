@@ -16,7 +16,7 @@ label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedS
 }
 
 button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconButton-sizeMedium {
-    display: none;
+   /*display: none;*/
 }
 
 .table {

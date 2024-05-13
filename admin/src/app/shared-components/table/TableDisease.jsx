@@ -79,19 +79,22 @@ const Example = (props) => {
           get_global_filter = props.globalFilter
         }
 
+        let order=""
         if (columnFilters || get_global_filter) {
           let icd, name, receipt = null
           for (let k = 0; k < columnFilters.length; k++) {
             let new_ = columnFilters[k]
-            if (new_.id == 'icd') { icd = new_.value }
-            if (new_.id == 'name') { name = new_.value }
-            if (new_.id == 'receipt') { receipt = parseInt(new_.value) }
+            if (new_.id == 'icd') { icd = new_.value; order='icd' }
+            if (new_.id == 'name') { name = new_.value; order='name' }
+            if (new_.id == 'receipt') { receipt = parseInt(new_.value); order='receipt' }
             new_columnFilters.push({
               ...icd ? { icd:  {contains:icd} } : {},
               ...name ? { name:  {contains:name} } : {},
               ...receipt ? { receipt: receipt } : {}
             })
           }
+
+ 
 
           f_globalFilters =
           {
@@ -116,7 +119,7 @@ const Example = (props) => {
 
 
 
-        const response = await axios.post(apiConfig.illnessList + '?hospital=' + h_id + '&&take=' + pagination.pageSize + '&&skip=' + (10 * pagination.pageIndex), { filter });
+        const response = await axios.post(apiConfig.illnessList + '?hospital=' + h_id + '&&take=' + pagination.pageSize + '&&skip=' + (10 * pagination.pageIndex)+ '&&order='+order, { filter });
         let new_data = []
         let get_data = response.data.data
 
@@ -160,7 +163,8 @@ const Example = (props) => {
     pagination.pageIndex,
     pagination.pageSize,
     sorting,
-    props.globalFilter
+    props.globalFilter,
+    isRefetching
   ]);
 
    const { t } = useTranslation('shared-components');
@@ -261,8 +265,8 @@ const Example = (props) => {
 
   //DELETE action
   const openDeleteConfirmModal = (row) => {
-    if (window.confirm('Are you sure you want to delete this illness?')) {
-      deleteUser(row.original.id);
+    if (window.confirm(t('Are you sure you want to delete this?'))) {
+      deleteUser(row.original);
     }
   };
 
@@ -303,7 +307,10 @@ const Example = (props) => {
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete">
-          <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+          <IconButton color="error" onClick={() =>{ 
+            openDeleteConfirmModal(row)
+            setIsRefetching(true)}
+          }>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -357,14 +364,8 @@ function useDeleteUser() {
   return useMutation({
     mutationFn: async (illnessId) => {
       //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
+      const response = await axios.post(apiConfig.illnessRemove,{receipt:illnessId.receipt});
       return Promise.resolve();
-    },
-    //client side optimistic update
-    onMutate: (illnessId) => {
-      queryClient.setQueryData(['illnesss'], (prevUsers) =>
-        prevUsers?.filter((illness) => illness.id !== illnessId),
-      );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['illnesss'] }), //refetch illnesss after mutation, disabled for demo
   });

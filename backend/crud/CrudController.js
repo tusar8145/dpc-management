@@ -58,6 +58,15 @@ export const list =  async (req, res, next) => {
         let globalFilter = req.body?.filter?.globalFilter
         let f_globalFilters = req.body?.filter?.f_globalFilters
 
+        console.log({
+            ...response.list_paginate(req),
+            where: {
+                ...req.return == true ? { ...where_con } : {},
+                ...f_columnFilters ? { ...f_columnFilters } : {},
+                ...globalFilter ?{...f_globalFilters} : {}
+            },
+        })
+
         const findMany = await prisma[`${table_name}`].findMany({
             ...response.list_paginate(req),
             where: {
@@ -118,9 +127,11 @@ export const count =  async (req, res, next) => {
 export const remove =  async (req, res, next) => {
     try {   
         let table_name=req.params.table
+        let receipt = req.body.receipt
+
         const delete_ = await prisma[`${table_name}`].delete({
             where: {
-                "id":parseInt(req.body.id)
+               receipt:  parseInt(receipt)   
             },
           })
         

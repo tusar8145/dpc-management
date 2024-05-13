@@ -163,7 +163,8 @@ const Example = (props) => {
     pagination.pageIndex,
     pagination.pageSize,
     sorting,
-    props.globalFilter
+    props.globalFilter,
+    isRefetching
   ]);
 
    const { t } = useTranslation('shared-components');
@@ -284,8 +285,8 @@ const Example = (props) => {
 
   //DELETE action
   const openDeleteConfirmModal = (row) => {
-    if (window.confirm('Are you sure you want to delete this illness?')) {
-      deleteUser(row.original.id);
+    if (window.confirm(t('Are you sure you want to delete this?'))) {
+      deleteUser(row.original);
     }
   };
 
@@ -326,8 +327,11 @@ const Example = (props) => {
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete">
-          <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
-            <DeleteIcon />
+          <IconButton color="error" onClick={() =>{ 
+            openDeleteConfirmModal(row)
+            setIsRefetching(true)}
+          }>            
+          <DeleteIcon />
           </IconButton>
         </Tooltip>
       </div>
@@ -380,14 +384,8 @@ function useDeleteUser() {
   return useMutation({
     mutationFn: async (illnessId) => {
       //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
+      const response = await axios.post(apiConfig.medicalPrRemove,{receipt:illnessId.receipt});
       return Promise.resolve();
-    },
-    //client side optimistic update
-    onMutate: (illnessId) => {
-      queryClient.setQueryData(['illnesss'], (prevUsers) =>
-        prevUsers?.filter((illness) => illness.id !== illnessId),
-      );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['illnesss'] }), //refetch illnesss after mutation, disabled for demo
   });

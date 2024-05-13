@@ -69,7 +69,7 @@ function FileChoose(props) {
     const [progress, setProgress] = React.useState(10);
 
     useEffect(() => {  setProgress(props.progress)  }, [props.progress]);
-    useEffect(() => {  console.log(99); setData([])  }, [props.resetComponents]);
+    useEffect(() => {   setData([])  }, [props.resetComponents]);
     
 
     function LinearProgressWithLabel(props) {
