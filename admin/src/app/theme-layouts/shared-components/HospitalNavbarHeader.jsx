@@ -14,6 +14,7 @@ import FuseSvgIcon from '../../../@fuse/core/FuseSvgIcon';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../context/ThemeContext';
 import { useMemo,useEffect, useState } from 'react';
+import {filterItemsEqual} from '../../helpers/commonHelpers';
 
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
@@ -43,18 +44,12 @@ const Root = styled('div')(({ theme }) => ({
  * The user navbar header.
  */
 
-const countries = [
-	{ code: 'AI', label: '&Neo Administrator'},
-    { code: 'AL', label: 'Daichan Hospital'},
-    { code: 'AM', label: 'Gani hospital'},
-	{ code: 'AM', label: 'Hospital 3'},
-];
-
+ 
 
 function HospitalNavbarHeader() {
 	const { t } = useTranslation('shared-components');
 	const { hospital, toggleHospital } = useTheme();
-	const [age, setAge] = React.useState('*');
+	const [hos, setHos] = React.useState('*');
 	const [hospitals, setHospitals] = React.useState([]);
 
 	async function hospitalFetch() {
@@ -88,11 +83,13 @@ function HospitalNavbarHeader() {
 
 	const handleChange = (event) => {
 		if(event.target.value>0){
-					toggleHospital({id:event.target.value, name:'xyz'})
-
+					let filter = filterItemsEqual(hospitals, 'id', event.target.value);
+					toggleHospital(filter[0])
+		}else{
+			toggleHospital(null)
 		}
 
-		setAge(event.target.value);
+		setHos(event.target.value);
 	};
 
 	const user = useAppSelector(selectUser);
@@ -112,8 +109,8 @@ function HospitalNavbarHeader() {
 
 							labelId="demo-simple-select-helper-label"
 							id="demo-simple-select-helper"
-							value={age}
-							label="Age"
+							value={hos}
+							label="Hos"
 							onChange={handleChange}
 						>
 							<MenuItem value="*">{t('ALL Hospital')}</MenuItem>
@@ -132,42 +129,6 @@ function HospitalNavbarHeader() {
 			</div>
 
 	</Root>
-
-		/*<Root className="user relative   items-center justify-center p-16 pb-14 shadow-0">
-			<div className="mb-24 flex items-center justify-center bg-[#0043CB]">
-			<Typography className="username whitespace-nowrap text-14 font-medium">
-				View As
-			</Typography>
-
-			<Typography variant="h4" gutterBottom>
-			View As
-      </Typography>
-      <Typography variant="h5" gutterBottom>
-      
-						<FormControl sx={{ m: 1, minWidth: 230 }} >
-					<InputLabel id="demo-simple-select-helper-label">Select</InputLabel>
-					<Select
-					labelId="demo-simple-select-helper-label"
-					id="demo-simple-select-helper"
-					value={age}
-					label="Age"
-					onChange={handleChange}
-					>
-					<MenuItem value="">
-					</MenuItem>
-					<MenuItem value={1}>&Neo Administrator</MenuItem>
-					<MenuItem value={2}>Daichan Hospital</MenuItem>
-					<MenuItem value={3}>Gani hospital</MenuItem>
-					<MenuItem value={4}>Hospital 3</MenuItem>
-					</Select>
-				</FormControl>	  
-
-      </Typography>
-			 
-
-			</div>
-	
-		</Root>*/
 	);
 }
 

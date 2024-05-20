@@ -63,7 +63,7 @@ const navigationConfig = [
 			},
 		]
 	},
-
+ 
 	{
 		id: 'apps.ecommerce1',
 		title: 'DPC management',
@@ -72,29 +72,73 @@ const navigationConfig = [
 		translate: 'DPCManagement',
 		children: [
 			{
-				id: 'e-commerce-products1',
+				id: 'pages.invoice.printable',
 				title: '1 layer',
 				translate: 'A1layer',
-				type: 'item',
-				icon: 'material-outline:layers',
-				url: 'apps/e-commerce/products',
-				end: true
+				type: 'collapse',
+				icon: 'material-outline:filter_1',
+ 
+				children: [
+					{
+						id: 'pages.invoice.printable.compact',
+						title: 'ICD to DPC',
+						translate: 'ICDtoDPC',
+						type: 'item',
+						icon: 'material-outline:layers',
+						url: 'dpc-management/icd-dpc'
+					},
+					{
+						id: 'pages.invoice.printable.modern',
+						title: 'Age birth weight',
+						translate: 'AgeBirthWeight',
+						type: 'item',
+						icon: 'material-outline:layers',
+						url: 'dpc-management/age-birth-weight'
+					}
+				]
+
+
 			},
 			{
-				id: 'e-commerce-product-detail1',
+				id: 'pages3.invoice3.printable',
 				title: '2 layers',
 			    translate: 'A2layers',
 				type: 'item',
-				icon: 'material-outline:layers',
-				url: 'apps/e-commerce/products/1/a-walk-amongst-friends-canvas-print'
+				icon: 'material-outline:filter_2',
+				url: 'dpc-management/surgery'
 			},
 			{
-				id: 'e-commerce-new-product1',
+				id: 'pages2.invoice2.printable',
 				title: '3 layers',
 				translate: 'A3layers',
-				type: 'item',
-				icon: 'material-outline:layers',
-				url: 'apps/e-commerce/products/new'
+				type: 'collapse',
+				icon: 'material-outline:filter_3',
+				children: [
+					{
+						id: 'pages2.invoice2.printable.compact',
+						title: 'Treatement 1',
+						translate: 'Treatement1',
+						type: 'item',
+						icon: 'material-outline:layers',
+						url: 'dpc-management/treatement-1'
+					},
+					{
+						id: 'pages2.invoice2.printable.modern',
+						title: 'Treatement 2',
+						translate: 'Treatement2',
+						type: 'item',
+						icon: 'material-outline:layers',
+						url: 'dpc-management/treatement-2'
+					},
+					{
+						id: 'pages2.invoice2.printable.modern2',
+						title: 'Secondary Injury',
+						translate: 'SecondaryInjury',
+						type: 'item',
+						icon: 'material-outline:layers',
+						url: 'dpc-management/secondary-injury'
+					}
+				]
 			},
 			{
 				id: 'e-commerce-orders1',

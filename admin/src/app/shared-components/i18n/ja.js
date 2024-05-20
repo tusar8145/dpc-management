@@ -51,6 +51,25 @@ const locale = {
 	'Write classification/medical practice name/receipt code & press Enter':'分類/診療行為名/レセプトコードを書いてEnterを押してください',
 
 
+	'This field is Required':'この項目は必須です',
+	'DPC First 6 Digits':'DPC 最初の 6 桁',
+	'Type your query and press Enter':'クエリを入力してEnterキーを押します',
+	'ICD to DPC':'ICD から DPC へ',
+	'Compatible code':'互換コード',
+	'Condition name':'条件名',
+	'Judge':'裁判官',
+	'Age Birth Weight':'年齢 出生体重',
+	'Surgery':'手術',
+	'K Code':'Kコード',
+	'Secondary Injury':'二次傷害',
+	'Correspondence code':'通信コード',
+	'Disease name':'病名',
+	'Drug name: Treatment name':'薬剤名: 治療名',
+	'Treatment 1':'治療1',
+	'Branch code':'支店コード',
+	'Name':'名前',
+	'Treatment 2':'治療2',
+
 
 };
 export default locale;

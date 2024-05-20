@@ -12,7 +12,7 @@ import Alert from '@mui/material/Alert';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
-const Table = lazy(() => import('../../shared-components/table/TableMedicine'));
+const Table = lazy(() => import('../../shared-components/table/TableCommon'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -26,6 +26,21 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
  
+
+
+let tableName='medicines'
+let keyConfig=[
+
+  {name:'class', type:'String', header:'Medicinal efficacy classification', edit:1, validate:{required:1}},
+  {name:'name', type:'String', header:'Pharmaceutical name',edit:1, validate:{required:1}},
+  {name:'unit', type:'String', header:'Unit',edit:1, validate:{required:1}},
+  {name:'price', type:'Integer', header:'Price', edit:1, validate:{required:1}},  
+  {name:'receipt', type:'Integer', header:'Receipt',edit:0, validate:{required:0}},
+
+]
+
+
+
 function Medicine() {
 	const { t } = useTranslation('shared-components');
 
@@ -53,7 +68,7 @@ function Medicine() {
 
 		try {
 			//if(type=='replace'){
-					const medicineClear = await axios.post(apiConfig.medicineClear, {});
+					const medicineClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
 			//	}
 			
 	 
@@ -90,7 +105,7 @@ function Medicine() {
 
 						obj_col[done]=obj
 
-						const response = await axios.post(apiConfig.medicineCreate, obj);
+						const response = await axios.post(apiConfig.tableCreate + tableName+'/create', obj);
 						obj = []
 						counts = 0
 					}
@@ -203,7 +218,7 @@ function Medicine() {
 					{showUpload == 0 &&
 						<>{/*Table*/}
 							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write classification/class/receipt & press Enter"}/>
-							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter} />
+							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter}    tableName={tableName} keyConfig={keyConfig}/>
 						</>
 					}
 

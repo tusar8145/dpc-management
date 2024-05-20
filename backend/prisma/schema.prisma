@@ -26,8 +26,8 @@ model admins {
   password                     String
   address                      String?     @db.VarChar(300)
   phone                        String?      @db.VarChar(20)
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
 
   customer_admin customers[] @relation("admin_con")
 }
@@ -39,8 +39,8 @@ model customers {
   address                      String?     @db.VarChar(300)
   phone                        String?     @db.VarChar(20)
   created_by                      Int            
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
 
   admins admins? @relation("admin_con", fields: [created_by], references: [id])
 }
@@ -52,58 +52,198 @@ model hospitals {
   email                        String?     @db.VarChar(300)
   pass                         String?     @db.VarChar(20)
   created_by                      Int            
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+    test test[] @relation("test")
 }
 
  
 
 model injuries {
   id                           Int         @id @default(autoincrement())
-  receipt                      Int         @unique
+  receipt                      Int         
   icd                          String      
   name                         String      @db.VarChar(300)
   hospital_id                  Int?
+  parent_id                    Int?
   created_by                   Int            
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs injuries[] @relation("injuries")
+  parents injuries? @relation("injuries", fields: [parent_id], references: [id])
 }
 
 //     score   
 model medical_practices {
   id                           Int         @id @default(autoincrement())
-  receipt                      Int         @unique
+  receipt                      Int         
   name                         String      @db.VarChar(300)
   class                        String
   score                        Int      
   hospital_id                  Int?
+  parent_id                    Int?
+
   created_by                   Int            
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs medical_practices[] @relation("medical_practices")
+  parents medical_practices? @relation("medical_practices", fields: [parent_id], references: [id])
 }
 
       
 model medicines {
   id                           Int         @id @default(autoincrement())
-  receipt                      Int         @unique
+  receipt                      Int        
   name                         String      @db.VarChar(300)
   class                        String
   unit                         String      
   price                        Int
   hospital_id                  Int?
+  parent_id                    Int?
+
   created_by                   Int            
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs medicines[] @relation("medicines")
+  parents medicines? @relation("medicines", fields: [parent_id], references: [id])
+
 }
 
   
 model medicinal_efficacy {
   id                           Int         @id @default(autoincrement())
-  receipt                      Int         @unique
+  receipt                      Int         
   name                         String       
   hospital_id                  Int?
+  parent_id                    Int?
+
   created_by                   Int            
-  created_at                   DateTime?   @db.Timestamp(0)
-  updated_at                   DateTime?   @db.Timestamp(0)
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs medicinal_efficacy[] @relation("medicinal_efficacy")
+  parents medicinal_efficacy? @relation("medicinal_efficacy", fields: [parent_id], references: [id])
 }
 
+
+model icd_dpc {
+  id                           Int         @id @default(autoincrement())
+  receipt                      Int         
+  dpc                          String
+  name                         String
+  icd                          String
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs icd_dpc[] @relation("icd_dpc")
+  parents icd_dpc? @relation("icd_dpc", fields: [parent_id], references: [id])
+}
+
+model age_birth_weight {
+  id                           Int         @id @default(autoincrement())
+  receipt                      Int         
+  dpc                          String
+  name                         String
+  class                        Int
+  code                         String?
+  judge                        String?
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs age_birth_weight[] @relation("age_birth_weight")
+  parents age_birth_weight? @relation("age_birth_weight", fields: [parent_id], references: [id])
+}
+
+model surgery {
+  id                           Int         @id @default(autoincrement())
+  receipt                      Int         
+  dpc                          String
+  code                         String
+  k_code                       String
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs surgery[] @relation("surgery")
+  parents surgery? @relation("surgery", fields: [parent_id], references: [id])
+}
+
+
+model treatment_1 {
+  id                           Int         @id @default(autoincrement())
+  corr_code                    String
+  branch_code                  String
+  receipt                      Int         
+  name                         String
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs treatment_1[] @relation("treatment_1")
+  parents treatment_1? @relation("treatment_1", fields: [parent_id], references: [id])
+}
+
+
+model treatment_2 {
+  id                           Int         @id @default(autoincrement())
+  corr_code                    String
+  branch_code                  String
+  receipt                      Int         
+  name                         String
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs treatment_2[] @relation("treatment_2")
+  parents treatment_2? @relation("treatment_2", fields: [parent_id], references: [id])
+}
+
+model secondary_injury {
+  id                           Int         @id @default(autoincrement())
+  corr_code                    String
+  dpc                          String
+  disease_name                 String  
+  receipt                      Int         
+  drug_name                    String
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+
+  childs secondary_injury[] @relation("secondary_injury")
+  parents secondary_injury? @relation("secondary_injury", fields: [parent_id], references: [id])
+}
+
+model test {
+  id                       Int         @id @default(autoincrement())
+  a                        String
+  recept                   Int
+  parent_id                Int?
+  hospital_id              Int?   
+  hospital hospitals? @relation("test", fields: [hospital_id], references: [id])
+  test test[] @relation("test2")
+  parents test? @relation("test2", fields: [parent_id], references: [id])
+}

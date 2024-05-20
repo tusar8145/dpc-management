@@ -12,8 +12,8 @@ import { HospitalRoute } from "./routes/HospitalRoute.js";
 const app = express();
 const SYSVERSION = "/api/";
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({limit: '2500mb'}));
+ 
 
  
 

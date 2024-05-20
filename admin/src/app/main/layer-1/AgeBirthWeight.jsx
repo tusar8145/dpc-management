@@ -9,6 +9,8 @@ import FusePageSimple from '@fuse/core/FusePageSimple';
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
 import Alert from '@mui/material/Alert';
+import {createdAt} from '../../helpers/timeHelpers';
+import {filterItemsEqual} from '../../helpers/commonHelpers';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
@@ -27,15 +29,23 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 }));
 
 
-let tableName='medicinal_efficacy'
+
+let tableName='age_birth_weight'
+let headingTitle='Age Birth Weight'
 let keyConfig=[
-  {name:'name', type:'String', header:'Medicinal efficacy classification name',edit:1, validate:{required:1}},
-  {name:'receipt', type:'Integer', header:'Medicinal efficacy classification code',edit:0, validate:{required:0}},
+  {name:'dpc', type:'String', header:'DPC First 6 Digits', edit:1, validate:{required:1}},
+  {name:'class', type:'Integer', header:'Classification', edit:1, validate:{required:1}},
+  {name:'code', type:'String', header:'Compatible code', edit:1, validate:{required:1}},
+  {name:'name', type:'String', header:'Condition name',edit:1, validate:{required:1}},
+  {name:'judge', type:'String', header:'Judge',edit:1, validate:{required:1}},
+  {name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0}}
 ]
 
 
+
+
  
-function MedicinalEfficacy() {
+function AgeBirthWeight() {
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {
@@ -58,33 +68,42 @@ function MedicinalEfficacy() {
 	const [resetComponents, setResetComponents] = useState(false);
 	const [globalFilter, setGlobalFilter] = useState(null);
 
+
 	async function server(type) {
 
 		try {
 			//if(type=='replace'){
-					const medicinalEfClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
+					const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
 			//	}
 			
-
+				let clock=createdAt()
 				let fail_count=0
 				let obj = []
 				let obj_col=[]
 				var counts = 0
 				var done = 0
 				let len = data.length
+				let recept=1
 				for (var i = 0; i < len; i++) {
 					let this_ = data[i]
-
-
-					console.log(this_)
-
-
-					if(this_['receipt'] || this_['name']){
+					
+					if(this_['MDCｺｰﾄﾞ'] || this_['分類ｺｰﾄﾞ'] || this_['条件名'] || this_['条件区分']){
 						obj.push({
-							"receipt": this_['receipt'],
-							"name": this_['name'],
+
+							
+							"receipt": recept,
+							"dpc": (this_['MDCｺｰﾄﾞ']+this_['分類ｺｰﾄﾞ']).toString(),
+							"name": this_['条件名'],
+							"class": parseInt(this_['条件区分']),
+							"code": '',
+							"judge": 'System',
+
+							
+							"created_at":clock,
+							"updated_at":clock,
 							"created_by": 1
-						})				
+						})
+						recept++				
 					}else{
 						fail_count++
 					}
@@ -93,7 +112,7 @@ function MedicinalEfficacy() {
 					done++
 
 					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						console.log(counts, obj)
+						console.log(counts, i, len)
 						var cal_per = parseInt((done / len) * 100)
 						setProgress(cal_per)
 
@@ -106,11 +125,6 @@ function MedicinalEfficacy() {
 					counts++
 				}
 
-
-
-				console.log(obj_col)
-
-
 				if(fail_count==0){setSuccessAlert("Data uploaded successfully")}else{setFailAlert(fail_count+ " Data upload failed")}
 				
 				setShowUpload(0)
@@ -119,8 +133,6 @@ function MedicinalEfficacy() {
 			setProgress(0)	
 			setFailAlert("Invalid File")
 		}
- 
-	
 	}
 
 
@@ -144,32 +156,29 @@ function MedicinalEfficacy() {
 
 
 	function handleActionFromSearch(action) {
-		console.log(action,'action')
+		console.log(action,'actionx')
 		setShowUpload(action)
 		setSuccessAlert(null)
 		setFailAlert(null)
-		//setResetComponents(true)
 		setAllowUpload(false)
 	}
 
 	function handleSetGlobalFilter(data) {
 		console.log(data,'tusar')
-		//if(data?.length>0){
 			setGlobalFilter(data)
-		//}
 	}
 	
 
 	const { theme, toggleTheme } = useTheme();
 	const { hospital, toggleHospital } = useTheme();
 	
-	useEffect(() => {  toggleTheme(t('Medicinal efficacy category'))  }, [t('Medicinal efficacy category')]);
+	useEffect(() => {  toggleTheme(t(headingTitle))  }, [t(headingTitle)]);
 
 	return (
 		<Root
 			header={
 				<div className="p-24 hidden-on-large">
-					<h4>{t('Medicinal efficacy category')} </h4>
+					<h4>{t(headingTitle)} </h4>
 				</div>
 			}
 			content={
@@ -211,8 +220,8 @@ function MedicinalEfficacy() {
 
 					{showUpload == 0 &&
 						<>{/*Table*/}
-							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Write Medicinal efficacy classification name/code & press Enter"}/>
-							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter}    tableName={tableName} keyConfig={keyConfig}/>
+							<SearchInput textUpload={textUpload} enableUpload={handleActionFromSearch} globalFilter={handleSetGlobalFilter} txt={"Type your query and press Enter"}/>
+							<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter}   tableName={tableName} keyConfig={keyConfig}/>
 						</>
 					}
 
@@ -224,4 +233,4 @@ function MedicinalEfficacy() {
 	);
 }
 
-export default MedicinalEfficacy;
+export default AgeBirthWeight;

@@ -30,5 +30,12 @@ const apiConfig = {
     medicinalEfClear:base_url+'crud/medicinal_efficacy/remove-all',
     medicinalEfRemove:base_url+'crud/medicinal_efficacy/remove',
 
+    tableCreate:base_url+'crud/',
+    tableUpdate:base_url+'crud/',
+    tableCount:base_url+'crud/',
+	tableList:base_url+'crud/',
+    tableClear:base_url+'crud/',
+    tableRemove:base_url+'crud/',
+
 }
 export default apiConfig;

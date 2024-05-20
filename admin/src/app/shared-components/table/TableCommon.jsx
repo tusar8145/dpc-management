@@ -69,7 +69,7 @@ const Example = (props) => {
   
 
 
-
+       // if (columnFilters || get_global_filter) {
         let tkeys = [];
         let tvalues = [];
         let ttype = [];
@@ -109,6 +109,46 @@ const Example = (props) => {
           });
  
  
+/*--------------------------------------------------------------------------------------------*/
+ 
+if(get_global_filter){
+    let value_single=get_global_filter
+ 
+  for(let j=0 ; j<keyConfig.length;j++){
+    let new_key = keyConfig[j]
+    
+    let gen=null
+        if(new_key.type=='Integer'){
+             gen = parseInt(value_single); 
+        }else{
+             gen = value_single;  
+        }
+      
+  tkeys[j]=new_key.name
+  tvalues[j]=gen
+  ttype[j]=new_key.type
+}
+
+
+  let dynamicObject2 = {};
+  // Create object with dynamic keys
+  tkeys.forEach((key, index) => {
+      if(tvalues[index]){
+        if(ttype[index]=='Integer'){
+            dynamicObject2[key] = tvalues[index];
+        }else{ 
+          dynamicObject2[key] = {contains:tvalues[index]};
+        }
+      }
+  });
+
+  const originalArray = {...dynamicObject2};
+  const convertedArray = Object.entries(originalArray).map(([key, value]) => ({ [key]: value }));
+
+  f_globalFilters =  {  OR:convertedArray }
+}
+ 
+ 
 
         let filter = {
           f_columnFilters: dynamicObject,
@@ -118,36 +158,47 @@ const Example = (props) => {
         }
 /*------------------------------------End Filter-----------------------------------*/
 
-
         const response = await axios.post(apiConfig.tableList + tableName+'/list?child=1&&hospital=' + h_id + '&&take=' + pagination.pageSize + '&&skip=' + (10 * pagination.pageIndex)+ '&&order='+order, { filter });
         let new_data = []
         let get_data = response.data.data
-
-
-        for (let k = 0; k < get_data?.length; k++) {
-          let this_d = get_data[k]
  
-          if(this_d?.childs?.length>0){
-            this_d=this_d.childs[0]
-          } 
-
-          new_data.push({
-            icd: this_d.icd,
-            name: this_d.name,
-            receipt: this_d.receipt.toString(),
-            id: this_d.id
-          })
-        }
+            let keys = [];
+            let values = [];
+ 
+              for(let j=0 ; j<keyConfig.length;j++){
+                  let new_key = keyConfig[j]
+                  keys[j]=new_key.name
+                  values[j] = [];
+                  for(let k=0; k<get_data.length; k++){
+                        
+                          let ob=get_data[k]
+                          
+                          if(ob?.childs?.length>0){
+                            ob=ob.childs[0]
+                          } 
+                      
+                         values[j][k]=ob[new_key.name]
+                  }
+              }
+    
+    
+            const result = values[0].map((_, index) => {
+              let obj = {};
+              keys.forEach((key, keyIndex) => {
+                obj[key] = values[keyIndex][index];
+              });
+              return obj;
+            });
 
  
-        setData(new_data);
+        setData(result);
 
 
         const row = await axios.post(apiConfig.tableCount + tableName+'/count?child=1&&hospital=' + h_id, { filter });
         props.sendCountToSubParent(row.data.count._count.id)
         setRowCount(row.data.count._count.id);
 
-
+        
 
       } catch (error) {
         setIsError(true);
@@ -182,12 +233,12 @@ const Example = (props) => {
       accessorKey: new_key.name,
       header: t(new_key.header),
       ...new_key.edit==1?{enableEditing: true,}:{enableEditing: false,},
-      size: 20,
+      size: 200,
       muiEditTextFieldProps: {
         required: true,
         error: !!validationErrors[new_key.name],
         helperText: validationErrors[new_key.name],
-        //remove any previous validation errors when illness focuses on the input
+        //remove any previous validation errors when params focuses on the input
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
@@ -198,8 +249,7 @@ const Example = (props) => {
     })
   }
 
-  console.log(col_key,'col_key')
-
+ 
   const columns = useMemo(
     () => col_key, 
     [validationErrors],
@@ -298,7 +348,7 @@ const Example = (props) => {
 
 
 
-  function validateUser(illness) {
+  function validateUser(params) {
     let tkeys = [];
     let ttype = [];
     let trequired = [];
@@ -319,16 +369,16 @@ const Example = (props) => {
           if(trequired[index]==1){
   
             if(ttype[index]=='String'){
-                if(illness[key].length>0){
+                if(params[key].length>0){
                   dynamicObject[key] = ''
                 }else{
-                  dynamicObject[key] = 'This field is Required'
+                  dynamicObject[key] = t('This field is Required')
                 }
             }else{
-              if(illness[key]>0){
+              if(params[key]>0){
                 dynamicObject[key] = ''
               }else{
-                dynamicObject[key] = 'This field is Required'
+                dynamicObject[key] = t('This field is Required')
               }
             }
   
@@ -342,12 +392,12 @@ const Example = (props) => {
   }
 
 
-//UPDATE hook (put illness in api)
+//UPDATE hook (put params in api)
 function useUpdateUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (illness) => {
-      const response = await axios.post(apiConfig.tableUpdate+tableName+'/update',{...illness});
+    mutationFn: async (params) => {
+      const response = await axios.post(apiConfig.tableUpdate+tableName+'/update',{...params});
       return Promise.resolve();
     },
   });
@@ -355,7 +405,7 @@ function useUpdateUser() {
 
 
 
-//DELETE hook (delete illness in api)
+//DELETE hook (delete params in api)
 function useDeleteUser() {
   const queryClient = useQueryClient();
   return useMutation({

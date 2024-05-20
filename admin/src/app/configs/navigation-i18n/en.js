@@ -13,6 +13,14 @@ const locale = {
 	A2layers:'2 layers',
 	A3layers:'3 layers',
 	DaysAndScoreSettings:'Days and score settings',
-	medicalpractice:'医療行為'
+	medicalpractice:'医療行為',
+
+	ICDtoDPC:'ICD to DPC',
+	AgeBirthWeight:'Age birth weight',
+	Treatement1:'Treatement 1',
+	Treatement2:'Treatement 2',
+	SecondaryInjury:'Secondary Injury',
+	Surgery:'Surgery',
+
 };
 export default locale;

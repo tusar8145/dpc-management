@@ -12,7 +12,14 @@ import MedicalPracticeConfig from '../main/medical-practice/MedicalPracticeConfi
 import MedicineConfig from '../main/medicine/MedicineConfig';
 import MedicinalEfficacyConfig from '../main/medicinal-efficacy/MedicinalEfficacyConfig';
 
-const routeConfigs = [ExampleConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig];
+import ICDtoDPCConfig from '../main/layer-1/ICDtoDPCConfig';
+import AgeBirthWeightConfig from '../main/layer-1/AgeBirthWeightConfig';
+import SurgeryConfig from '../main/layer-2/SurgeryConfig';
+import Treatment1Config from '../main/layer-3/Treatment1Config';
+import Treatment2Config from '../main/layer-3/Treatment2Config';
+import SecondaryInjuryConfig from '../main/layer-3/SecondaryInjuryConfig';
+
+const routeConfigs = [ExampleConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig ];
 /**
  * The routes of the application.
  */

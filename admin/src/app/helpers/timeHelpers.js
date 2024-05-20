@@ -77,15 +77,14 @@ export const currentTimeValue = () => {
           const unixTimestamp = Math.floor(ts / 1000);
           return unixTimestamp 
        }catch(error){
-         // next(error) 
+         // next(error)
        }
   };
-  
 
 
 
 
-  export const created_at = () => {
+  export const createdAt = () => {
     try {   
 
       let options = {
@@ -122,9 +121,6 @@ export const currentTimeValue = () => {
         var hour
         if(t1_t[2]=="PM"){
               let hour_0    =  parseInt(t1_t_1[0])+12
-              if(hour_0==24){
-                hour_0=12
-              }
               hour=hour_0.toString()
         }else{
               hour    =  t1_t_1[0]
@@ -158,4 +154,5 @@ export const currentTimeValue = () => {
          // next(error)
        }
   };
+  
   
