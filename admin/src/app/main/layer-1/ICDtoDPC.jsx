@@ -15,7 +15,7 @@ import {filterItemsEqual} from '../../helpers/commonHelpers';
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
 const Table = lazy(() => import('../../shared-components/table/TableCommon'));
-
+const ReportModal = lazy(() => import('../../shared-components/modal/ReportModal')); 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
 		backgroundColor: theme.palette.background.paper,
@@ -28,22 +28,22 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
 
-
-
-let tableName='icd_dpc'
-let headingTitle='ICD to DPC'
-let keyConfig=[
-  {name:'dpc', type:'String', header:'DPC First 6 Digits', edit:1, validate:{required:1}},
-  {name:'name', type:'String', header:'Injury and disease name',edit:1, validate:{required:1}},
-  {name:'icd', type:'String', header:'ICD Code', edit:1, validate:{required:1}},
-  {name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0}}
-]
-
-
+ 
 
 
  
 function ICDtoDPC() {
+
+	let tableName='icd_dpc'
+	let headingTitle='ICD to DPC'
+	let keyConfig=[
+	  {name:'dpc', type:'String', header:'DPC First 6 Digits', edit:1, validate:{required:1},   	 xlsx:'MDCｺｰﾄﾞ<+>分類ｺｰﾄﾞ'},
+	  {name:'name', type:'String', header:'Injury and disease name',edit:1, validate:{required:1},   xlsx:'ICD名称'},
+	  {name:'icd', type:'String', header:'ICD Code', edit:1, validate:{required:1},  				 xlsx:'ICDｺｰﾄﾞ'},
+	  {name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},   				 xlsx:'<auto>'}
+	]
+
+
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {
@@ -65,46 +65,96 @@ function ICDtoDPC() {
 	const [failAlert, setFailAlert] = useState(null);
 	const [resetComponents, setResetComponents] = useState(false);
 	const [globalFilter, setGlobalFilter] = useState(null);
+	const [fail_count_list, setFail_count_list] = useState(null);
 
 
+	/*-----------start common function shareable------------*/
 	async function server(type) {
 
 		try {
-			//if(type=='replace'){
-					const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
-			//	}
+				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
 			
 				let clock=createdAt()
 				let fail_count=0
+				let fail_data=[]
 				let obj = []
 				let obj_col=[]
 				var counts = 0
 				var done = 0
 				let len = data.length
-				let recept=1
+ 				let auto=1
 				for (var i = 0; i < len; i++) {
 					let this_ = data[i]
 					
-					if(this_['ICD名称'] || this_['ICDｺｰﾄﾞ'] || this_['MDCｺｰﾄﾞ'] || this_['分類ｺｰﾄﾞ']){
+
+					let array={}
+					let empty=0
+
+
+					for(let h=0; h<keyConfig.length; h++){
+						let keycon=keyConfig[h]
+
+
+						const keyconSplit = keycon.xlsx.split("<+>");
+						
+						let result=''
+						for(let x=0; x<keyconSplit.length; x++){
+							if(keyconSplit[x]=='<auto>' || this_[keyconSplit[x]]){
+								if(keyconSplit[x] != '<auto>'){
+									if(keycon.type=='String'){
+										result=result+this_[keyconSplit[x]].toString()
+									}else{
+										result=parseInt(this_[keyconSplit[x]])
+									}
+								}else if(keyconSplit[x] == '<auto>'){
+									result=auto
+									if(empty==0){
+										auto++
+									}
+									
+								}							
+							}else{
+								console.log(this_,'fail')
+								if(i>1){
+									
+								}	
+							}
+							
+						}
+						if(!result){
+							if(keycon.validate.required==1){
+								empty++
+							}
+						}
+ 
+						array[keycon.name] = result;
+						result=''
+
+					}
+					 
+
+					
+					if(empty==0){
 						obj.push({
-							"name": this_['ICD名称'],
-							"receipt": recept,
-							"icd": this_['ICDｺｰﾄﾞ'],
-							"dpc": this_['MDCｺｰﾄﾞ']+this_['分類ｺｰﾄﾞ'],
+							...array,
 							"created_at":clock,
 							"updated_at":clock,
 							"created_by": 1
-						})
-						recept++				
+						})	
+						
+						empty=0
 					}else{
-						fail_count++
+						if(i!=0){
+							fail_data.push(this_)
+							fail_count++
+						}
 					}
 
+						 			
 
 					done++
 
 					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						console.log(counts, i, len)
 						var cal_per = parseInt((done / len) * 100)
 						setProgress(cal_per)
 
@@ -117,6 +167,8 @@ function ICDtoDPC() {
 					counts++
 				}
 
+				setFail_count_list(fail_data)
+
 				if(fail_count==0){setSuccessAlert("Data uploaded successfully")}else{setFailAlert(fail_count+ " Data upload failed")}
 				
 				setShowUpload(0)
@@ -126,7 +178,7 @@ function ICDtoDPC() {
 			setFailAlert("Invalid File")
 		}
 	}
-
+	/*---------end common function shareable---------*/
 
 	function handleDataFromChild(data) {
 		console.log(data,'tusar')
@@ -178,11 +230,12 @@ function ICDtoDPC() {
 
 					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
+					{failAlert != null &&  <ReportModal data={fail_count_list}/> }
 
 					{/*File upload*/}
 					{showUpload == 1 &&
 						<div className="flex flex-col w-full max-w-4xl">
-							<FileChoose progress={progress} sendDataToParent={handleDataFromChild} textUpload={textUpload} resetComponents={resetComponents} enableUpload={handleActionFromSearch} start={start} />
+							<FileChoose progress={progress} sendDataToParent={handleDataFromChild} textUpload={textUpload} resetComponents={resetComponents} enableUpload={handleActionFromSearch} start={start} keyConfig={keyConfig} />
 							<div className="flex  justify-center mt-32">
 								<Button
 

@@ -24,6 +24,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import en from '../i18n/en';
 import ja from '../i18n/ja';
 import Box from '@mui/material/Box';
+ 
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';			
+
 
 i18next.addResourceBundle('en', 'shared-components', en);
 i18next.addResourceBundle('ja', 'shared-components', ja);
@@ -68,6 +73,9 @@ function FileChoose(props) {
 
     const [progress, setProgress] = React.useState(10);
 
+    const [line1, setLine1] = React.useState(null);
+    const [line2, setLine2] = React.useState(null);
+
     useEffect(() => {  setProgress(props.progress)  }, [props.progress]);
     useEffect(() => {   setData([])  }, [props.resetComponents]);
     
@@ -100,6 +108,93 @@ function FileChoose(props) {
                   setMessage(Object.keys(json).length+" "+t("items found!") || "none")
                    
                     setData(json)
+
+
+ 
+
+                  
+ 
+
+try {
+    setLine1(JSON.stringify(json[0]))
+
+
+    const arr = [];
+    const arr_all = [];
+    const arr_all_value = [];
+    const arr_used = [];
+
+    let json1=json[1]
+    let json1_str=""
+    let t_keyConfig=props.keyConfig
+
+    for (let z in json1) {
+      arr_all.push(z);
+      arr_all_value.push(json1[z]);
+      let this_str=""
+      for(let h=0; h<t_keyConfig.length; h++){
+        let keycon=t_keyConfig[h]
+
+        const keyconSplit = keycon.xlsx.split("<+>");
+          for(let x=0; x<keyconSplit.length; x++){
+
+              if(keyconSplit[x] != '<auto>'){
+                  if(keyconSplit[x]==z){
+                        this_str='<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid gray; margin-right:7px; margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+ z +'</span>'+ " : "+'<span style="color:blue">'+ t(keycon.header) +'<span style="color:gray; font-size:10px;"> '+json1[z]+' </span></span></span>'                                    
+                        arr.push(z);
+                      }
+              }else{
+
+              }						
+          }
+      }
+
+      json1_str=json1_str+this_str
+   }
+
+
+   for(let h=0; h<t_keyConfig.length; h++){
+    let keycon=t_keyConfig[h]
+    let this_str=""
+    const keyconSplit = keycon.xlsx.split("<+>");
+      for(let x=0; x<keyconSplit.length; x++){
+              console.log(keyconSplit[x],'check')
+          if(arr.includes(keyconSplit[x])==true){
+          }else{
+            if(keyconSplit[x] != '<auto>'){
+                  this_str='<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid red; margin-right:7px;  margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+ keyconSplit[x] +'</span>'+ " : "+'<span style="color:red">'+ t('Not Found') +'</span></span>'                                    
+            }
+          }
+      }
+      json1_str=json1_str+this_str
+  }
+
+
+
+  for(let h=0; h<arr_all.length; h++){
+    let ttt=arr_all[h]
+    let this_str=""
+    if(arr.includes(ttt)==true){
+
+    }else{ 
+            this_str='<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid red; margin-right:7px;  margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+ ttt +'</span>'+ " : "+'<span style="color:orange">'+ t('Not Used') +'</span><span style="color:gray; font-size:10px;"> '+arr_all_value[h]+' </span></span>'                                    
+    }
+
+      json1_str=json1_str+this_str
+  }
+
+
+   setLine2(json1_str)
+
+
+} catch (error) {
+  
+}
+
+
+
+ 
+
                     props.sendDataToParent(json);
 
                   }; 
@@ -175,7 +270,44 @@ function FileChoose(props) {
           </div>
         </motion.span>
 
+
+
+        {line1&&  
+            <>
+              <Typography
+              style={{"margin-top": "30px", "text-align":"center", "color":"gray"}}
+                className="text-15 mt-30 mb-5  font-600"
+                variant="h6"
+              >
+                {t('File Info')}
+
+                <div dangerouslySetInnerHTML={{ __html: ' <span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid gray; margin-right:7px; margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+t('Column Name')+'</span> : <span style="color:blue">'+t('Heading')+'<span style="color:gray; font-size:10px;"> '+t('Example Value')+' </span></span></span>' }} />
+               
+
+
+              </Typography>
+
+                <List>
+                    <ListItem>
+                        
+                          <div dangerouslySetInnerHTML={{ __html: line2 }} />
+                      
+                    </ListItem>
+                </List>
+          </>
+        }
+
+
+
       </div>
+
+
+
+
+
+
+
+
     </div>
   );
 }

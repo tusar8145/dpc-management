@@ -27,7 +27,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
 
-function Example({ onData }) {
+function Dashboard({ onData }) {
 	const [img_col, setimg_col] = useState(null);
 
 	const onFileChange = function (e) {
@@ -66,7 +66,7 @@ function Example({ onData }) {
 
 	  
 	  
-	const { t } = useTranslation('examplePage');
+	const { t } = useTranslation('dashboardPage');
 
 	const { theme, toggleTheme } = useTheme();
 	const { hospital, toggleHospital } = useTheme();
@@ -100,4 +100,4 @@ function Example({ onData }) {
 	);
 }
 
-export default Example;
+export default Dashboard;

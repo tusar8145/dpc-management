@@ -69,6 +69,15 @@ const locale = {
 	'Branch code':'支店コード',
 	'Name':'名前',
 	'Treatment 2':'治療2',
+	'File Info':'ファイル情報',
+	'Not Used':'使用されていない',
+	'Not Found':'見つかりません',
+	'Column Name':'列名',
+	'Heading':'見出し',
+	'Example Value':'値の例',
+
+	'Fail Report':'失敗レポート',
+	'View Fail Report':'失敗レポートを表示',
 
 
 };

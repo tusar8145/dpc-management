@@ -17,6 +17,7 @@ const ExampleConfig2 = {
 	settings: {
 		layout: {}
 	},
+	auth    : authRoles.admin,
 	routes: [
 		{
 			path: 'injury- ',

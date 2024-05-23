@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import en from './navigation-i18n/en';
 import ja from './navigation-i18n/ja';
+import { authRoles } from '../auth';
 
 i18next.addResourceBundle('en', 'navigation', en);
 i18next.addResourceBundle('ja', 'navigation', ja);
@@ -18,7 +19,8 @@ const navigationConfig = [
 		translate: 'Dashboard',
 		type: 'item',
 		icon: 'material-outline:widgets',
-		url: 'example'
+		auth: authRoles.hospitalAssistant,
+		url: 'dashboard'
 	},
 	{
 		id: 'apps.ecommerce',
@@ -26,6 +28,7 @@ const navigationConfig = [
 		type: 'collapse',
 		icon: 'heroicons-outline:menu-alt-2',
 		translate: 'Dataregistration',
+		auth: authRoles.admin,
 		children: [
 			{
 				id: 'e-commerce-products',
@@ -34,6 +37,7 @@ const navigationConfig = [
 				type: 'item',
 				icon: 'material-twotone:face_retouching_natural',
 				url: 'data-registration/injury-illness',
+				
 				end: true
 			},
 			{
@@ -70,6 +74,7 @@ const navigationConfig = [
 		type: 'collapse',
 		icon: 'material-outline:auto_awesome_motion',
 		translate: 'DPCManagement',
+		auth: authRoles.admin,
 		children: [
 			{
 				id: 'pages.invoice.printable',

@@ -2,12 +2,23 @@ input#upload {
     display: none;
 }
 
-label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium {
-    width: 600px;
-    height: 400px;
-    background: white;
-    color: black;
+@media only screen and (min-width : 768px) {
+            label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium {
+                width: 600px;
+                height: 400px;
+                background: white;
+                color: black;
+            }
+    }
+    @media only screen and (max-width : 768px) {
+        label.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium {
+            width: 100% !important;
+            background: white;
+            color: black;
+        }
 }
+
+
 
 .tablex{
     width: 100%;
