@@ -3,17 +3,16 @@ import _ from '@lodash';
 import { useEffect, useState } from 'react';
 import { lazy } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../../context/ThemeContext';
 import { styled } from '@mui/material/styles';
 import FusePageSimple from '@fuse/core/FusePageSimple';
 import axios from 'axios';
-import apiConfig from '../../configs/apiConfig';
+import apiConfig from '../../../configs/apiConfig';
 import Alert from '@mui/material/Alert';
-import {createdAt} from '../../helpers/timeHelpers';
-import {filterItemsEqual} from '../../helpers/commonHelpers';
-import SummaryWidget from '../../shared-components/card/SummaryWidget';
+import {createdAt} from '../../../helpers/timeHelpers';
+import {filterItemsEqual} from '../../../helpers/commonHelpers';
 import { motion } from 'framer-motion';
-import  User  from '../../auth/user/user';
+import  User  from '../../../auth/user/user';
  
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
@@ -29,19 +28,15 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 }));
 
 
-
-
-
-
-
  
-function Dashboard() {
+ 
+function Hospital() {
 
  
 	let user=User()
  
 	let tableName=''
-	let headingTitle='Dashboard'
+	let headingTitle='Hospital Management'
   
 	const { t } = useTranslation('shared-components');
  
@@ -119,33 +114,7 @@ function Dashboard() {
  					
 					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
-		
-					{user?.role=='admin' &&
-						<motion.div
-							className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
-							variants={container}
-							initial="hidden"
-							animate="show"
-						>
-							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
-							</motion.div>
-
-							<motion.div variants={item}>
-								<SummaryWidget count={countAdmin}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
-							</motion.div>
-
-							<motion.div variants={item}>
-								<SummaryWidget count={countAssistant}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
-							</motion.div>
-
-							<motion.div variants={item}>
-								<SummaryWidget count={countStaff}   title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
-							</motion.div>
-						</motion.div>
-					}
-
-
+ 
 				</div>
 			}
 	/>
@@ -153,4 +122,4 @@ function Dashboard() {
 	);
 }
 
-export default Dashboard;
+export default Hospital;

@@ -22,5 +22,12 @@ const locale = {
 	SecondaryInjury:'Secondary Injury',
 	Surgery:'Surgery',
 
+	HospitalManagement:'Hospital management',
+	DPCAnalysis:'DPC analysis',
+	Search:'Search',
+	DataUpload:'Data upload',
+	ContactForm:'Contact form',
+	UserManagement:'User management',
+
 };
 export default locale;

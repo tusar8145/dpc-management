@@ -16,9 +16,10 @@ import { useTheme } from '../../context/ThemeContext';
 import { useMemo,useEffect, useState } from 'react';
 import {filterItemsEqual} from '../../helpers/commonHelpers';
 
+import  User  from '../../auth/user/user';
+
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
-
 
 const Root = styled('div')(({ theme }) => ({
 	'& .username, & .email': {
@@ -51,6 +52,7 @@ function HospitalNavbarHeader() {
 	const { hospital, toggleHospital } = useTheme();
 	const [hos, setHos] = React.useState('*');
 	const [hospitals, setHospitals] = React.useState([]);
+	let this_user=User()
 
 	async function hospitalFetch() {
 		const response = await axios.post(apiConfig.hospitalList,{});
@@ -95,7 +97,8 @@ function HospitalNavbarHeader() {
 	const user = useAppSelector(selectUser);
 	return (
 		<Root className="user relative flex flex-col items-center justify-center p-16 pb-14 shadow-0">
-		
+	 
+		{this_user?.role=='admin' && 
 			<div className='view-as'>
 				<Typography className="mb-6 username whitespace-nowrap text-14 font-medium  flex items-left pl-10 ">
 				<FuseSvgIcon className="text-48" size={24} color="action" >heroicons-outline:eye</FuseSvgIcon>	 {t('View as')+':'}
@@ -126,7 +129,9 @@ function HospitalNavbarHeader() {
 				</div>
 
 
-			</div>
+			</div>			
+		}
+
 
 	</Root>
 	);

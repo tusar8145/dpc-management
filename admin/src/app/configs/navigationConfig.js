@@ -19,7 +19,7 @@ const navigationConfig = [
 		translate: 'Dashboard',
 		type: 'item',
 		icon: 'material-outline:widgets',
-		auth: authRoles.hospitalAssistant,
+		auth: authRoles.common,
 		url: 'dashboard'
 	},
 	{
@@ -155,6 +155,60 @@ const navigationConfig = [
 				end: true
 			},
 		]
+	},
+	{
+		id: '3',
+		title: 'Hospital management',
+		translate: 'HospitalManagement',
+		type: 'item',
+		icon: 'heroicons-solid:key',
+		auth: authRoles.admin,
+		url: 'hospital-management'
+	},
+	{
+		id: '4',
+		title: 'DPC analysis',
+		translate: 'DPCAnalysis',
+		type: 'item',
+		icon: 'heroicons-solid:document-report',
+		auth: authRoles.hospitalAssistant_staff,
+		url: 'hospital/dpc-analysis'
+	},	
+	{ 
+		id: '5',
+		title: 'Search',
+		translate: 'Search',
+		type: 'item',
+		icon: 'heroicons-solid:document-search',
+		auth: authRoles.hospitalAssistant_staff,
+		url: 'hospital/search'
+	},	
+	{
+		id: '6',
+		title: 'Data upload',
+		translate: 'DataUpload',
+		type: 'item',
+		icon: 'heroicons-solid:cloud-upload',
+		auth: authRoles.hospitalAssistant_staff,
+		url: 'hospital/data-upload'
+	},
+	{
+		id: '7',
+		title: 'Contact form',
+		translate: 'ContactForm',
+		type: 'item',
+		icon: 'heroicons-solid:chat-alt-2',
+		auth: authRoles.hospitalAssistant_staff,
+		url: 'hospital/contact-form'
+	},
+	{
+		id: '8',
+		title: 'User management',
+		translate: 'UserManagement',
+		type: 'item',
+		icon: 'heroicons-solid:user-add',
+		auth: authRoles.admin_hospitalAssistant,
+		url: 'user-management'
 	},
 
 ];

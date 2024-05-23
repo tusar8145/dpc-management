@@ -2,6 +2,8 @@ import { createContext, useState, useEffect, useCallback, useMemo } from 'react'
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import config from './jwtAuthConfig';
+import { changeFuseTheme } from '@fuse/core/FuseSettings/fuseSettingsSlice';
+import { useAppDispatch } from 'app/store/hooks';
 
 const defaultAuthContext = {
 	isAuthenticated: false,
@@ -18,11 +20,139 @@ const defaultAuthContext = {
 export const JwtAuthContext = createContext(defaultAuthContext);
 
 function JwtAuthProvider(props) {
+
+	const dispatch = useAppDispatch();
+
+	async function setTheme(user){
+		let _theme={
+				
+			"id": "Emarald Gold",
+			"section": {
+				"main": {
+					"palette": {
+						"mode": "light",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#dcf2f2",
+							"paper": "#f2fdfa"
+						},
+						"text": {
+							"primary": "rgb(17, 24, 39)",
+							"secondary": "rgb(107, 114, 128)",
+							"disabled": "rgb(149, 156, 169)"
+						},
+						"divider": "#b3c4c3"
+					}
+				},
+				"navbar": {
+					"palette": {
+						"mode": "dark",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#004D40",
+							"paper": "#00544a"
+						},
+						"text": {
+							"primary": "rgb(255,255,255)",
+							"secondary": "rgb(148, 163, 184)",
+							"disabled": "rgb(156, 163, 175)"
+						},
+						"divider": "#2d6360"
+					}
+				},
+				"toolbar": {
+					"palette": {
+						"mode": "light",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#dcf2f2",
+							"paper": "#f2fdfa"
+						},
+						"text": {
+							"primary": "rgb(17, 24, 39)",
+							"secondary": "rgb(107, 114, 128)",
+							"disabled": "rgb(149, 156, 169)"
+						},
+						"divider": "#b3c4c3"
+					}
+				},
+				"footer": {
+					"palette": {
+						"mode": "dark",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#004D40",
+							"paper": "#00544a"
+						},
+						"text": {
+							"primary": "rgb(255,255,255)",
+							"secondary": "rgb(148, 163, 184)",
+							"disabled": "rgb(156, 163, 175)"
+						},
+						"divider": "#2d6360"
+					}
+				}
+			}
+		
+		}
+		if(user?.role!='admin'){ 
+		await dispatch(changeFuseTheme(_theme?.section)).then(() => { });
+		}
+	}
+
+
+
 	const [user, setUser] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [authStatus, setAuthStatus] = useState('configuring');
 	const { children } = props;
+
+ 
 	/**
 	 * Handle sign-in success
 	 */
@@ -30,6 +160,7 @@ function JwtAuthProvider(props) {
 		setSession(accessToken);
 		setIsAuthenticated(true);
 		setUser(userData);
+		//setTheme(userData)
 	}, []);
 	/**
 	 * Handle sign-up success

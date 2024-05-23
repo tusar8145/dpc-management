@@ -37,5 +37,7 @@ const apiConfig = {
     tableClear:base_url+'crud/',
     tableRemove:base_url+'crud/',
 
+    countAdminGroup:base_url+'crud/admins/count/role',
+    countHospital:base_url+'crud/hospitals/count',
 }
 export default apiConfig;

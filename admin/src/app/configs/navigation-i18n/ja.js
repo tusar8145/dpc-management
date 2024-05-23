@@ -23,6 +23,15 @@ const locale = {
 	Surgery:'手術',
 
 
+	HospitalManagement:'病院経営',
+	DPCAnalysis:'DPC分析',
+	Search:'検索',
+	DataUpload:'データのアップロード',
+	ContactForm:'お問い合わせフォーム',
+	UserManagement:'ユーザー管理',
+ 
+
+
 
 
 

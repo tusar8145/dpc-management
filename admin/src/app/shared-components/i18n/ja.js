@@ -79,6 +79,12 @@ const locale = {
 	'Fail Report':'失敗レポート',
 	'View Fail Report':'失敗レポートを表示',
 
+	'Hospitals':'病院',
+	'Admin':'管理者',
+	'Hospital Assistant':'病院助手',
+	'Hospital Staff':'病院スタッフ',
+	'Hospital Management':'病院経営',
+
 
 };
 export default locale;
