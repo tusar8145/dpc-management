@@ -49,13 +49,17 @@ const Root = styled('div')(({ theme }) => ({
 
 function HospitalNavbarHeader() {
 	const { t } = useTranslation('shared-components');
-	const { hospital, toggleHospital } = useTheme();
+	const { hospital, toggleHospital, refreshHospital, toggleRefreshHospital} = useTheme();
 	const [hos, setHos] = React.useState('*');
 	const [hospitals, setHospitals] = React.useState([]);
+	const [fetchComlete, setFetchComlete] = React.useState(false);
 	let this_user=User()
 
+	console.log('yyyy',this_user)
+
 	async function hospitalFetch() {
-		const response = await axios.post(apiConfig.hospitalList,{});
+		let hos_present=0
+		const response = await axios.post(apiConfig.hospitalManageList,{});
 		let res=response.data.data
 		let new_obj=[]
 		for (let x = 0; x < res.length; x++) {
@@ -66,16 +70,33 @@ function HospitalNavbarHeader() {
 			if(res[x].name.length>22){
 				f1=f1+'..'
 			}
+			if(hos==res[x].id){
+				hos_present=1
+				/*toggleHospital({
+					id: res[x].id,
+					logo: res[x].logo,
+					name: res[x].name,
+					sort_name:f1,
+					email: res[x].admin_email,
+				})*/
+
+			}
+
 			new_obj.push({
 				id: res[x].id,
 				logo: res[x].logo,
 				name: res[x].name,
 				sort_name:f1,
-				email: res[x].email,
+				email: res[x].admin_email,
 			}
 		  )
 		}
 		setHospitals(new_obj);
+		
+		if(hos_present==0){
+			setHos('*')
+		}
+		setFetchComlete(true)
 	}
 
 
@@ -83,21 +104,52 @@ function HospitalNavbarHeader() {
 		hospitalFetch()
 	}, []);
 
+
+	useEffect(() => {
+		hospitalFetch()
+	}, [refreshHospital]);
+
 	const handleChange = (event) => {
 		if(event.target.value>0){
 					let filter = filterItemsEqual(hospitals, 'id', event.target.value);
 					toggleHospital(filter[0])
+					setHos(event.target.value);
 		}else{
 			toggleHospital(null)
+			setHos('*')
 		}
 
-		setHos(event.target.value);
+		
 	};
+
+	function selectHospital  (id)   {
+		if(id>0){
+					let filter = filterItemsEqual(hospitals, 'id', id);
+					toggleHospital(filter[0])
+					setHos(id);
+		}else{
+			toggleHospital(null)
+			setHos('*')
+		}
+	};
+
+	useEffect(() => {
+		console.log(this_user.hospital,'this_user.hospital')
+		if(this_user.hospital!=null && fetchComlete==true){
+			selectHospital(this_user.hospital.id)	
+		}
+		if(this_user.hospital==null && fetchComlete==true){
+			selectHospital(null)	
+		}
+		
+	}, [this_user.hospital,fetchComlete]);
+
+
+	
 
 	const user = useAppSelector(selectUser);
 	return (
 		<Root className="user relative flex flex-col items-center justify-center p-16 pb-14 shadow-0">
-	 
 		{this_user?.role=='admin' && 
 			<div className='view-as'>
 				<Typography className="mb-6 username whitespace-nowrap text-14 font-medium  flex items-left pl-10 ">

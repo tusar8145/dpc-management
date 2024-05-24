@@ -12,7 +12,8 @@ import LeftSideLayout1 from './components/LeftSideLayout1';
 import NavbarWrapperLayout1 from './components/NavbarWrapperLayout1';
 import RightSideLayout1 from './components/RightSideLayout1';
 import ToolbarLayout1 from './components/ToolbarLayout1';
-
+ 
+ 
 const FuseDialog = lazy(() => import('@fuse/core/FuseDialog/FuseDialog'));
 const Root = styled('div')(({ config }) => ({
 	...(config.mode === 'boxed' && {
@@ -34,6 +35,8 @@ const Root = styled('div')(({ config }) => ({
  * The layout 1.
  */
 function Layout1(props) {
+ 
+
 	const { children } = props;
 	const config = useAppSelector(selectFuseCurrentLayoutConfig);
 	const appContext = useContext(AppContext);

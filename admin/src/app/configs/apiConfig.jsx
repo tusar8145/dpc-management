@@ -1,5 +1,7 @@
 let base_url= import.meta.env.VITE_BASE_URL
 const apiConfig = {
+    base_url:base_url,
+
     hospitalList:base_url+'crud/hospitals/list',
 
     illnessCreate:base_url+'crud/injuries/create',
@@ -39,5 +41,18 @@ const apiConfig = {
 
     countAdminGroup:base_url+'crud/admins/count/role',
     countHospital:base_url+'crud/hospitals/count',
+
+    hospitalManageList:base_url+'hospital-manage/list',
+    hospitalManageCreate:base_url+'hospital-manage/create',
+    hospitalManageRemove:base_url+'hospital-manage/remove',
+    hospitalManageUpdate:base_url+'hospital-manage/update',
+    hospitalManageLogo:base_url+'hospital-manage/logo',
+
+    hospitalStaffManageList:base_url+'hospital-staff-manage/list',
+    hospitalStaffManageCreate:base_url+'hospital-staff-manage/create',
+    hospitalStaffManageRemove:base_url+'hospital-staff-manage/remove',
+    hospitalStaffManageUpdate:base_url+'hospital-staff-manage/update',
+    hospitalStaffManageLogo:base_url+'hospital-staff-manage/logo',
+    
 }
 export default apiConfig;

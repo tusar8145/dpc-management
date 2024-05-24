@@ -1,6 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+ 
 import { z } from 'zod';
 import _ from '@lodash';
 import TextField from '@mui/material/TextField';
@@ -10,6 +10,11 @@ import Checkbox from '@mui/material/Checkbox';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import useJwtAuth from '../useJwtAuth';
+import * as React from 'react';
+import Alert from '@mui/material/Alert';
+import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+
 /**
  * Form Validation Schema
  */
@@ -27,6 +32,9 @@ const defaultValues = {
 };
 
 function JwtSignInForm() {
+
+	const { t } = useTranslation('shared-components');
+	const [alert, setAlert] = useState(false);
 	const { signIn } = useJwtAuth();
 	const { control, formState, handleSubmit, setValue, setError } = useForm({
 		mode: 'onChange',
@@ -39,14 +47,15 @@ function JwtSignInForm() {
 		setValue('password', '12345678Ss.', { shouldDirty: true, shouldValidate: true });
 	}, [setValue]);
 
-	function onSubmit(formData) {
+	async function onSubmit(formData) {
 		const { email, password } = formData;
-
+		setAlert(false)
 		
-		signIn({
+		let x= await signIn({
 			email,
 			password
 		}).catch((error) => {
+			
 			const errorData = error.response.data;
 			errorData.forEach((err) => {
 				setError(err.type, {
@@ -55,15 +64,27 @@ function JwtSignInForm() {
 				});
 			});
 		});
+
+		if(x.message=='Request failed with status code 404'){
+			setAlert(true)
+		} 
 	}
 
 	return (
+		<>
+
 		<form
 			name="loginForm"
 			noValidate
 			className="mt-32 flex w-full flex-col justify-center"
 			onSubmit={handleSubmit(onSubmit)}
 		>
+
+
+
+
+
+
 			<Controller
 				name="email"
 				control={control}
@@ -140,6 +161,16 @@ function JwtSignInForm() {
 				Sign in
 			</Button>
 		</form>
+
+{alert==true &&
+
+		<Alert variant="outlined" severity="error" className='mt-24'>
+           {t('Email or password not match')}
+       </Alert>
+}
+
+		
+		</>
 	);
 }
 

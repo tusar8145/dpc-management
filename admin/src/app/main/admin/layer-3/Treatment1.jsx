@@ -41,8 +41,10 @@ function Treatment1() {
 	let tableName='treatment_1'
 	let headingTitle='Treatment 1'
 	let keyConfig=[
-			{name:'corr_code', type:'String', header:'Correspondence code', edit:1, validate:{required:1},	xlsx:'対応ｺｰﾄﾞ'},
-			{name:'branch_code', type:'String', header:'Branch code',edit:1, validate:{required:1},			xlsx:'__EMPTY'},
+		
+			{name:'branch_code', type:'String', header:'Branch code',edit:1, validate:{required:1},			xlsx:'分類ｺｰﾄﾞ'},
+			{name:'receipt_code', type:'String', header:'Receipt code', edit:1, validate:{required:1},	    xlsx:'__EMPTY'},
+			{name:'res_code', type:'String', header:'Response Code', edit:1, validate:{required:1},	        xlsx:'対応ｺｰﾄﾞ'},
 			{name:'name', type:'String', header:'Name', edit:1, validate:{required:1},						xlsx:'処置等（１）'},
 			{name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},						xlsx:'<auto>'}
 	]
@@ -74,6 +76,7 @@ function Treatment1() {
 
 	/*-----------start common function shareable------------*/
 	async function server(type) {
+											
 
 		try {
 				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
@@ -253,6 +256,8 @@ function Treatment1() {
 										type='upload' }
 										if (window.confirm(t(msg))) {
 											server(type)
+											window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+											
 										}
 									}}
 									className="mx-8"

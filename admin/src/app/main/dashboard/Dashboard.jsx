@@ -14,7 +14,8 @@ import {filterItemsEqual} from '../../helpers/commonHelpers';
 import SummaryWidget from '../../shared-components/card/SummaryWidget';
 import { motion } from 'framer-motion';
 import  User  from '../../auth/user/user';
- 
+import { changeFuseTheme } from '@fuse/core/FuseSettings/fuseSettingsSlice';
+import { useAppDispatch } from 'app/store/hooks';
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -36,9 +37,129 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
  
 function Dashboard() {
-
+	//const dispatch = useAppDispatch();
  
 	let user=User()
+	if(user.role != 'admin'){
+		let _theme={
+				
+			"id": "Emarald Gold",
+			"section": {
+				"main": {
+					"palette": {
+						"mode": "light",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#dcf2f2",
+							"paper": "#f2fdfa"
+						},
+						"text": {
+							"primary": "rgb(17, 24, 39)",
+							"secondary": "rgb(107, 114, 128)",
+							"disabled": "rgb(149, 156, 169)"
+						},
+						"divider": "#b3c4c3"
+					}
+				},
+				"navbar": {
+					"palette": {
+						"mode": "dark",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#004D40",
+							"paper": "#00544a"
+						},
+						"text": {
+							"primary": "rgb(255,255,255)",
+							"secondary": "rgb(148, 163, 184)",
+							"disabled": "rgb(156, 163, 175)"
+						},
+						"divider": "#2d6360"
+					}
+				},
+				"toolbar": {
+					"palette": {
+						"mode": "light",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#dcf2f2",
+							"paper": "#f2fdfa"
+						},
+						"text": {
+							"primary": "rgb(17, 24, 39)",
+							"secondary": "rgb(107, 114, 128)",
+							"disabled": "rgb(149, 156, 169)"
+						},
+						"divider": "#b3c4c3"
+					}
+				},
+				"footer": {
+					"palette": {
+						"mode": "dark",
+						"primary": {
+							"main": "#00695C",
+							"light": "#439889",
+							"dark": "#003D33",
+							"contrastText": "rgb(255,255,255)"
+						},
+						"secondary": {
+							"main": "#FFD740",
+							"light": "#FFFF74",
+							"dark": "#C8A600",
+							"contrastText": "rgb(17, 24, 39)"
+						},
+						"background": {
+							"default": "#004D40",
+							"paper": "#00544a"
+						},
+						"text": {
+							"primary": "rgb(255,255,255)",
+							"secondary": "rgb(148, 163, 184)",
+							"disabled": "rgb(156, 163, 175)"
+						},
+						"divider": "#2d6360"
+					}
+				}
+			}
+		
+		}
+ 
+		  //dispatch(changeFuseTheme(_theme?.section)).then(() => { });
+ 
+	}
  
 	let tableName=''
 	let headingTitle='Dashboard'
@@ -74,6 +195,12 @@ function Dashboard() {
 	const [countAdmin, setCountAdmin] = useState(0);
 	const [countAssistant, setCountAssistant] = useState(0);
 	const [countStaff, setCountStaff] = useState(0);
+
+	const [count3rd, setCount3rd] = useState(0);
+	const [count7th, setCount7th] = useState(0);
+	const [countAll, setCountAll] = useState(0);
+	const [countDischarged, setCountDischarged] = useState(0);
+	const [countWithC, setCountWithC] = useState(0);
 
 
 	async function dashboardCount(){
@@ -136,7 +263,7 @@ function Dashboard() {
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countAssistant}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
+								<SummaryWidget count={countHospital}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
@@ -145,6 +272,34 @@ function Dashboard() {
 						</motion.div>
 					}
 
+					{user?.role!='admin' &&
+											<motion.div
+											className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
+											variants={container}
+											initial="hidden"
+											animate="show"
+										>
+											<motion.div variants={item}>
+												<SummaryWidget count={count3rd}   title={t('3rd Day')} icon={'material-outline:bedtime'}/>
+											</motion.div>
+				
+											<motion.div variants={item}>
+												<SummaryWidget count={count7th}   title={t('7th Day')}  icon={'material-outline:bedtime'}/>
+											</motion.div>
+				
+											<motion.div variants={item}>
+												<SummaryWidget count={countAll}   title={t('All  Patients')}  icon={'material-outline:bedtime'}/>
+											</motion.div>
+				
+											<motion.div variants={item}>
+												<SummaryWidget count={countDischarged}   title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
+											</motion.div>
+
+											<motion.div variants={item}>
+												<SummaryWidget count={countWithC}   title={t('With Change')}  icon={'material-outline:bedtime'}/>
+											</motion.div>
+										</motion.div>
+					}
 
 				</div>
 			}

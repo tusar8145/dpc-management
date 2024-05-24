@@ -2,24 +2,24 @@ import i18next from 'i18next';
 import { lazy } from 'react';
 import en from './i18n/en';
 import ja from './i18n/ja';
-import {authRoles} from '../../../auth';
+import {authRoles} from '../../auth';
 
 i18next.addResourceBundle('en', 'shared-components', en);
 i18next.addResourceBundle('ja', 'shared-components', ja);
-const Hospital = lazy(() => import('./Hospital'));
+const Staff = lazy(() => import('./Staff'));
 /**
- * The Hospital page config.
+ * The Staff page config.
  */
-const HospitalConfig = {
+const StaffConfig = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.common,
+	auth    : authRoles.hospitalAssistant,
 	routes: [
 		{
-			path: 'hospital-management',
-			element: <Hospital />
+			path: 'staff-management',
+			element: <Staff />
 		}
 	]
 };
-export default HospitalConfig;
+export default StaffConfig;

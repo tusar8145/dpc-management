@@ -157,6 +157,15 @@ const navigationConfig = [
 		]
 	},
 	{
+		id: '18',
+		title: 'CCPM',
+		translate: 'CCPM',
+		type: 'item',
+		icon: 'material-outline:assignment_turned_in',
+		auth: authRoles.admin,
+		url: 'ccpm'
+	},
+	{
 		id: '3',
 		title: 'Hospital management',
 		translate: 'HospitalManagement',
@@ -203,12 +212,12 @@ const navigationConfig = [
 	},
 	{
 		id: '8',
-		title: 'User management',
-		translate: 'UserManagement',
+		title: 'Staff management',
+		translate: 'StaffManagement',
 		type: 'item',
 		icon: 'heroicons-solid:user-add',
-		auth: authRoles.admin_hospitalAssistant,
-		url: 'user-management'
+		auth: authRoles.hospitalAssistant,
+		url: 'staff-management'
 	},
 
 ];

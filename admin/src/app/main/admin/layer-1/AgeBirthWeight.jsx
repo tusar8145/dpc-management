@@ -38,9 +38,9 @@ function AgeBirthWeight() {
 	let keyConfig=[
 	  {name:'dpc', type:'String', header:'DPC First 6 Digits', edit:1, validate:{required:1},   xlsx:'MDCｺｰﾄﾞ<+>分類ｺｰﾄﾞ'},
 	  {name:'class', type:'Integer', header:'Classification', edit:1, validate:{required:1},    xlsx:'条件区分'},
-	  {name:'code', type:'String', header:'Compatible code', edit:1, validate:{required:1},   	xlsx:'条件区分'},
+	  {name:'code', type:'String', header:'Compatible code', edit:1, validate:{required:1},   	xlsx:'__EMPTY_1'},
 	  {name:'name', type:'String', header:'Condition name',edit:1, validate:{required:1},   	xlsx:'条件名'},
-	  {name:'judge', type:'String', header:'Judge',edit:1, validate:{required:1},  	 			xlsx:'条件区分'},
+	  {name:'judge', type:'String', header:'Judge',edit:1, validate:{required:1},  	 			xlsx:'Daichan comment'},
 	  {name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},   			xlsx:'<auto>'}
 	]
 	
@@ -71,6 +71,7 @@ function AgeBirthWeight() {
 
 	/*-----------start common function shareable------------*/
 	async function server(type) {
+											
 
 		try {
 				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
@@ -250,6 +251,8 @@ function AgeBirthWeight() {
 										type='upload' }
 										if (window.confirm(t(msg))) {
 											server(type)
+											window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+											
 										}
 									}}
 									className="mx-8"

@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import clsx from 'clsx';
 import Box from '@mui/material/Box';
-
+import { useTranslation } from 'react-i18next';
 /**
  * FuseLoading displays a loading state with an optional delay
  */
@@ -13,6 +13,7 @@ function FuseLoading(props) {
 	useTimeout(() => {
 		setShowLoading(true);
 	}, delay);
+	const { t } = useTranslation('shared-components');
 	return (
 		<div
 			className={clsx(
@@ -25,7 +26,7 @@ function FuseLoading(props) {
 				className="-mb-16 text-13 font-medium sm:text-20"
 				color="text.secondary"
 			>
-				Loading
+				{t('Loading')}
 			</Typography>
 			<Box
 				id="spinner"

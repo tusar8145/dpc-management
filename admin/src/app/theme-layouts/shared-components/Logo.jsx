@@ -1,4 +1,6 @@
 import { styled } from '@mui/material/styles';
+import { useTheme } from '../../context/ThemeContext';
+import '../../../styles/custom-basic.css';
 
 const Root = styled('div')(({ theme }) => ({
 	'& > .logo-icon': {
@@ -19,13 +21,18 @@ const Root = styled('div')(({ theme }) => ({
  * The logo component.
  */
 function Logo() {
+	const { hospital, toggleHospital, refreshHospital, toggleRefreshHospital} = useTheme();
+ 
 	return (
 		<Root className="flex items-center">
-			<img
-				className="logo-icon h-32 "
-				src="assets/images/logo/logo.png"
-				alt="logo"
-			/>
+			{hospital?.logo &&
+				<img
+					className="logo-icon logo_img"
+					src={hospital?.logo}
+					alt="logo"
+				/>
+			}
+
 			{/*<div className="flex space-x-6 px-8 items-center">
 				<div
 					className="badge flex items-end justify-end rounded-4 w-24 h-24 px-3"

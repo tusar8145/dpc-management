@@ -28,6 +28,7 @@ const locale = {
 	'Are you sure to replace old data with new data?':'古いデータを新しいデータに置き換えますか?',
 	'Are you sure to continue?':'続けてよろしいですか?',
 	'Are you sure to save?':'本当に保存しますか?',
+	'Are you sure to create?':'本当に作成しますか?',
 	'Are you sure you want to delete this?':'これを削除してもよろしいですか?',
 	'ALL Hospital':'すべての病院',
 	'Data upload failed':'データのアップロードに失敗しました',
@@ -85,6 +86,51 @@ const locale = {
 	'Hospital Staff':'病院スタッフ',
 	'Hospital Management':'病院経営',
 
+	'Create':'+新しい',
+	'ID':'ID', 
+	'Logo':'ロゴ',
+	'Address':'住所',
+	'Assistant Name':'アシスタント名',
+	'Assistant Phone':'アシスタントフォン',
+	'Assistant Email':'アシスタントの電子メール',
+	'Assistant Password':'アシスタントのパスワード',
+	'Created By':'によって作成された',
+	'Created At':'作成日',
+	'Updated At':'更新日',
+	'Edit Hospital':'病院を編集する',
+	'Create':'作成する',
+
+	'Upload Logo':'ロゴをアップロードする',
+	'Upload':'アップロード',
+	'Change':'変化',
+
+	'3rd Day':'3日目',
+	'7th Day':'7日目',
+	'All  Patients':'すべての患者',
+	'Discharged Patient':'退院した患者',
+	'With Changes':'変更あり',
+ 
+
+	'Photo':'写真',
+	'Phone':'電話',
+	'Email':'Eメール',
+	'Password':'パスワード',
+	'Save':'保存',
+	'Cancel':'キャンセル',
+
+	'Email or password not match':'メールアドレスまたはパスワードが一致しません',
+	'staff':'スタッフ',
+	'hospitalAssistant':'病院助手',
+	'admin':'管理者',
+	'Loading':'読み込み中',
+	
+
+	'DPC Code':'DPCコード',
+	'CCPM Group':'CCPMグループ',
+	'Receipt code':'レシートコード',
+	'Response Code':'応答コード',
+	
+	
 
 };
 export default locale;

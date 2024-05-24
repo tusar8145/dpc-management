@@ -169,7 +169,7 @@ if(get_global_filter){
                   let new_key = keyConfig[j]
                   keys[j]=new_key.name
                   values[j] = [];
-                  for(let k=0; k<get_data.length; k++){
+                  for(let k=0; k<get_data?.length; k++){
                         
                           let ob=get_data[k]
                           

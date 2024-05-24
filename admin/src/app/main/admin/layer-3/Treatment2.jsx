@@ -41,10 +41,11 @@ function Treatment2() {
 	let tableName='treatment_2'
 	let headingTitle='Treatment 2'
 	let keyConfig=[
-			{name:'corr_code', type:'String', header:'Correspondence code', edit:1, validate:{required:1}, xlsx:'対応ｺｰﾄﾞ'},
-			{name:'branch_code', type:'String', header:'Branch code',edit:1, validate:{required:1},   	   xlsx:'__EMPTY'},
-			{name:'name', type:'String', header:'Name', edit:1, validate:{required:1},   				   xlsx:'処置等(1)'},
-			{name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},   				   xlsx:'<auto>'}
+		{name:'branch_code', type:'String', header:'Branch code',edit:1, validate:{required:1},			xlsx:'分類ｺｰﾄﾞ'},
+		{name:'receipt_code', type:'String', header:'Receipt code', edit:1, validate:{required:1},	    xlsx:'Daichan made it'},
+		{name:'res_code', type:'String', header:'Response Code', edit:1, validate:{required:1},	        xlsx:'対応ｺｰﾄﾞ'},
+		{name:'name', type:'String', header:'Name', edit:1, validate:{required:1},						xlsx:'処置等(1)'},
+		{name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},						xlsx:'<auto>'}
 	]
 
 
@@ -75,6 +76,7 @@ function Treatment2() {
 
 	/*-----------start common function shareable------------*/
 	async function server(type) {
+											
 
 		try {
 				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
@@ -254,6 +256,8 @@ function Treatment2() {
 										type='upload' }
 										if (window.confirm(t(msg))) {
 											server(type)
+											window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+											
 										}
 									}}
 									className="mx-8"

@@ -8,6 +8,7 @@ import { CrudRoute } from "./crud/CrudRoute.js";
 
 import { UserRoute } from "./routes/UserRoute.js";
 import { HospitalRoute } from "./routes/HospitalRoute.js";
+import { HospitalStaffRoute } from "./routes/HospitalStaffRoute.js";
 
 const app = express();
 const SYSVERSION = "/api/";
@@ -27,6 +28,7 @@ app.use(cors(corsOptions))
 
 app.use(SYSVERSION, UserRoute);
 app.use(SYSVERSION, HospitalRoute);
+app.use(SYSVERSION, HospitalStaffRoute);
 app.use(SYSVERSION, CrudRoute);
 
 app.use((req, res, next) => {

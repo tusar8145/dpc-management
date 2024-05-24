@@ -34,7 +34,7 @@ const __dirname = path.dirname(__filename);
 
 export const uploads = async (req, res, next) => {
     try {
-console.log(req);
+ 
 
         //app.post('/api/pod/:counts', async (req, res, next) => {
            //console.log('99999999999999999999999999999999999999999999999999999999999999',req.params.counts);
@@ -47,13 +47,13 @@ console.log(req);
             
              form.parse(req, (err, fields, files) => {
                if (err) {
-                console.log('eeeee');
+              
                  next(err);
                  return;
                }
                for (let x = 0; x < file_count; x++) {
                  try {
-           //console.log(x);
+     
                    const file = files['file-' + x.toString()]
                    let str = file.toString()
                    const myArray = str.split(",");
@@ -72,11 +72,11 @@ console.log(req);
                    const newFilepath_1 = `${uploadDir}/${trimmedStr_1}`;
            
            
-                   console.log(newFilepath_1, newFilepath, 'newFilepath')
+              
                    fs.rename(newFilepath_1, newFilepath, err => err);
            
                  } catch (error) {
-                   console.log(error, 'error')
+                 
                  }
            
            
@@ -113,7 +113,10 @@ export const login = async (req, res, next) => {
                 email: email,
                 password: md5(password),
             },
+            include:{hospital:{select:{logo:true, name: true, id:true}}}
         });
+
+    
 
         if (Object.keys(admins).length > 0) {
             const authorization = jwt.sign(
@@ -123,6 +126,8 @@ export const login = async (req, res, next) => {
             );
 
             let this_user = admins[0]
+            const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+            let logo = this_user.photo || 'brian-hughes.jpg'
             res.status(200).json(
                 {
 
@@ -132,7 +137,7 @@ export const login = async (req, res, next) => {
                         "role": this_user.role,
                         "data": {
                             "displayName": this_user.name,
-                            "photoURL": "assets/images/avatars/brian-hughes.jpg",
+                            "photoURL": url.origin+'/api/hospital-manage/image/'+logo,
                             "email": this_user.email,
                             "settings": {
                                 "layout": {},
@@ -144,6 +149,8 @@ export const login = async (req, res, next) => {
                                 "apps.contacts"
                             ]
                         },
+                        
+                        ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id}}:{"hospital":this_user?.hospital,},
                         "title": "hi"
                     },
                     "access_token": authorization
@@ -168,6 +175,9 @@ export const refresh = async (req, res, next) => {
         let token = req.headers.authorization;
         token = token.split(" ")[1];
         let user = jwt.verify(token, process.env.JWT_SECRET);
+        const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+        let logo = user.photo || 'brian-hughes.jpg'
+
         res.status(200).json(
             {
 
@@ -175,7 +185,7 @@ export const refresh = async (req, res, next) => {
                 "role": user.role,
                 "data": {
                     "displayName": user.name,
-                    "photoURL": "assets/images/avatars/brian-hughes.jpg",
+                    "photoURL": url.origin+'/api/hospital-manage/image/'+logo,
                     "email": user.email,
                     "settings": {
                         "layout": {},
@@ -186,7 +196,8 @@ export const refresh = async (req, res, next) => {
                         "apps.mailbox",
                         "apps.contacts"
                     ]
-                }
+                },
+                ...user.hospital_id?{"hospital":{id:user.hospital_id}}:{"hospital":user?.hospital,},
             }
         );
 
@@ -199,7 +210,7 @@ export const refresh = async (req, res, next) => {
 
 export const registration = async (req, res, next) => {
     try {
-        const { name, password, email, phone, role } = req.body;
+        const { name, password, email, phone, role, hospital_id, created_by } = req.body;
 
         // Check if the email is already in use
         const existingadmin = await prisma.admins.findUnique({
@@ -220,6 +231,8 @@ export const registration = async (req, res, next) => {
                 email: email,
                 phone: phone,
                 role: role,
+                ...hospital_id?{hospital_id:hospital_id}:{},
+                ...created_by?{created_by:created_by}:{},
                 password: md5(password),
             },
         });
@@ -227,12 +240,17 @@ export const registration = async (req, res, next) => {
         // Create a JWT token
         const authorization = jwt.sign({ id: addadmin.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_VALIDITY });
 
-        return res.status(200).json({
-            success: true,
-            message: "admin created successfully!",
-            authorization: authorization,
-            id: addadmin.id,
-        });
+        if(req.body.return==true){
+            return addadmin.id;
+        }else{
+            return res.status(200).json({
+                success: true,
+                message: "admin created successfully!",
+                authorization: authorization,
+                id: addadmin.id,
+            });            
+        }
+
 
 
     } catch (error) {

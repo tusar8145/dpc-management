@@ -14,6 +14,8 @@ import {filterItemsEqual} from '../../../helpers/commonHelpers';
 import { motion } from 'framer-motion';
 import  User  from '../../../auth/user/user';
  
+   
+const Table = lazy(() => import('../../../shared-components/table/TableHospital'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -35,9 +37,25 @@ function Hospital() {
  
 	let user=User()
  
-	let tableName=''
+	let tableName='hospitals'
 	let headingTitle='Hospital Management'
-  
+ 
+	let keyConfig=[
+		{name:'id', type:'Integer', header:'ID', edit:0, validate:{required:0}, globalF:0},
+		{name:'logo', type:'String', header:'Logo',edit:0, validate:{required:0}, globalF:0},
+		{name:'name', type:'String', header:'Name', edit:1, validate:{required:1}, globalF:1},
+		{name:'address', type:'String', header:'Address',edit:1, validate:{required:1}, globalF:1},
+		{name:'admin_name', type:'String', header:'Assistant Name',edit:1, validate:{required:1}, globalF:0},
+		{name:'admin_phone', type:'String', header:'Assistant Phone',edit:1, validate:{required:0}, globalF:0},
+		{name:'admin_email', type:'String', header:'Assistant Email',edit:1, validate:{required:1}, globalF:0},
+		{name:'admin_password', type:'String', header:'Assistant Password',edit:1, validate:{required:0}, globalF:0},
+		{name:'creator', type:'String', header:'Created By',edit:0, validate:{required:0}, globalF:0},
+		{name:'created_at', type:'String', header:'Created At',edit:0, validate:{required:0}, globalF:0},
+		{name:'updated_at', type:'String', header:'Updated At',edit:0, validate:{required:0}, globalF:0},
+		
+	]
+
+
 	const { t } = useTranslation('shared-components');
  
 
@@ -49,7 +67,9 @@ function Hospital() {
  
 	const { theme, toggleTheme } = useTheme();
 	const { hospital, toggleHospital } = useTheme();
-	
+	const { refreshHospital, toggleRefreshHospital } = useTheme();
+
+	const [globalFilter, setGlobalFilter] = useState(null);
 	useEffect(() => {  toggleTheme(t(headingTitle))  }, [t(headingTitle)]);
 
 
@@ -65,41 +85,15 @@ function Hospital() {
 		show: { opacity: 1, y: 0 }
 	};
 
-	const [countHospital, setCountHospital] = useState(0);
-	const [countAdmin, setCountAdmin] = useState(0);
-	const [countAssistant, setCountAssistant] = useState(0);
-	const [countStaff, setCountStaff] = useState(0);
-
-
-	async function dashboardCount(){
-		let data = await axios.post(apiConfig.countAdminGroup, {});
-		let getData=data.data.count
-
-		for(let x=0; x<getData.length; x++){
-			let this_=getData[x]
-
-			if(this_.role=='admin'){setCountAdmin(this_._count.id)}
-			if(this_.role=='hospitalAssistant'){setCountAssistant(this_._count.id)}
-			if(this_.role=='staff'){setCountStaff(this_._count.id)}
- 	
+	function handleCountDataFromChild(count) {
+		console.log(count,'xxxx')
+		if(refreshHospital==true){
+			toggleRefreshHospital(false)
+		}else{
+			toggleRefreshHospital(true)
 		}
-
-
-		 data = await axios.post(apiConfig.countHospital, {});
-		 getData=data.data.count._count.id
-		 setCountHospital(getData)
-		  
+		
 	}
-	 
-	useEffect(() => {  
-		dashboardCount()
-	}, []);
-
-
-
-
-
-
 
 	return (
 		<Root
@@ -114,7 +108,15 @@ function Hospital() {
  					
 					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
- 
+
+					<motion.div
+							className="grid   gap-24 w-full min-w-0 py-24"
+							variants={container}
+							initial="hidden"
+							animate="show"
+						>
+					<Table filter={{}} sendCountToParent={handleCountDataFromChild} globalFilter={globalFilter}   tableName={tableName} keyConfig={keyConfig}/>
+					</motion.div>
 				</div>
 			}
 	/>

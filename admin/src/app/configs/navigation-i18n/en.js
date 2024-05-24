@@ -27,7 +27,8 @@ const locale = {
 	Search:'Search',
 	DataUpload:'Data upload',
 	ContactForm:'Contact form',
-	UserManagement:'User management',
+	StaffManagement:'Staff management',
+	CCPM:'CCPM',
 
 };
 export default locale;

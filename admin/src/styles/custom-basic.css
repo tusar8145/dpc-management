@@ -101,3 +101,24 @@ background-color: unset !important;
     td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-alignLeft.MuiTableCell-sizeMedium {
         width: 105px;
     }
+
+
+
+    @media screen and (max-width: 600px) {
+        .logo_img {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+    
+    /* For larger screens */
+    @media screen and (min-width: 601px) {
+        .logo_img {
+            max-width: 80%; /* Adjust as needed */
+            height: auto;
+        }
+    }
+
+
+
+ 

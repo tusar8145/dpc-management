@@ -71,6 +71,7 @@ function Medicine() {
 
 	/*-----------start common function shareable------------*/
 	async function server(type) {
+											
 
 		try {
 				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
@@ -253,6 +254,8 @@ function Medicine() {
 										type='upload' }
 										if (window.confirm(t(msg))) {
 											server(type)
+											window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+											
 										}
 									}}
 									className="mx-8"

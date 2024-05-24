@@ -24,7 +24,28 @@ function JwtAuthProvider(props) {
 	const dispatch = useAppDispatch();
 
 	async function setTheme(user){
-		let _theme={
+
+	}
+
+
+
+	const [user, setUser] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [authStatus, setAuthStatus] = useState('configuring');
+	const { children } = props;
+
+ 
+	/**
+	 * Handle sign-in success
+	 */
+	const handleSignInSuccess = useCallback((userData, accessToken) => {
+		setSession(accessToken);
+		setIsAuthenticated(true);
+		setUser(userData);
+		setTheme(userData)
+
+		/*let _theme={
 				
 			"id": "Emarald Gold",
 			"section": {
@@ -139,28 +160,15 @@ function JwtAuthProvider(props) {
 			}
 		
 		}
-		if(user?.role!='admin'){ 
-		await dispatch(changeFuseTheme(_theme?.section)).then(() => { });
-		}
-	}
+		if(userData?.role!='admin'){ 
+		  dispatch(changeFuseTheme(_theme?.section)).then(() => { 
+			
+		});
+		}*/
 
 
 
-	const [user, setUser] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
-	const [authStatus, setAuthStatus] = useState('configuring');
-	const { children } = props;
 
- 
-	/**
-	 * Handle sign-in success
-	 */
-	const handleSignInSuccess = useCallback((userData, accessToken) => {
-		setSession(accessToken);
-		setIsAuthenticated(true);
-		setUser(userData);
-		//setTheme(userData)
 	}, []);
 	/**
 	 * Handle sign-up success
@@ -275,6 +283,7 @@ function JwtAuthProvider(props) {
 			handleSuccess(userData, accessToken);
 			return userData;
 		} catch (error) {
+			//alert('error')
 			const axiosError = error;
 			handleFailure(axiosError);
 			return axiosError;

@@ -13,7 +13,8 @@ datasource db {
 enum Role {
 superAdmin
 admin
-hospital
+hospitalAssistant
+staff
 }
 
 
@@ -27,9 +28,18 @@ model admins {
   address                      String?     @db.VarChar(300)
   phone                        String?      @db.VarChar(20)
   created_at                   DateTime? @default(now()) 
+  created_by                   Int?
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
+  hospital_id                  Int?
+  photo                        String?
 
   customer_admin customers[] @relation("admin_con")
+  hospitalCreate hospitals[] @relation("admin_con")
+  hospital  hospitals? 
+  admins  admins[] @relation("admin_con1")
+  creator admins? @relation("admin_con1", fields: [created_by], references: [id])
+  staff_hospital   hospitals?    @relation("abc", fields: [hospital_id], references: [id])
 }
 
 model customers {
@@ -47,15 +57,19 @@ model customers {
 
 model hospitals {
   id                           Int         @id @default(autoincrement())
-  logo                         String
-  name                         String      
-  email                        String?     @db.VarChar(300)
-  pass                         String?     @db.VarChar(20)
-  created_by                      Int            
+  logo                         String?
+  name                         String     
+  address                      String?   
+  created_by                   Int  
+  admin_id                     Int @unique          
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
-    test test[] @relation("test")
+  creator admins? @relation("admin_con", fields: [created_by], references: [id])
+  admin   admins    @relation(fields: [admin_id], references: [id])
+  test test[] @relation("test")
+  staff_admin admins[]   @relation("abc")
 }
 
  
@@ -70,6 +84,7 @@ model injuries {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs injuries[] @relation("injuries")
   parents injuries? @relation("injuries", fields: [parent_id], references: [id])
@@ -88,6 +103,7 @@ model medical_practices {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs medical_practices[] @relation("medical_practices")
   parents medical_practices? @relation("medical_practices", fields: [parent_id], references: [id])
@@ -107,6 +123,7 @@ model medicines {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs medicines[] @relation("medicines")
   parents medicines? @relation("medicines", fields: [parent_id], references: [id])
@@ -124,6 +141,7 @@ model medicinal_efficacy {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs medicinal_efficacy[] @relation("medicinal_efficacy")
   parents medicinal_efficacy? @relation("medicinal_efficacy", fields: [parent_id], references: [id])
@@ -142,6 +160,7 @@ model icd_dpc {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs icd_dpc[] @relation("icd_dpc")
   parents icd_dpc? @relation("icd_dpc", fields: [parent_id], references: [id])
@@ -161,6 +180,7 @@ model age_birth_weight {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs age_birth_weight[] @relation("age_birth_weight")
   parents age_birth_weight? @relation("age_birth_weight", fields: [parent_id], references: [id])
@@ -178,6 +198,7 @@ model surgery {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs surgery[] @relation("surgery")
   parents surgery? @relation("surgery", fields: [parent_id], references: [id])
@@ -186,8 +207,10 @@ model surgery {
 
 model treatment_1 {
   id                           Int         @id @default(autoincrement())
-  corr_code                    String
+  
   branch_code                  String
+  receipt_code                 String
+  res_code                     String
   receipt                      Int         
   name                         String
   hospital_id                  Int?
@@ -196,6 +219,7 @@ model treatment_1 {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs treatment_1[] @relation("treatment_1")
   parents treatment_1? @relation("treatment_1", fields: [parent_id], references: [id])
@@ -204,8 +228,9 @@ model treatment_1 {
 
 model treatment_2 {
   id                           Int         @id @default(autoincrement())
-  corr_code                    String
   branch_code                  String
+  receipt_code                 String
+  res_code                     String
   receipt                      Int         
   name                         String
   hospital_id                  Int?
@@ -214,6 +239,7 @@ model treatment_2 {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs treatment_2[] @relation("treatment_2")
   parents treatment_2? @relation("treatment_2", fields: [parent_id], references: [id])
@@ -232,10 +258,31 @@ model secondary_injury {
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
   updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
 
   childs secondary_injury[] @relation("secondary_injury")
   parents secondary_injury? @relation("secondary_injury", fields: [parent_id], references: [id])
 }
+
+
+model ccpm {
+  id                           Int         @id @default(autoincrement())
+  
+  dpc                          String
+  ccpm_group                   String
+  receipt                      Int         
+  hospital_id                  Int?
+  parent_id                    Int?
+
+  created_by                   Int            
+  created_at                   DateTime? @default(now()) 
+  updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
+
+  childs ccpm[] @relation("ccpm")
+  parents ccpm? @relation("ccpm", fields: [parent_id], references: [id])
+}
+
 
 model test {
   id                       Int         @id @default(autoincrement())

@@ -28,8 +28,9 @@ const locale = {
 	Search:'検索',
 	DataUpload:'データのアップロード',
 	ContactForm:'お問い合わせフォーム',
-	UserManagement:'ユーザー管理',
+	StaffManagement:'スタッフ管理',
  
+	CCPM:'CCPM',
 
 
 

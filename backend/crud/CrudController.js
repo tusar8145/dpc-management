@@ -13,7 +13,12 @@ export const create = async (req, res, next) => {
             skipDuplicates: true,
         }) 
   
-        response.create(result,res)
+        if(req.query.return==true){
+            return result;
+        }else{
+            response.create(result,res)
+        }
+        
 
     } catch (error) {
         response.error(error,res,next)
@@ -198,7 +203,49 @@ where: {
     }
 }; 
 
+export const count_group =  async (req, res, next) => {
+    try {   
+        let table_name=req.params.table
+        let group=req.params.group
+        
+        
+        let f_columnFilters = req.body?.filter?.f_columnFilters
+        let globalFilter = req.body?.filter?.globalFilter
+        let f_globalFilters = req.body?.filter?.f_globalFilters
+ 
+        let child=parseInt(req.query.child || null)
 
+        const count = await prisma[`${table_name}`].groupBy({
+            by: [group],
+            _count: {
+              id: true,
+            },
+   
+          })
+
+
+
+
+        /*const count = await prisma[`${table_name}`].aggregate({
+            where: {
+                ...req.return == true ? { ...where_con } : {},
+                ...f_columnFilters ? { ...f_columnFilters } : {},
+                ...globalFilter ?{...f_globalFilters} : {},
+                ...child==1?{"parent_id": null}:{}
+            },
+            _count: {
+              id: true,
+            },
+          })*/
+
+ 
+
+        response.count(count,res)
+
+    }catch(error){
+        response.error(error,res,next)
+    }
+}; 
  
 
 export const count =  async (req, res, next) => {
@@ -209,6 +256,7 @@ export const count =  async (req, res, next) => {
         let f_columnFilters = req.body?.filter?.f_columnFilters
         let globalFilter = req.body?.filter?.globalFilter
         let f_globalFilters = req.body?.filter?.f_globalFilters
+        let others =req.body?.filter?.others
  
         let child=parseInt(req.query.child || null)
 
@@ -217,14 +265,13 @@ export const count =  async (req, res, next) => {
                 ...req.return == true ? { ...where_con } : {},
                 ...f_columnFilters ? { ...f_columnFilters } : {},
                 ...globalFilter ?{...f_globalFilters} : {},
-                ...child==1?{"parent_id": null}:{}
+                ...child==1?{"parent_id": null}:{},
+                ...others?{...others}:{}
             },
             _count: {
               id: true,
             },
           })
-
- 
 
         response.count(count,res)
 
