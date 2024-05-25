@@ -213,7 +213,7 @@ try {
     <div className="">
       <div className="flex flex-col">
 
-        <motion.span
+        {props.disableBack!=true &&<motion.span
           initial={{ x: 20 }}
           animate={{ x: 0, transition: { delay: 0.0 } }}
         >
@@ -228,7 +228,7 @@ try {
               {t(props.textUpload)}
             </Button>
           </div>
-        </motion.span>
+        </motion.span>}
 
         <motion.span
           initial={{ y: -20 }}
@@ -272,7 +272,7 @@ try {
 
 
 
-        {line1&&  
+        {line1&& props.disableBack!=true && 
             <>
               <Typography
               style={{"margin-top": "30px", "text-align":"center", "color":"gray"}}

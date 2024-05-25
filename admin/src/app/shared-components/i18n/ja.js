@@ -129,6 +129,13 @@ const locale = {
 	'CCPM Group':'CCPMグループ',
 	'Receipt code':'レシートコード',
 	'Response Code':'応答コード',
+	'Data Upload':'データのアップロード',
+	'DPC Analysis':'DPC分析',
+
+	'All':'全て',
+	'Already checked':'チェック済み',
+	'Not inspected':'未検査',
+	'Search':'検索',
 	
 	
 

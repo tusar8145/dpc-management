@@ -41,7 +41,6 @@ function Hospital() {
 	let headingTitle='Hospital Management'
  
 	let keyConfig=[
-		{name:'id', type:'Integer', header:'ID', edit:0, validate:{required:0}, globalF:0},
 		{name:'logo', type:'String', header:'Logo',edit:0, validate:{required:0}, globalF:0},
 		{name:'name', type:'String', header:'Name', edit:1, validate:{required:1}, globalF:1},
 		{name:'address', type:'String', header:'Address',edit:1, validate:{required:1}, globalF:1},
@@ -52,7 +51,8 @@ function Hospital() {
 		{name:'creator', type:'String', header:'Created By',edit:0, validate:{required:0}, globalF:0},
 		{name:'created_at', type:'String', header:'Created At',edit:0, validate:{required:0}, globalF:0},
 		{name:'updated_at', type:'String', header:'Updated At',edit:0, validate:{required:0}, globalF:0},
-		
+		{name:'id', type:'Integer', header:'ID', edit:0, validate:{required:0}, globalF:0},
+
 	]
 
 

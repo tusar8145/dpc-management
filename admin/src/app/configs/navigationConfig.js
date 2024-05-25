@@ -151,7 +151,7 @@ const navigationConfig = [
 				translate: 'DaysAndScoreSettings',
 				type: 'item',
 				icon: 'material-outline:event',
-				url: 'apps/e-commerce/orders',
+				url: 'page',
 				end: true
 			},
 		]
@@ -190,7 +190,7 @@ const navigationConfig = [
 		type: 'item',
 		icon: 'heroicons-solid:document-search',
 		auth: authRoles.hospitalAssistant_staff,
-		url: 'hospital/search'
+		url: 'hospital/dpc-search'
 	},	
 	{
 		id: '6',
@@ -208,7 +208,7 @@ const navigationConfig = [
 		type: 'item',
 		icon: 'heroicons-solid:chat-alt-2',
 		auth: authRoles.hospitalAssistant_staff,
-		url: 'hospital/contact-form'
+		url: 'page'
 	},
 	{
 		id: '8',

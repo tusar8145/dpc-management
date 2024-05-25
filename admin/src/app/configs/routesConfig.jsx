@@ -22,8 +22,12 @@ import SecondaryInjuryConfig from '../main/admin/layer-3/SecondaryInjuryConfig';
 import HospitalConfig from '../main/admin/hospital-management/HospitalConfig';
 import StaffConfig from '../main/staff-management/StaffConfig';
 import CCPMConfig from '../main/admin/ccpm/CCPMConfig';
+import DataUploadConfig from '../main/data-upload/DataUploadConfig';
+import DPCAnalysisConfig from '../main/dpc-analysis/DPCAnalysisConfig';
+import SearchConfig from '../main/search/SearchConfig';
+import PageConfig from '../main/page/PageConfig';
 
-const routeConfigs = [DashboardConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig, HospitalConfig, StaffConfig, CCPMConfig ];
+const routeConfigs = [DashboardConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig, HospitalConfig, StaffConfig, CCPMConfig, DataUploadConfig, DPCAnalysisConfig, SearchConfig, PageConfig ];
 /**
  * The routes of the application.
  */

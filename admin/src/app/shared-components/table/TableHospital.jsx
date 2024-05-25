@@ -344,7 +344,7 @@ console.log(f_globalFilters,'f_globalFilters')
     let new_key = keyConfig[j]
 
 
-    if(j==1){
+    if(j==0){
         col_key.push( 
           {
             accessorFn: (row) => ` `, //accessorFn used to join multiple data into a single cell
