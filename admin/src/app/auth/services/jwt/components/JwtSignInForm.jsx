@@ -32,6 +32,7 @@ const defaultValues = {
 };
 
 function JwtSignInForm() {
+	localStorage.removeItem("applied");
 
 	const { t } = useTranslation('shared-components');
 	const [alert, setAlert] = useState(false);

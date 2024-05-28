@@ -37,129 +37,145 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
  
 function Dashboard() {
-	//const dispatch = useAppDispatch();
- 
 	let user=User()
-	if(user.role != 'admin'){
-		let _theme={
+	let them=localStorage.getItem("theme");
+
+	if(them!='applied') {
+			if(user.role != 'admin'){
+				const dispatch = useAppDispatch();
+ 
+				let _theme={
+						
+					"id": "Emarald Gold",
+					"section": {
+						"main": {
+							"palette": {
+								"mode": "light",
+								"primary": {
+									"main": "#00695C",
+									"light": "#439889",
+									"dark": "#003D33",
+									"contrastText": "rgb(255,255,255)"
+								},
+								"secondary": {
+									"main": "#FFD740",
+									"light": "#FFFF74",
+									"dark": "#C8A600",
+									"contrastText": "rgb(17, 24, 39)"
+								},
+								"background": {
+									"default": "#dcf2f2",
+									"paper": "#f2fdfa"
+								},
+								"text": {
+									"primary": "rgb(17, 24, 39)",
+									"secondary": "rgb(107, 114, 128)",
+									"disabled": "rgb(149, 156, 169)"
+								},
+								"divider": "#b3c4c3"
+							}
+						},
+						"navbar": {
+							"palette": {
+								"mode": "dark",
+								"primary": {
+									"main": "#00695C",
+									"light": "#439889",
+									"dark": "#003D33",
+									"contrastText": "rgb(255,255,255)"
+								},
+								"secondary": {
+									"main": "#FFD740",
+									"light": "#FFFF74",
+									"dark": "#C8A600",
+									"contrastText": "rgb(17, 24, 39)"
+								},
+								"background": {
+									"default": "#004D40",
+									"paper": "#00544a"
+								},
+								"text": {
+									"primary": "rgb(255,255,255)",
+									"secondary": "rgb(148, 163, 184)",
+									"disabled": "rgb(156, 163, 175)"
+								},
+								"divider": "#2d6360"
+							}
+						},
+						"toolbar": {
+							"palette": {
+								"mode": "light",
+								"primary": {
+									"main": "#00695C",
+									"light": "#439889",
+									"dark": "#003D33",
+									"contrastText": "rgb(255,255,255)"
+								},
+								"secondary": {
+									"main": "#FFD740",
+									"light": "#FFFF74",
+									"dark": "#C8A600",
+									"contrastText": "rgb(17, 24, 39)"
+								},
+								"background": {
+									"default": "#dcf2f2",
+									"paper": "#f2fdfa"
+								},
+								"text": {
+									"primary": "rgb(17, 24, 39)",
+									"secondary": "rgb(107, 114, 128)",
+									"disabled": "rgb(149, 156, 169)"
+								},
+								"divider": "#b3c4c3"
+							}
+						},
+						"footer": {
+							"palette": {
+								"mode": "dark",
+								"primary": {
+									"main": "#00695C",
+									"light": "#439889",
+									"dark": "#003D33",
+									"contrastText": "rgb(255,255,255)"
+								},
+								"secondary": {
+									"main": "#FFD740",
+									"light": "#FFFF74",
+									"dark": "#C8A600",
+									"contrastText": "rgb(17, 24, 39)"
+								},
+								"background": {
+									"default": "#004D40",
+									"paper": "#00544a"
+								},
+								"text": {
+									"primary": "rgb(255,255,255)",
+									"secondary": "rgb(148, 163, 184)",
+									"disabled": "rgb(156, 163, 175)"
+								},
+								"divider": "#2d6360"
+							}
+						}
+					}
 				
-			"id": "Emarald Gold",
-			"section": {
-				"main": {
-					"palette": {
-						"mode": "light",
-						"primary": {
-							"main": "#00695C",
-							"light": "#439889",
-							"dark": "#003D33",
-							"contrastText": "rgb(255,255,255)"
-						},
-						"secondary": {
-							"main": "#FFD740",
-							"light": "#FFFF74",
-							"dark": "#C8A600",
-							"contrastText": "rgb(17, 24, 39)"
-						},
-						"background": {
-							"default": "#dcf2f2",
-							"paper": "#f2fdfa"
-						},
-						"text": {
-							"primary": "rgb(17, 24, 39)",
-							"secondary": "rgb(107, 114, 128)",
-							"disabled": "rgb(149, 156, 169)"
-						},
-						"divider": "#b3c4c3"
-					}
-				},
-				"navbar": {
-					"palette": {
-						"mode": "dark",
-						"primary": {
-							"main": "#00695C",
-							"light": "#439889",
-							"dark": "#003D33",
-							"contrastText": "rgb(255,255,255)"
-						},
-						"secondary": {
-							"main": "#FFD740",
-							"light": "#FFFF74",
-							"dark": "#C8A600",
-							"contrastText": "rgb(17, 24, 39)"
-						},
-						"background": {
-							"default": "#004D40",
-							"paper": "#00544a"
-						},
-						"text": {
-							"primary": "rgb(255,255,255)",
-							"secondary": "rgb(148, 163, 184)",
-							"disabled": "rgb(156, 163, 175)"
-						},
-						"divider": "#2d6360"
-					}
-				},
-				"toolbar": {
-					"palette": {
-						"mode": "light",
-						"primary": {
-							"main": "#00695C",
-							"light": "#439889",
-							"dark": "#003D33",
-							"contrastText": "rgb(255,255,255)"
-						},
-						"secondary": {
-							"main": "#FFD740",
-							"light": "#FFFF74",
-							"dark": "#C8A600",
-							"contrastText": "rgb(17, 24, 39)"
-						},
-						"background": {
-							"default": "#dcf2f2",
-							"paper": "#f2fdfa"
-						},
-						"text": {
-							"primary": "rgb(17, 24, 39)",
-							"secondary": "rgb(107, 114, 128)",
-							"disabled": "rgb(149, 156, 169)"
-						},
-						"divider": "#b3c4c3"
-					}
-				},
-				"footer": {
-					"palette": {
-						"mode": "dark",
-						"primary": {
-							"main": "#00695C",
-							"light": "#439889",
-							"dark": "#003D33",
-							"contrastText": "rgb(255,255,255)"
-						},
-						"secondary": {
-							"main": "#FFD740",
-							"light": "#FFFF74",
-							"dark": "#C8A600",
-							"contrastText": "rgb(17, 24, 39)"
-						},
-						"background": {
-							"default": "#004D40",
-							"paper": "#00544a"
-						},
-						"text": {
-							"primary": "rgb(255,255,255)",
-							"secondary": "rgb(148, 163, 184)",
-							"disabled": "rgb(156, 163, 175)"
-						},
-						"divider": "#2d6360"
-					}
 				}
-			}
 		
-		}
- 
-		  //dispatch(changeFuseTheme(_theme?.section)).then(() => { });
- 
+				dispatch(changeFuseTheme(_theme?.section)).then(() => { });
+		
+			 
+
+				localStorage.setItem("theme","applied");
+			}
 	}
+	
+
+
+ 
+	//
+
+ 
+	
+
  
 	let tableName=''
 	let headingTitle='Dashboard'
@@ -240,7 +256,7 @@ function Dashboard() {
 		}else{
 			dashboardCount()
 		}
-	}, [user]);
+	}, [user,hospital]);
 
 
 
