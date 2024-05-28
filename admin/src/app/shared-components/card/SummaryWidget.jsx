@@ -31,7 +31,7 @@ function SummaryWidget(props) {
 			</div>
 
 			<div className="text-center mt-8">
-				<Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
+				<Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500" style={{color:props.color}}>
 				{props.count}
 				</Typography>
 			 

@@ -42,7 +42,7 @@ function SecondaryInjury() {
 	let tableName='secondary_injury'
 	let headingTitle='Secondary Injury'
 	let keyConfig=[
-			{name:'corr_code', type:'String', header:'Correspondence code', edit:1, validate:{required:1},		 xlsx:'対応ｺｰﾄﾞ', },
+			{name:'corres_code', type:'String', header:'Correspondence code', edit:1, validate:{required:1},		 xlsx:'対応ｺｰﾄﾞ', },
 			{name:'dpc', type:'String', header:'DPC First 6 Digits', edit:1, validate:{required:1},  			 xlsx:'MDCｺｰﾄﾞ<+>分類ｺｰﾄﾞ'},
 			{name:'disease_name', type:'String', header:'Disease name', edit:1, validate:{required:1},			 xlsx:'ICDｺｰﾄﾞ'},
 			{name:'drug_name', type:'String', header:'Drug name: Treatment name', edit:1, validate:{required:1}, xlsx:'ICD名称'},

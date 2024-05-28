@@ -18,7 +18,7 @@ const MedicinalEfficacyConfig = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.admin,
+	auth    : authRoles.common,
 	routes: [
 		{
 			path: 'data-registration/medicinal-efficacy',

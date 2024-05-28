@@ -9,6 +9,7 @@ import { CrudRoute } from "./crud/CrudRoute.js";
 import { UserRoute } from "./routes/UserRoute.js";
 import { HospitalRoute } from "./routes/HospitalRoute.js";
 import { HospitalStaffRoute } from "./routes/HospitalStaffRoute.js";
+import { PatientRoute } from "./routes/PatientRoute.js";
 
 const app = express();
 const SYSVERSION = "/api/";
@@ -30,6 +31,7 @@ app.use(SYSVERSION, UserRoute);
 app.use(SYSVERSION, HospitalRoute);
 app.use(SYSVERSION, HospitalStaffRoute);
 app.use(SYSVERSION, CrudRoute);
+app.use(SYSVERSION, PatientRoute);
 
 app.use((req, res, next) => {
   res.status(404).json({

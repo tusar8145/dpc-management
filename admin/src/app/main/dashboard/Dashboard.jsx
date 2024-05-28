@@ -222,10 +222,25 @@ function Dashboard() {
 		 setCountHospital(getData)
 		  
 	}
+
+	async function dashboardPatientCount(hospital){
+		let data = await axios.post(apiConfig.PatientDashboardCount, {hospital_id:hospital.id});
+		let getData=data.data.data
+ 
+		setCount3rd(getData.total_3_hospitalized_count)
+		setCount7th(getData.total_7_hospitalized_count)
+		setCountAll(getData.total_hospitalized_count)
+		setCountDischarged(getData.total_discharge_count)
+ 
+	}
 	 
 	useEffect(() => {  
-		dashboardCount()
-	}, []);
+		if(user?.role!='admin'){
+			dashboardPatientCount(hospital)
+		}else{
+			dashboardCount()
+		}
+	}, [user]);
 
 
 
@@ -255,19 +270,19 @@ function Dashboard() {
 							animate="show"
 						>
 							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
+								<SummaryWidget count={countHospital}  color={'tomato'}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countAdmin}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
+								<SummaryWidget count={countAdmin}  color={'darkcyan'}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
+								<SummaryWidget count={countHospital}  color={'darkgreen'}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countStaff}   title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
+								<SummaryWidget count={countStaff}   color={'blueviolet'}  title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
 							</motion.div>
 						</motion.div>
 					}
@@ -280,23 +295,23 @@ function Dashboard() {
 											animate="show"
 										>
 											<motion.div variants={item}>
-												<SummaryWidget count={count3rd}   title={t('3rd Day')} icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={count3rd}  color={''} title={t('3rd Day')} icon={'material-outline:bedtime'}/>
 											</motion.div>
 				
 											<motion.div variants={item}>
-												<SummaryWidget count={count7th}   title={t('7th Day')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={count7th}   color={'cadetblue'}   title={t('7th Day')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 				
 											<motion.div variants={item}>
-												<SummaryWidget count={countAll}   title={t('All  Patients')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countAll}   color={'violet'}   title={t('All  Patients')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 				
 											<motion.div variants={item}>
-												<SummaryWidget count={countDischarged}   title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countDischarged}    color={'coral'}  title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 
 											<motion.div variants={item}>
-												<SummaryWidget count={countWithC}   title={t('With Change')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countWithC}    color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 										</motion.div>
 					}

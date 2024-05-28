@@ -194,6 +194,7 @@ model surgery {
   k_code                       String
   hospital_id                  Int?
   parent_id                    Int?
+  name                         String
 
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
@@ -210,7 +211,7 @@ model treatment_1 {
   
   branch_code                  String
   receipt_code                 String
-  res_code                     String
+  corres_code                  String
   receipt                      Int         
   name                         String
   hospital_id                  Int?
@@ -230,7 +231,7 @@ model treatment_2 {
   id                           Int         @id @default(autoincrement())
   branch_code                  String
   receipt_code                 String
-  res_code                     String
+  corres_code                  String
   receipt                      Int         
   name                         String
   hospital_id                  Int?
@@ -247,7 +248,7 @@ model treatment_2 {
 
 model secondary_injury {
   id                           Int         @id @default(autoincrement())
-  corr_code                    String
+  corres_code                  String
   dpc                          String
   disease_name                 String  
   receipt                      Int         
@@ -282,6 +283,66 @@ model ccpm {
   childs ccpm[] @relation("ccpm")
   parents ccpm? @relation("ccpm", fields: [parent_id], references: [id])
 }
+
+
+model dpc_generate {
+  id              Int         @id @default(autoincrement())      
+  hospital_id     Int
+ 
+patient_code	  Int
+doctor			    String?
+receipt_obj		  String?
+items_obj 			String?
+amount_obj		  String?
+ward 			      String?
+icd_code 		    String
+admission_date 	String	
+discharge_date  String?	
+treatment_date 	String?	
+date_of_birth 	String?	
+
+
+
+dpc_6  String?
+and_1  String?
+age_1  String?
+sur_2  String?
+tre1_1 String?
+tre2_1 String?
+sec_1  String?
+sco_1  String?
+
+s_dpc_6  String?
+s_and_1  String?
+s_age_1  String?
+s_sur_2  String?
+s_tre1_1 String?
+s_tre2_1 String?
+s_sec_1  String?
+s_sco_1  String?
+
+
+hospitalization_days String?
+
+is_verified Int?  @default(0)
+verified_by Int?
+verified_at String?
+
+
+  created_at                   DateTime? @default(now()) 
+  created_by                   Int            
+  updated_at                   DateTime? @default(now()) 
+  updated_by                   Int? 
+
+  parent_id                    Int?
+  uid  BigInt @unique
+
+  childs dpc_generate[] @relation("dpc")
+  parents dpc_generate? @relation("dpc", fields: [parent_id], references: [id])
+}
+
+
+
 
 
 model test {

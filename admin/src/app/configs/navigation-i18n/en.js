@@ -29,6 +29,7 @@ const locale = {
 	ContactForm:'Contact form',
 	StaffManagement:'Staff management',
 	CCPM:'CCPM',
+	DataManagement:'Data management',
 
 };
 export default locale;

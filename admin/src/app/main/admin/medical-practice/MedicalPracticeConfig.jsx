@@ -18,7 +18,7 @@ const MedicalPracticeConfig = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.admin,
+	auth    : authRoles.common,
 	routes: [
 		{
 			path: 'data-registration/medical-practice',

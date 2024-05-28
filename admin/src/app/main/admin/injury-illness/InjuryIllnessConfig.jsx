@@ -19,7 +19,7 @@ const InjuryIllnessConfig = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.admin,
+	auth    : authRoles.common,
 	routes: [
 		{
 			path: 'data-registration/injury-illness',

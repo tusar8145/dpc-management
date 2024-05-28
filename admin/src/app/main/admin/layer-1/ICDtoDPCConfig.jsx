@@ -18,7 +18,7 @@ const ICDtoDPCConfig = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.admin,
+	auth    : authRoles.common,
 	routes: [
 		{
 			path: 'dpc-management/icd-dpc',

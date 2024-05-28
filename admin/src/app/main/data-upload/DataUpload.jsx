@@ -11,6 +11,8 @@ import apiConfig from '../../configs/apiConfig';
 import Alert from '@mui/material/Alert';
 import {createdAt} from '../../helpers/timeHelpers';
 import {filterItemsEqual} from '../../helpers/commonHelpers';
+ 
+
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
@@ -28,11 +30,12 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-sidebarContent': {}
 }));
 
- 
-
 
  
 function DataUpload() {
+
+
+
 
 	let tableName='new'
 	let headingTitle='Data Upload'
@@ -67,14 +70,19 @@ function DataUpload() {
 	const [globalFilter, setGlobalFilter] = useState(null);
 	const [fail_count_list, setFail_count_list] = useState(null);
 
+	const { hospital, toggleHospital } = useTheme();
+
+ 
+	const [is_surgery_file, setis_surgery_file] = useState(null);
 
 	/*-----------start common function shareable------------*/
-	async function server(type) {
-											
+	async function server(type,hospital) {
+				 					
 
 		try {
-				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
-			
+				//const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
+ 
+
 				let clock=createdAt()
 				let fail_count=0
 				let fail_data=[]
@@ -84,97 +92,155 @@ function DataUpload() {
 				var done = 0
 				let len = data.length
  				let auto=1
-				for (var i = 0; i < len; i++) {
-					let this_ = data[i]
-					
-
-					let array={}
-					let empty=0
 
 
-					for(let h=0; h<keyConfig.length; h++){
-						let keycon=keyConfig[h]
+
+				let first_loop_collect=[]
+				let receipt_obj=[]
+				let items_obj=[]
+				let amount_obj=[]
 
 
-						const keyconSplit = keycon.xlsx.split("<+>");
-						
-						let result=''
-						for(let x=0; x<keyconSplit.length; x++){
-							if(keyconSplit[x]=='<auto>' || this_[keyconSplit[x]]){
-								if(keyconSplit[x] != '<auto>'){
-									if(keycon.type=='String'){
-										result=result+this_[keyconSplit[x]].toString()
-									}else{
-										result=parseInt(this_[keyconSplit[x]])
-									}
-								}else if(keyconSplit[x] == '<auto>'){
-									result=auto
-									if(empty==0){
-										auto++
-									}
-									
-								}							
-							}else{
-								console.log(this_,'fail')
-								if(i>1){
-									
-								}	
-							}
-							
-						}
-						if(!result){
-							if(keycon.validate.required==1){
-								empty++
-							}
-						}
- 
-						array[keycon.name] = result;
-						result=''
+				let final_data=[]
 
-					}
-					 
 
-					
-					if(empty==0){
-						obj.push({
-							...array,
-							"created_at":clock,
-							"updated_at":clock,
-							"created_by": 1
-						})	
-						
-						empty=0
-					}else{
-						if(i!=0){
-							fail_data.push(this_)
-							fail_count++
-						}
-					}
-
-						 			
-
-					done++
-
-					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						var cal_per = parseInt((done / len) * 100)
-						setProgress(cal_per)
-
-						obj_col[done]=obj
-
-						const response = await axios.post(apiConfig.tableCreate + tableName+'/create', obj);
-						obj = []
-						counts = 0
-					}
-					counts++
+				function clear_data(){
+					first_loop_collect=[]
+					receipt_obj=[]
+					items_obj=[]
+					amount_obj=[]
 				}
+
+				function assign_data(this_,hospital){
+					
+						//data only first loop
+						if(first_loop_collect.length==0){
+							first_loop_collect.push({
+								patient_code:this_['患者コード'],
+								doctor:this_['医師(会計)'],
+								ward:this_['病棟'],
+								icd_code:this_['医療資源を最も投入した傷病のＩＣＤコード'],
+								admission_date:this_['入院日(DPC入院情報)'],
+								discharge_date:this_['退院日(DPC入院情報)'],
+								treatment_date:this_['会計日'],
+								date_of_birth:this_['生年月日'],
+
+								hospitalization_days:3,
+								hospital_id:hospital.id,
+							})							
+						}
+
+						
+						//data every loop
+						receipt_obj.push(this_['レセプト電算用マスタコード'])
+						items_obj.push(this_['算定項目'])
+						amount_obj.push(this_['点数・金額'])
+				}
+
+				 let operation_count=0
+
+				 let c_patient=null
+				 let p_patient=null
+
+
+
+				let surgery=[]
+				 if(is_surgery_file==1){
+					console.log(222222222222)
+				 
+					//update surgery code
+					for (var i = 0; i < len; i++) {
+						let this_ = data[i]
+
+						surgery.push({
+							patient_code:this_['患者コード'],
+							k_code:this_['DPC入院情報手術Kコード']
+						})
+
+					}
+					const responsec = await axios.post(apiConfig.PatientDpcUpdateCode, {data:surgery, hospital_id:hospital.id});
+					console.log(responsec,'surgery')
+					
+				 }else{
+						for (var i = 0; i < len; i++) {
+							let this_ = data[i]
+							c_patient=this_['患者コード']
+
+							if(p_patient==null){p_patient=c_patient } //initial
+
+							if(c_patient==p_patient){ //continue data collect //same persion
+								assign_data(this_,hospital)
+
+
+
+							}else{
+								//ager data gula store korte hobe
+								//axios
+								//console.log(first_loop_collect,receipt_obj,items_obj,amount_obj)
+								operation_count++
+								final_data.push({
+									first_loop_collect:first_loop_collect[0],
+									receipt_obj:receipt_obj,
+									items_obj:items_obj,
+									amount_obj:amount_obj
+								})
+
+
+								//new store start korte hobe
+								clear_data()
+								assign_data(this_,hospital)
+								p_patient=c_patient
+
+							}
+
+							//last index where new patient absent
+							if(i == len-1){
+								operation_count++
+								final_data.push({
+									first_loop_collect:first_loop_collect[0],
+									receipt_obj:receipt_obj,
+									items_obj:items_obj,
+									amount_obj:amount_obj
+								})
+							}
+
+
+							done++
+
+							if ((operation_count == 50) || (i == parseInt(len) - 1)) {
+								var cal_per = parseInt((done / len) * 100)
+								setProgress(cal_per)
+
+
+								//obj_col[done]=obj
+								console.log(final_data,'final_data')
+								const response = await axios.post(apiConfig.PatientDpcCreate, final_data);
+								final_data = []
+								operation_count = 0
+							}
+						}
+				 }
+
+
+
+
+
+
+				 
+				setAllowUpload(false)
+
+
+ 
 
 				setFail_count_list(fail_data)
 
 				if(fail_count==0){setSuccessAlert("Data uploaded successfully")}else{setFailAlert(fail_count+ " Data upload failed")}
-				
+				setis_surgery_file(null)
 				setShowUpload(0)
-				setProgress(0)			
+				setProgress(0)		
+				setShowUpload(1)	
 		} catch (error) {
+			console.log(error,'error')
 			setProgress(0)	
 			setFailAlert("Invalid File")
 		}
@@ -186,6 +252,13 @@ function DataUpload() {
 		if(data.length>0){
 			setAllowUpload(true)
 			setData(data)
+			if(data[0]['DPC入院情報手術Kコード']){
+		 
+				setis_surgery_file(1)
+
+			 }else{
+				setis_surgery_file(0)
+			 }
 		}
 	}
 
@@ -215,7 +288,7 @@ function DataUpload() {
 	
 
 	const { theme, toggleTheme } = useTheme();
-	const { hospital, toggleHospital } = useTheme();
+
 	
 	useEffect(() => {  toggleTheme(t(headingTitle))  }, [t(headingTitle)]);
 
@@ -233,6 +306,11 @@ function DataUpload() {
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
 					{failAlert != null &&  <ReportModal data={fail_count_list}/> }
 
+					
+
+					{is_surgery_file == 1 && <Alert severity="success">{t('Surgery Data Found')}.</Alert>}
+					{is_surgery_file == 0 && <Alert severity="success">{t('Service Data Found')}.</Alert>}
+
 					{/*File upload*/}
 					{showUpload == 1 &&
 						<div className="flex flex-col w-full max-w-4xl">
@@ -249,7 +327,7 @@ function DataUpload() {
 										} else { msg = "Are you sure to continue?"
 										type='upload' }
 										if (window.confirm(t(msg))) {
-											server(type)
+											server(type,hospital)
 											window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 											
 										}

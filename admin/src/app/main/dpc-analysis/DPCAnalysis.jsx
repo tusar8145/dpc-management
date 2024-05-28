@@ -11,6 +11,10 @@ import apiConfig from '../../configs/apiConfig';
 import Alert from '@mui/material/Alert';
 import {createdAt} from '../../helpers/timeHelpers';
 import {filterItemsEqual} from '../../helpers/commonHelpers';
+import Grid from '@mui/material/Grid';
+import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { useAppDispatch } from 'app/store/hooks';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
@@ -18,6 +22,8 @@ const Table = lazy(() => import('../../shared-components/table/TableCommon'));
 const ReportModal = lazy(() => import('../../shared-components/modal/ReportModal')); 
 const ButtonThree = lazy(() => import('./Button'));
 const TablePatient = lazy(() => import('../../shared-components/table/TablePatient'));
+const Paginate = lazy(() => import('../../shared-components/card/Paginate'));
+const Drawer = lazy(() => import('./Drawer'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -36,6 +42,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
  
 function DPCAnalysis() {
+	const dispatch = useAppDispatch();
 
 	let tableName='new'
 	let headingTitle='DPC Analysis'
@@ -70,116 +77,68 @@ function DPCAnalysis() {
 	const [globalFilter, setGlobalFilter] = useState(null);
 	const [fail_count_list, setFail_count_list] = useState(null);
 
+	const [dpc_data, setDpc_data] = useState([]);
+
+	const { theme, toggleTheme } = useTheme();
+	const { hospital, toggleHospital } = useTheme();
+
+	
+
+	const [c_verified, setCverified] = useState(0);
+	const [c_n_verified, setCNverified] = useState(0);
+
+	const [pageP, setPageP] = useState(0);
+	const [rowP, setRowP] = useState(10);
+	const [total_data, setTotal_data] = useState(0);
+
+	const [is_verified, setIs_verified] = useState(null);
+
+	let sl=(pageP*rowP)+1;
+
+	const [filter_days, setFilterDays] = useState(null);
+	const [filter_code, setFilterCode] = useState(null);
+	const [filter_ward, setFilterWard] = useState(null);
+	const [filter_hospitalized, setHospitalized] = useState(null);
 
 	/*-----------start common function shareable------------*/
-	async function server(type) {
-											
+	async function server(hospital,filter_codex) {
+				 						
 
 		try {
-				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
-			
-				let clock=createdAt()
-				let fail_count=0
-				let fail_data=[]
-				let obj = []
-				let obj_col=[]
-				var counts = 0
-				var done = 0
-				let len = data.length
- 				let auto=1
-				for (var i = 0; i < len; i++) {
-					let this_ = data[i]
-					
-
-					let array={}
-					let empty=0
-
-
-					for(let h=0; h<keyConfig.length; h++){
-						let keycon=keyConfig[h]
-
-
-						const keyconSplit = keycon.xlsx.split("<+>");
-						
-						let result=''
-						for(let x=0; x<keyconSplit.length; x++){
-							if(keyconSplit[x]=='<auto>' || this_[keyconSplit[x]]){
-								if(keyconSplit[x] != '<auto>'){
-									if(keycon.type=='String'){
-										result=result+this_[keyconSplit[x]].toString()
-									}else{
-										result=parseInt(this_[keyconSplit[x]])
-									}
-								}else if(keyconSplit[x] == '<auto>'){
-									result=auto
-									if(empty==0){
-										auto++
-									}
-									
-								}							
-							}else{
-								console.log(this_,'fail')
-								if(i>1){
-									
-								}	
-							}
-							
-						}
-						if(!result){
-							if(keycon.validate.required==1){
-								empty++
-							}
-						}
- 
-						array[keycon.name] = result;
-						result=''
-
-					}
-					 
-
-					
-					if(empty==0){
-						obj.push({
-							...array,
-							"created_at":clock,
-							"updated_at":clock,
-							"created_by": 1
-						})	
-						
-						empty=0
-					}else{
-						if(i!=0){
-							fail_data.push(this_)
-							fail_count++
-						}
-					}
-
-						 			
-
-					done++
-
-					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						var cal_per = parseInt((done / len) * 100)
-						setProgress(cal_per)
-
-						obj_col[done]=obj
-
-						const response = await axios.post(apiConfig.tableCreate + tableName+'/create', obj);
-						obj = []
-						counts = 0
-					}
-					counts++
+			 
+				let skip=rowP*pageP
+				let take=rowP
+				let filter={
+					...filter_codex?{patient_code:parseInt(filter_codex)}:{}
 				}
+				 
 
-				setFail_count_list(fail_data)
+				const data = await axios.post(apiConfig.PatientDpcList +'?skip='+skip+'&take='+take, {hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}});
+				 
+				let temp_count=data.data.data.count
+				setDpc_data(data.data.data.list)
 
-				if(fail_count==0){setSuccessAlert("Data uploaded successfully")}else{setFailAlert(fail_count+ " Data upload failed")}
+
+				let temp1=temp_count[0]?._count?.is_verified || 0
+				let temp2=temp_count[1]?._count?.is_verified || 0
+
+
+				setCNverified(temp1 || 0)
+				setCverified(temp2 || 0)
+			
+
+				if(is_verified==1){ 
+					setTotal_data(temp2 || 0)
+				}
+				else if(is_verified==0){ 
+					setTotal_data(temp1 || 0)
+				}
+				else { 
+					setTotal_data(temp1+temp2)
+				}
 				
-				setShowUpload(0)
-				setProgress(0)			
 		} catch (error) {
-			setProgress(0)	
-			setFailAlert("Invalid File")
+			//setFailAlert("Invalid File")
 		}
 	}
 	/*---------end common function shareable---------*/
@@ -212,15 +171,45 @@ function DPCAnalysis() {
 	}
 
 	function handleSetGlobalFilter(data) {
-		console.log(data,'tusar')
 			setGlobalFilter(data)
 	}
-	
 
-	const { theme, toggleTheme } = useTheme();
-	const { hospital, toggleHospital } = useTheme();
+	function setPageParent(val) {
+		setPageP(val)	 
+	}
 	
-	useEffect(() => {  toggleTheme(t(headingTitle))  }, [t(headingTitle)]);
+	function setRowParent(val) {
+		setRowP(val)	 
+	}
+	
+	function setVerified(val) {
+		setIs_verified(val)	 
+	}
+	function keyup(val) {
+		setFilterCode(val)
+	}
+	function verify() {
+		server(hospital,filter_code);   
+
+		dispatch(showMessage({
+			message: 'データの更新に成功しました',
+			autoHideDuration: 2000,
+			anchorOrigin: {
+				vertical: 'top',
+				horizontal: 'right'
+			}
+		}))
+
+	}
+
+	
+	useEffect(() => { 
+		server(hospital,filter_code);  
+	
+	}, [pageP, rowP, is_verified,filter_code]);
+
+
+	useEffect(() => {  toggleTheme(t(headingTitle));   }, [t(headingTitle)]);
 
 	return (
 		<Root
@@ -232,27 +221,40 @@ function DPCAnalysis() {
 			content={
 				<div className="flex flex-col items-center p-24 sm:p-40 container">
 
+ 
 					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
 					{failAlert != null &&  <ReportModal data={fail_count_list}/> }
 
-					<ButtonThree/>
-					<br/><br/>
-					<TablePatient className="mt-24" sl={1}/>
-					<br/><br/>
-					<TablePatient className="mt-24" sl={2}/>
-					<br/><br/>
-					<TablePatient className="mt-24" sl={3}/>
 
-					{/*File upload*/}
-					{showUpload == 1 &&
-
-						<div className="flex flex-col w-full max-w-4xl">
+					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+						<Grid item xs={5}>
+							<ButtonThree setVerified={setVerified} c_n_verified={c_n_verified} c_verified={c_verified}/>
+						</Grid>
+						<Grid item xs={2}>
+							<Drawer keyup={keyup}/>
+						</Grid>
+						<Grid item xs={5}>
+							<Paginate total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent}/>
+						</Grid>
+					</Grid>
 	
-							<div className="flex  justify-center mt-32">
-2
-							</div>
-						</div>
+
+					<br/><br/>
+
+					{dpc_data?.map(single => (
+						<>
+							<TablePatient className="mt-24" sl={sl++} data={single}   verify={verify}/>
+							<br/><br/>
+						</>
+					))}
+
+
+					{dpc_data.length == 0 &&
+						<>
+							<FuseSvgIcon className="text-48 mt-128" size={48} color="action">material-outline:error_outline</FuseSvgIcon>
+							<i className='mt-24'>何もデータが見つかりませんでした</i>
+						</>
 					}
 
 

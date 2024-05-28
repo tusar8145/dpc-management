@@ -18,7 +18,7 @@ const Treatment1Config = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.admin,
+	auth    : authRoles.common,
 	routes: [
 		{
 			path: 'dpc-management/treatement-1',

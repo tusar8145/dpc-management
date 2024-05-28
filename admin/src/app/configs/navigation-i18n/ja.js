@@ -31,6 +31,7 @@ const locale = {
 	StaffManagement:'スタッフ管理',
  
 	CCPM:'CCPM',
+	DataManagement:'データ管理',
 
 
 

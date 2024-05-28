@@ -136,6 +136,8 @@ const locale = {
 	'Already checked':'チェック済み',
 	'Not inspected':'未検査',
 	'Search':'検索',
+	'Surgery Data Found':'手術データが見つかりました',
+	'Service Data Found':'サービスデータが見つかりました',
 	
 	
 

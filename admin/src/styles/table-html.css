@@ -5,19 +5,24 @@
     border-collapse: collapse;
 }
 
-.dpc th {
-    border: 1px solid black;
+.dpc td {
+    border: 1px solid lightgray;
     padding: 8px;
 }
-.dpc td {
-    border: 1px solid black;
+.dpc th {
+    border: 1px solid lightgray;
     padding: 8px;
     text-align: center;
+    font-size: medium;
+}
+.dpc td {
+    background-color: white;
+    border-radius: 5px;
 }
 .dpc th {
-    background-color: #f2f2f2;
+    background-color: white;
+    border-radius: 5px;
 }
-
 
 .dpc .fxl {
     font-size: x-large
@@ -36,4 +41,15 @@
     border-left: 0px;
     border-top: 0px;
     border-bottom: 0px;
+}
+
+.width_double{
+    width:12%
+}
+
+.width_single{
+    width:8%
+}
+.width_others{
+    width:8%
 }

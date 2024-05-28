@@ -47,6 +47,7 @@ export const list = (data,res) => {
       });
 
      }catch(error){
+      console.log(error)
        return false
      }
 };

@@ -8,12 +8,32 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@mui/material/IconButton';
 import Fingerprint from '@mui/icons-material/Fingerprint';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import '../../../styles/table-html.css';
+import axios from 'axios';
+import apiConfig from '../../configs/apiConfig';
+import { lazy } from 'react';
+
+const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
 export default function TablePatient(props) {
     const { t } = useTranslation('shared-components');
     const [value, setValue] = React.useState(0);
 
+    async function verify(id,is_verified) {
+      try {
+          console.log(id,is_verified)
+          const result = await axios.post(apiConfig.PatientDpcVerify, {id:id, is_verified:is_verified});
+          props.verify()
+          
+      } catch (error) {
+        console.log(error)
+        
+      }
+    }
+
+
+    let data=props.data
     function part3(a,b,c,d){
       return (
           <span style={{display: "flex"}} className='dpc'> 
@@ -28,8 +48,8 @@ export default function TablePatient(props) {
             </div>  
 
             <div className='fxl pv5'> / </div> 
-            <div className='pv10'>{c}</div> 
-
+            {c==null?  <div className='pv10'>{'未'}</div> : <div className='pv10'>{c}</div>  }
+        
             {d &&
               <div  className='fxl pv5' > / </div>
             }
@@ -41,32 +61,74 @@ export default function TablePatient(props) {
       )
     }
 
+    async function change(a,b,c) {
+      console.log(a,b,c)
+    }
+
+    function UpdateComplete(para) {
+      props.verify()
+     // setIsRefetching(true)
+    }
+    
     return ( 
     <table  className='dpc dpc-table'>
         <tr>
-            <th rowSpan={2} className='b0'> {props.sl} </th>
-            <th>{part3('患者', 'コード', '0097726', null)}</th>
-            <th>{part3('名前', null, '山田　太郎', null)}</th>
-            <th>{part3('病棟', null, '33', null)}</th>
-            <th>{part3('入院日', null, '8', '23')}</th>
-            <th>{part3('退院', '予定日', '未', '0')}</th>
-            <th>{part3('入院', '日数', '3', null)}</th>
-            <th>{part3('今期', '患者数', '未', null)}</th>
-            <th>{part3('過去', '患者数', '未', null)}</th>
-            <th>{part3('入院', '期間Ⅱ', '16', null)}</th>
-            <th>確定
-            <IconButton aria-label="fingerprint" color="success"><Fingerprint/></IconButton>
-            </th>
+            <td className="b0 width_single" rowSpan={2}> {props.sl} </td>
+            <td className="width_double">{part3('患者', 'コード', data.patient_code, null)}</td>
+            <td className="width_double">{part3('名前', null, data.doctor, null)}</td>
+            <td className="width_single">{part3('病棟', null, data.ward, null)}</td>
+            <td className="width_double">{part3('入院日', null, data.admission_date, null)}</td>
+            <td className="width_double">{part3('退院', '予定日', data.discharge_date, null)}</td>
+            <td className="width_single">{part3('入院', '日数', data.hospitalization_days, null)}</td>
+            <td className="width_single">{part3('今期', '患者数', '未', null)}</td>
+            <td className="width_single">{part3('過去', '患者数', '未', null)}</td>
+            <td className="width_single">{part3('入院', '期間Ⅱ', '16', null)}</td>
+            <td className="width_others">確定
+              {data.is_verified==1 ?
+              <IconButton aria-label="fingerprint"
+              onClick={() => {
+                verify(data.id,0)
+              }}
+              color="success"><Fingerprint/></IconButton> :  <IconButton aria-label="PendingIcon" 
+              onClick={() => {
+                verify(data.id,1)
+              }}
+              
+              color="error"><PendingIcon/></IconButton> 
+              }  
+          
+            </td>
         </tr>
         <tr>
-            <td colSpan={2}>0  1  0  0  6  0</td>
-            <td colSpan={2}>X</td>
-            <td>未</td>
-            <td>9 9</td>
-            <td>0</td>
-            <td>4</td>
-            <td>1</td>
-            <td>未</td>
+            <th colSpan={2}>{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
+ {/*
+ <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['1','2','3']}}  api={''}  complete={UpdateComplete}/>
+
+ */}
+
+
+
+            </th>
+            <th colSpan={2}>
+              <div className="flex flex-col">
+                {data.s_and_1? s_and_1 : data.and_1 }
+                <DPCEditModal data={{val:data.s_and_1? s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
+              </div>
+            </th>
+            <th>{data.s_age_1? data.s_age_1 : data.age_1 }
+            <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/></th>
+            <th>{data.s_sur_2? data.s_sur_2 : data.sur_2 }
+            <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:['99','97','01','02','03','04','05','06']}}  api={''}  complete={UpdateComplete}/></th>
+            <th>{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
+            <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:['0','1','2','3','4','5']}}  api={''}  complete={UpdateComplete}/></th>
+            <th>{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
+            <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:['0','1','2','3','4','5','6','7','8','9']}}  api={''}  complete={UpdateComplete}/></th>
+
+            <th>{data.s_sec_1? data.s_sec_1 : data.sec_1 }
+            <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:['0','1','2']}}  api={''}  complete={UpdateComplete}/></th>
+            
+            <th>{data.s_sco_1? data.s_sco_1 : data.sco_1 }
+            <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/></th>
         </tr>
     </table>
    );

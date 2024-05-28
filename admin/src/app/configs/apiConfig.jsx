@@ -53,6 +53,12 @@ const apiConfig = {
     hospitalStaffManageRemove:base_url+'hospital-staff-manage/remove',
     hospitalStaffManageUpdate:base_url+'hospital-staff-manage/update',
     hospitalStaffManageLogo:base_url+'hospital-staff-manage/logo',
-    
+
+    PatientDpcCreate:base_url+'patient/dpc-create',
+    PatientDpcList:base_url+'patient/dpc-list',
+    PatientDpcVerify:base_url+'patient/dpc-verify',
+    PatientDpcUpdate:base_url+'patient/dpc-update',
+    PatientDashboardCount:base_url+'patient/dashboard-count',
+    PatientDpcUpdateCode:base_url+'patient/dpc-update-code',
 }
 export default apiConfig;

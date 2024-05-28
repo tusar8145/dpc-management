@@ -7,16 +7,21 @@ import PendingIcon from '@mui/icons-material/Pending';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { useTranslation } from 'react-i18next';
 
-export default function ButtonThree() {
+export default function ButtonThree(props) {
     const { t } = useTranslation('shared-components');
     const [value, setValue] = React.useState(0);
     return (<Box sx={{ width: 500 }}>
       <BottomNavigation showLabels value={value} onChange={(event, newValue) => {
             setValue(newValue);
+            console.log(newValue)
+            if(newValue==0){ props.setVerified(null)  }
+            if(newValue==1){ props.setVerified(1)  }
+            if(newValue==2){ props.setVerified(0)  }
+
         }}>
-        <BottomNavigationAction label="All (10)" icon={<BallotIcon />}/>
-        <BottomNavigationAction label="Already checked (5)" icon={<DoneAllIcon />}/>
-        <BottomNavigationAction label="Not inspected (5)" icon={<PendingIcon />}/>
+        <BottomNavigationAction label={`全て (${props.c_n_verified+props.c_verified})`} icon={<BallotIcon />}/>
+        <BottomNavigationAction label={`チェック済み (${props.c_verified})`}  icon={<DoneAllIcon />}/>
+        <BottomNavigationAction label={`未検査 (${props.c_n_verified})`} icon={<PendingIcon />}/>
       </BottomNavigation>
     </Box>);
 }

@@ -18,7 +18,7 @@ const AgeBirthWeightConfig = {
 	settings: {
 		layout: {}
 	},
-	auth    : authRoles.admin,
+	auth    : authRoles.common,
 	routes: [
 		{
 			path: 'dpc-management/age-birth-weight',
