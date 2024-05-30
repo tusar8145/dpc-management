@@ -13,12 +13,17 @@ import '../../../styles/table-html.css';
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
 import { lazy } from 'react';
+import Button from '@mui/material/Button';
+import CIcon from '@mui/icons-material/ChevronRight';
+import Edit from '@mui/icons-material/Edit';
+import Grid from '@mui/material/Grid';
 
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
 export default function TablePatient(props) {
     const { t } = useTranslation('shared-components');
     const [value, setValue] = React.useState(0);
+    const [edit, setEdit] = React.useState(0);
 
     async function verify(id,is_verified) {
       try {
@@ -69,11 +74,49 @@ export default function TablePatient(props) {
       props.verify()
      // setIsRefetching(true)
     }
+
+    function changeEdit() {
+      if(edit==1){
+        setEdit(0)
+      }else{
+        setEdit(1)
+      }
+    }
+
+    setEdit
     
     return ( 
-    <table  className='dpc dpc-table'>
+    <table  className={`dpc dpc-table p-10  ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
+      {props.basic !=1 &&
+          <tr>
+            <td className="b0 width_single text-right border-right-zero" colSpan={12}>
+
+            <Button  className="mr-24" size="small" variant="contained" onClick={() => {
+                if(edit==1){
+                  setEdit(0)
+                }else{
+                  setEdit(1)
+                }
+            }}
+              endIcon={<Edit />}>
+              編集
+            </Button>
+
+            <Button  size="small" variant="contained" onClick={() => {
+              props.patientDetails(data)
+            }}
+              endIcon={<CIcon />}>
+              詳細
+            </Button>
+
+            </td>
+          </tr>      
+
+      }
+
+
         <tr>
-            <td className="b0 width_single" rowSpan={2}> {props.sl} </td>
+            <td className="b0 width_single text-center" rowSpan={2}> {props.sl} </td>
             <td className="width_double">{part3('患者', 'コード', data.patient_code, null)}</td>
             <td className="width_double">{part3('名前', null, data.doctor, null)}</td>
             <td className="width_single">{part3('病棟', null, data.ward, null)}</td>
@@ -98,6 +141,7 @@ export default function TablePatient(props) {
               }  
           
             </td>
+            <td className="b0 width_single text-center border-right-zero"></td>
         </tr>
         <tr>
             <th colSpan={2}>{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
@@ -110,26 +154,46 @@ export default function TablePatient(props) {
 
             </th>
             <th colSpan={2}>
-              <div className="flex flex-col">
+              <div className=" ">
                 {data.s_and_1? s_and_1 : data.and_1 }
-                <DPCEditModal data={{val:data.s_and_1? s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
+                {edit==1 && 
+                    <DPCEditModal data={{val:data.s_and_1? s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
+                }
+                
               </div>
             </th>
-            <th>{data.s_age_1? data.s_age_1 : data.age_1 }
-            <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/></th>
+            <th>
+              
+              
+              
+     
+          {data.s_age_1? data.s_age_1 : data.age_1 }
+          {edit==1 &&  <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}
+  
+
+
+             
+           </th>
             <th>{data.s_sur_2? data.s_sur_2 : data.sur_2 }
-            <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:['99','97','01','02','03','04','05','06']}}  api={''}  complete={UpdateComplete}/></th>
+            {edit==1 && <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:['99','97','01','02','03','04','05','06']}}  api={''}  complete={UpdateComplete}/>}
+            </th>
             <th>{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
-            <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:['0','1','2','3','4','5']}}  api={''}  complete={UpdateComplete}/></th>
+            {edit==1 && <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:['0','1','2','3','4','5']}}  api={''}  complete={UpdateComplete}/>}
+            </th>
             <th>{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
-            <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:['0','1','2','3','4','5','6','7','8','9']}}  api={''}  complete={UpdateComplete}/></th>
+            {edit==1 && <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:['0','1','2','3','4','5','6','7','8','9']}}  api={''}  complete={UpdateComplete}/>}
+            </th>
 
             <th>{data.s_sec_1? data.s_sec_1 : data.sec_1 }
-            <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:['0','1','2']}}  api={''}  complete={UpdateComplete}/></th>
+            {edit==1 && <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:['0','1','2']}}  api={''}  complete={UpdateComplete}/>}
+            </th>
             
             <th>{data.s_sco_1? data.s_sco_1 : data.sco_1 }
-            <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/></th>
+            {edit==1 && <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}
+            </th>
+            <th className="b0 width_single text-center border-right-zero"></th>
         </tr>
+        <tr> <td className="b0 width_single text-right border-right-zero border-right-zero" colSpan={12}></td> </tr>
     </table>
    );
 }

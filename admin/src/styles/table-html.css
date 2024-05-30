@@ -1,8 +1,16 @@
  
+.dpc-table .border-right-zero{
+    border-right: 0px;
+}
 
 .dpc-table{
     width: 100%;
     border-collapse: collapse;
+    padding: 20px !important;
+    /*background-color: white;*/
+    border-radius:5px ;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);
+    background: white;
 }
 
 .dpc td {
@@ -16,12 +24,11 @@
     font-size: medium;
 }
 .dpc td {
-    background-color: white;
     border-radius: 5px;
 }
 .dpc th {
-    background-color: white;
     border-radius: 5px;
+    
 }
 
 .dpc .fxl {
@@ -52,4 +59,47 @@
 }
 .width_others{
     width:8%
+}
+
+
+
+.drawerTable table, th, td {
+ 
+    padding: 5px;
+    text-align: center;
+  }
+
+
+.drawer-table .width_double{
+    width:10%
+}
+
+
+.drawer-table .width_single{
+    width:6%
+}
+
+.drawer-table .width_big{
+    width:40%
+}
+
+.drawer-table .t-right{
+    text-align: right;
+}
+
+.drawer-table .t-left{
+    text-align: left;
+}
+
+.drawer-table .t-center{
+    text-align: center;
+}
+
+.drawer-table  .border {
+    padding: 5px;
+    border: 1px solid lightgray;
+}
+
+.bgblanchedalmond {
+    background: #91abda38;
 }

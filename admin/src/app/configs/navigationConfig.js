@@ -71,153 +71,6 @@ const navigationConfig = [
 
 
 
-//hospital
-	{
-		id: '28',
-		title: 'Data Management',
-		translate: 'DataManagement',
-		type: 'collapse',
-		icon: 'material-outline:assignment_turned_in',
-		auth: authRoles.hospitalAssistant_staff,
-		children: [
-			{
-				id: 'apps.ecommerce222',
-				title: 'Data registration',
-				type: 'collapse',
-				icon: 'heroicons-outline:menu-alt-2',
-				translate: 'Dataregistration',
-				children: [
-					{
-						id: 'e-commerce-products999',
-						title: 'Injury/illness name',
-						translate: 'Injuryillnessname',
-						type: 'item',
-						icon: 'material-twotone:face_retouching_natural',
-						url: 'data-registration/injury-illness',
-						
-						end: true
-					},
-					{
-						id: 'e-commerce-product-detail99',
-						title: 'Medical practice',
-						translate: 'medicalPractice',
-						type: 'item',
-						icon: 'feather:activity',
-						url: 'data-registration/medical-practice'
-					},
-					{
-						id: 'e-commerce-new-product99',
-						title: 'Medicine',
-						translate: 'Medicine',
-						type: 'item',
-						icon: 'material-outline:card_travel',
-						url: 'data-registration/medicine'
-					},
-					{
-						id: 'e-commerce-orders99',
-						title: 'Medicinal efficacy category',
-						translate: 'MedicinalEfficacyCategory',
-						type: 'item',
-						icon: 'material-twotone:medical_services',
-						url: 'data-registration/medicinal-efficacy',
-						end: true
-					},
-				]
-			},			
-			{
-				id: 'apps.ecommerce11',
-				title: 'DPC management',
-				type: 'collapse',
-				icon: 'material-outline:auto_awesome_motion',
-				translate: 'DPCManagement',
-				children: [
-					{
-						id: 'pages.invoice.printable88',
-						title: '1 layer',
-						translate: 'A1layer',
-						type: 'collapse',
-						icon: 'material-outline:filter_1',
-		 
-						children: [
-							{
-								id: 'pages.invoice.printable.compact99',
-								title: 'ICD to DPC',
-								translate: 'ICDtoDPC',
-								type: 'item',
-								icon: 'material-outline:layers',
-								url: 'dpc-management/icd-dpc'
-							},
-							{
-								id: 'pages.invoice.printable.modern99',
-								title: 'Age birth weight',
-								translate: 'AgeBirthWeight',
-								type: 'item',
-								icon: 'material-outline:layers',
-								url: 'dpc-management/age-birth-weight'
-							}
-						]
-		
-		
-					},
-					{
-						id: 'pages3.invoice3.printable88',
-						title: '2 layers',
-						translate: 'A2layers',
-						type: 'item',
-						icon: 'material-outline:filter_2',
-						url: 'dpc-management/surgery'
-					},
-					{
-						id: 'pages2.invoice2.printable88',
-						title: '3 layers',
-						translate: 'A3layers',
-						type: 'collapse',
-						icon: 'material-outline:filter_3',
-						children: [
-							{
-								id: 'pages2.invoice2.printable.compact99',
-								title: 'Treatement 1',
-								translate: 'Treatement1',
-								type: 'item',
-								icon: 'material-outline:layers',
-								url: 'dpc-management/treatement-1'
-							},
-							{
-								id: 'pages2.invoice2.printable.modern99',
-								title: 'Treatement 2',
-								translate: 'Treatement2',
-								type: 'item',
-								icon: 'material-outline:layers',
-								url: 'dpc-management/treatement-2'
-							},
-							{
-								id: 'pages2.invoice2.printable.modern299',
-								title: 'Secondary Injury',
-								translate: 'SecondaryInjury',
-								type: 'item',
-								icon: 'material-outline:layers',
-								url: 'dpc-management/secondary-injury'
-							}
-						]
-					},
-					/*{
-						id: 'e-commerce-orders188',
-						title: 'Days and score settings',
-						translate: 'DaysAndScoreSettings',
-						type: 'item',
-						icon: 'material-outline:event',
-						url: 'page',
-						end: true
-					},*/
-				]
-			},	
-
-		
-		]
-	},
-
-
-
  
 	{
 		id: 'apps.ecommerce1',
@@ -374,6 +227,155 @@ const navigationConfig = [
 		auth: authRoles.hospitalAssistant,
 		url: 'staff-management'
 	},
+
+	
+//hospital
+{
+	id: '28',
+	title: 'Data Management',
+	translate: 'DataManagement',
+	type: 'collapse',
+	icon: 'material-outline:assignment_turned_in',
+	auth: authRoles.hospitalAssistant_staff,
+	children: [
+		{
+			id: 'apps.ecommerce222',
+			title: 'Data registration',
+			type: 'collapse',
+			icon: 'heroicons-outline:menu-alt-2',
+			translate: 'Dataregistration',
+			children: [
+				{
+					id: 'e-commerce-products999',
+					title: 'Injury/illness name',
+					translate: 'Injuryillnessname',
+					type: 'item',
+					icon: 'material-twotone:face_retouching_natural',
+					url: 'data-registration/injury-illness',
+					
+					end: true
+				},
+				{
+					id: 'e-commerce-product-detail99',
+					title: 'Medical practice',
+					translate: 'medicalPractice',
+					type: 'item',
+					icon: 'feather:activity',
+					url: 'data-registration/medical-practice'
+				},
+				{
+					id: 'e-commerce-new-product99',
+					title: 'Medicine',
+					translate: 'Medicine',
+					type: 'item',
+					icon: 'material-outline:card_travel',
+					url: 'data-registration/medicine'
+				},
+				{
+					id: 'e-commerce-orders99',
+					title: 'Medicinal efficacy category',
+					translate: 'MedicinalEfficacyCategory',
+					type: 'item',
+					icon: 'material-twotone:medical_services',
+					url: 'data-registration/medicinal-efficacy',
+					end: true
+				},
+			]
+		},			
+		{
+			id: 'apps.ecommerce11',
+			title: 'DPC management',
+			type: 'collapse',
+			icon: 'material-outline:auto_awesome_motion',
+			translate: 'DPCManagement',
+			children: [
+				{
+					id: 'pages.invoice.printable88',
+					title: '1 layer',
+					translate: 'A1layer',
+					type: 'collapse',
+					icon: 'material-outline:filter_1',
+	 
+					children: [
+						{
+							id: 'pages.invoice.printable.compact99',
+							title: 'ICD to DPC',
+							translate: 'ICDtoDPC',
+							type: 'item',
+							icon: 'material-outline:layers',
+							url: 'dpc-management/icd-dpc'
+						},
+						{
+							id: 'pages.invoice.printable.modern99',
+							title: 'Age birth weight',
+							translate: 'AgeBirthWeight',
+							type: 'item',
+							icon: 'material-outline:layers',
+							url: 'dpc-management/age-birth-weight'
+						}
+					]
+	
+	
+				},
+				{
+					id: 'pages3.invoice3.printable88',
+					title: '2 layers',
+					translate: 'A2layers',
+					type: 'item',
+					icon: 'material-outline:filter_2',
+					url: 'dpc-management/surgery'
+				},
+				{
+					id: 'pages2.invoice2.printable88',
+					title: '3 layers',
+					translate: 'A3layers',
+					type: 'collapse',
+					icon: 'material-outline:filter_3',
+					children: [
+						{
+							id: 'pages2.invoice2.printable.compact99',
+							title: 'Treatement 1',
+							translate: 'Treatement1',
+							type: 'item',
+							icon: 'material-outline:layers',
+							url: 'dpc-management/treatement-1'
+						},
+						{
+							id: 'pages2.invoice2.printable.modern99',
+							title: 'Treatement 2',
+							translate: 'Treatement2',
+							type: 'item',
+							icon: 'material-outline:layers',
+							url: 'dpc-management/treatement-2'
+						},
+						{
+							id: 'pages2.invoice2.printable.modern299',
+							title: 'Secondary Injury',
+							translate: 'SecondaryInjury',
+							type: 'item',
+							icon: 'material-outline:layers',
+							url: 'dpc-management/secondary-injury'
+						}
+					]
+				},
+				/*{
+					id: 'e-commerce-orders188',
+					title: 'Days and score settings',
+					translate: 'DaysAndScoreSettings',
+					type: 'item',
+					icon: 'material-outline:event',
+					url: 'page',
+					end: true
+				},*/
+			]
+		},	
+
+	
+	]
+},
+
+
+
 
 ];
 export default navigationConfig;

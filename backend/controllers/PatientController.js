@@ -146,8 +146,17 @@ export const dpc_create = async (req, res, next) => {
 
     for(let x=0; x<req_data_all.length; x++){
         let first_loop_collect=req_data_all[x].first_loop_collect
-        let uid_=first_loop_collect.patient_code.toString()+''+first_loop_collect?.treatment_date.replaceAll("/", "")
-        console.log(uid_,first_loop_collect?.treatment_date,first_loop_collect.patient_code.toString())
+
+        let receipt_obj=req_data_all[x].receipt_obj
+        let items_obj=req_data_all[x].items_obj
+        let amount_obj=req_data_all[x].amount_obj
+        let doctor_obj=req_data_all[x].doctor_obj
+        let date_obj=req_data_all[x].date_obj
+        let dept_obj=req_data_all[x].dept_obj
+        let disease_obj=req_data_all[x].disease_obj
+
+        let uid_=first_loop_collect.patient_code.toString()+''+first_loop_collect?.admission_date.replaceAll("/", "")+''+first_loop_collect.hospital_id.toString()
+         
         let uid= parseInt(uid_)
         let icd=first_loop_collect.icd_code
 
@@ -197,12 +206,68 @@ export const dpc_create = async (req, res, next) => {
       hospitalization_days=calculateHospitalizationDays(admissionDate, treatmentDate).toString()
     }
  
-
-
  
         const age = calculateAge(first_loop_collect?.date_of_birth);
         if(age<10){age_1="0"  }else{ age_1="1" }
 
+          let val1=null
+          let val2=null
+          let val3=null      
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+       
+              for(let m=0; m<items_obj.length; m++){
+               let fruit=items_obj[m]
+
+              if(fruit){
+                  let find_ = await prisma.treatment_1.findMany({
+                    where: {
+                      name: {equals:fruit},
+                    },
+                  }) 
+                  
+                  if(find_.length>0){
+                    //found t1
+                    val1=find_[0].corres_code.toString()                 
+                  }else{
+                        let find_ = await prisma.treatment_2.findMany({
+                          where: {
+                            name: {equals:fruit},
+                          },
+                        }) 
+
+                        if(find_.length>0){
+                          //found t2
+                          val2=find_[0].corres_code.toString()
+                        }else{
+                              let find_ = await prisma.secondary_injury.findMany({
+                                where: {
+                                  drug_name: {equals:fruit},
+                                },
+                              }) 
+                              if(find_.length>0){
+                                //found t3
+                                val3='1'
+                              }else{      
+                              
+                              }        
+                        }
+                  }                       
+                  
+              }
+ 
+            }
+        //////////////////////////////////////////////////////////////////////////////
+  
+              if(val1==null){
+                val1='X'
+              }
+              if(val2==null){
+                val2='X'
+              }
+              if(val3==null){
+                val3='X'
+              }
 
               let data={
                 "hospital_id"     :first_loop_collect.hospital_id,
@@ -219,13 +284,23 @@ export const dpc_create = async (req, res, next) => {
                 "treatment_date"  :first_loop_collect?.treatment_date?.toString(),	
                 "date_of_birth"   :first_loop_collect?.date_of_birth?.toString(),	
 
+                
+                arr_doctor : JSON.stringify(doctor_obj),
+                arr_receipt : JSON.stringify(receipt_obj),
+                arr_date : JSON.stringify(date_obj),
+                arr_name : JSON.stringify(items_obj),
+                arr_amount : JSON.stringify(amount_obj),
+                arr_dept : JSON.stringify(dept_obj),
+                arr_disease : JSON.stringify(disease_obj),
+
+
                 "dpc_6"  :dpc_6,
                 "and_1"  :"X",
                 "age_1"  :age_1,
                 "sur_2"  :"99",
-                "tre1_1" :"X",
-                "tre2_1" :"X",
-                "sec_1"  :"X",
+                "tre1_1" :val1,
+                "tre2_1" :val2,
+                "sec_1"  :val3,
                 "sco_1"  :"X",
 
                 "s_dpc_6"  :null,
@@ -244,7 +319,116 @@ export const dpc_create = async (req, res, next) => {
                 "created_by" :1
               }
 
-        const upsertUser = await prisma.dpc_generate.upsert({
+ 
+
+              //find uid
+
+              //yes? upnade
+              // what actually update! dpc code
+
+              const find_ = await prisma.dpc_generate.findUnique({
+                where: {
+                  uid: uid,
+                },
+                select:{
+                    id  : true,
+                    dpc_6  : true,
+                    and_1  : true,
+                    age_1  : true,
+                    sur_2  : true,
+                    tre1_1 : true,
+                    tre2_1 : true,
+                    sec_1  : true,
+                    sco_1  : true,
+
+                    s_dpc_6  : true,
+                    s_and_1  : true,
+                    s_age_1  : true,
+                    s_sur_2  : true,
+                    s_tre1_1 : true,
+                    s_tre2_1 : true,
+                    s_sec_1  : true,
+                    s_sco_1  : true,
+
+                    arr_doctor: true,
+                    arr_receipt: true,
+                    arr_date: true,
+                    arr_name: true,
+                    arr_amount: true,
+                    arr_dept: true,
+                    arr_disease: true,
+                }
+              })
+
+              
+
+              
+
+              if(find_){
+
+                /*
+                  let n_doctor_obj =find_.arr_doctor+JSON.stringify(doctor_obj)
+                    let n_receipt_obj = find_.arr_receipt+JSON.stringify(receipt_obj)
+                    let n_date_obj = find_.arr_date+ JSON.stringify(date_obj)
+                    let n_items_obj = find_.arr_name+JSON.stringify(items_obj)
+                    let n_amount_obj = find_.arr_amount+JSON.stringify(amount_obj)
+                    let n_dept_obj = find_.arr_dept+JSON.stringify(dept_obj)
+                    let n_disease_obj = find_.arr_disease+JSON.stringify(disease_obj)
+
+                */
+                    //update please
+                    let n_doctor_obj =JSON.stringify(doctor_obj)
+                    let n_receipt_obj = JSON.stringify(receipt_obj)
+                    let n_date_obj = JSON.stringify(date_obj)
+                    let n_items_obj = JSON.stringify(items_obj)
+                    let n_amount_obj = JSON.stringify(amount_obj)
+                    let n_dept_obj = JSON.stringify(dept_obj)
+                    let n_disease_obj =JSON.stringify(disease_obj)
+
+                    let update_req_data={
+
+                          ...val1?{"tre1_1" :val1,}:{},
+                          ...val1?{"tre2_1" :val2,}:{},
+                          ...val1?{"sec_1"  :val3,}:{},
+
+                          arr_doctor : n_doctor_obj,
+                          arr_receipt : n_receipt_obj, 
+                          arr_date : n_date_obj,
+                          arr_name : n_items_obj,
+                          arr_amount : n_amount_obj, 
+                          arr_dept : n_dept_obj,
+                          arr_disease : n_disease_obj,
+                          
+                        ...first_loop_collect.discharge_date?{"discharge_date"  :first_loop_collect?.discharge_date?.toString(),}:{},
+                        ...hospitalization_days?{"hospitalization_days" :hospitalization_days,}:{},
+
+                    }
+
+                    const updateUser = await prisma.dpc_generate.update({
+                      where: {
+                        id: find_.id,
+                      },
+                      data: update_req_data,
+                    }) 
+
+
+              }
+              else{
+                  let cre_ = await prisma.dpc_generate.create({
+                    data: {
+                      ...data,
+                      uid: uid,
+                    },
+                  })
+              } 
+             
+
+
+              //no? create
+
+
+
+        /*const upsertDpcGenerate = await prisma.dpc_generate.upsert({
           where: {
             uid: uid,
           },
@@ -253,7 +437,7 @@ export const dpc_create = async (req, res, next) => {
            ...data,
            uid: uid,
           },
-        })
+        })*/
 
         //collection.push(data)
     }
@@ -410,6 +594,15 @@ export const dpc_list = async (req, res, next) => {
             "verified_by" :true,
             "verified_at" :true,
             "created_by" :true,
+
+            arr_doctor: true,
+            arr_receipt: true,
+            arr_date: true,
+            arr_name: true,
+            arr_amount: true,
+            arr_dept: true,
+            arr_disease: true,
+
           }
         })
 

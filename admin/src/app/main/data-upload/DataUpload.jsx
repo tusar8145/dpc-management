@@ -100,6 +100,10 @@ function DataUpload() {
 				let items_obj=[]
 				let amount_obj=[]
 
+				let doctor_obj=[]
+				let date_obj=[]
+				let dept_obj=[]
+				let disease_obj=[]
 
 				let final_data=[]
 
@@ -109,6 +113,11 @@ function DataUpload() {
 					receipt_obj=[]
 					items_obj=[]
 					amount_obj=[]
+
+					 doctor_obj=[]
+					 date_obj=[]
+					 dept_obj=[]
+					 disease_obj=[]
 				}
 
 				function assign_data(this_,hospital){
@@ -135,6 +144,11 @@ function DataUpload() {
 						receipt_obj.push(this_['レセプト電算用マスタコード'])
 						items_obj.push(this_['算定項目'])
 						amount_obj.push(this_['点数・金額'])
+
+						doctor_obj.push(this_['医師(会計)'])
+						date_obj.push(this_['会計日'])
+						dept_obj.push(this_['診療科(DPC入院情報)'])
+						disease_obj.push(this_['申込病名'])
 				}
 
 				 let operation_count=0
@@ -182,7 +196,12 @@ function DataUpload() {
 									first_loop_collect:first_loop_collect[0],
 									receipt_obj:receipt_obj,
 									items_obj:items_obj,
-									amount_obj:amount_obj
+									amount_obj:amount_obj,
+
+									doctor_obj:doctor_obj,
+									date_obj:date_obj,
+									dept_obj:dept_obj,
+									disease_obj:disease_obj,
 								})
 
 
@@ -200,20 +219,23 @@ function DataUpload() {
 									first_loop_collect:first_loop_collect[0],
 									receipt_obj:receipt_obj,
 									items_obj:items_obj,
-									amount_obj:amount_obj
+									amount_obj:amount_obj,
+
+									doctor_obj:doctor_obj,
+									date_obj:date_obj,
+									dept_obj:dept_obj,
+									disease_obj:disease_obj,
 								})
 							}
 
 
 							done++
 
-							if ((operation_count == 50) || (i == parseInt(len) - 1)) {
+							if ((operation_count == 10) || (i == parseInt(len) - 1)) {
 								var cal_per = parseInt((done / len) * 100)
 								setProgress(cal_per)
 
 
-								//obj_col[done]=obj
-								console.log(final_data,'final_data')
 								const response = await axios.post(apiConfig.PatientDpcCreate, final_data);
 								final_data = []
 								operation_count = 0

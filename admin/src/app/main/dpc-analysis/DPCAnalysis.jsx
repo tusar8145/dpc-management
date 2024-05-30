@@ -15,6 +15,15 @@ import Grid from '@mui/material/Grid';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import { useAppDispatch } from 'app/store/hooks';
+import { display, padding } from '@mui/system';
+import Input from '@mui/material/Input';
+import TextField from '@mui/material/TextField';
+import * as FileSaver from 'file-saver';
+import IconButton from '@mui/material/IconButton';
+import Close from '@mui/icons-material/Download';
+ 
+
+import * as XLSX from 'xlsx';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
@@ -60,7 +69,7 @@ function DPCAnalysis() {
 		console.log(data);
 	}
 
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
     const [data, setData] = useState([]);
 	const [dataFromChild, setDataFromChild] = useState("");
@@ -100,9 +109,15 @@ function DPCAnalysis() {
 	const [filter_ward, setFilterWard] = useState(null);
 	const [filter_hospitalized, setHospitalized] = useState(null);
 
+
+	const [single_patient, setsingle_patient]   = useState([]);
+
+	const [newval, setnewval] = useState('');
+
 	/*-----------start common function shareable------------*/
 	async function server(hospital,filter_codex) {
 				 						
+		console.log(filter_codex)
 
 		try {
 			 
@@ -117,7 +132,7 @@ function DPCAnalysis() {
 				 
 				let temp_count=data.data.data.count
 				setDpc_data(data.data.data.list)
-
+				setLoading(false)
 
 				let temp1=temp_count[0]?._count?.is_verified || 0
 				let temp2=temp_count[1]?._count?.is_verified || 0
@@ -141,6 +156,108 @@ function DPCAnalysis() {
 			//setFailAlert("Invalid File")
 		}
 	}
+
+
+
+	function Export  (exceldata,filename) {
+
+
+			 try {
+					console.log(exceldata,'collection',filename)
+				
+					const fileType= 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset-UTF-8';
+					const fileExtension = '.xlsx';
+			
+					const ws = XLSX.utils.json_to_sheet(exceldata);
+					const wb = {Sheets: {'data': ws}, SheetNames: ['data']};
+					const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'});
+					const data = new Blob ([excelBuffer], {type:fileType});
+					FileSaver.saveAs(data, filename+fileExtension)	
+			} catch (error) {
+				
+			} 
+
+	   
+	 
+	  }
+
+
+	async function download(hospital,filter_codex) {
+		
+		try {
+
+	 
+			var scale=50
+		  
+			let total=total_data
+			var per_page=0
+			var total_page=0
+			var last_page=0
+
+					if(total>scale){
+						per_page=scale
+					
+						total_page=parseInt(total/per_page)
+						last_page=total-total_page*per_page 
+					
+					}else{
+						total_page=0
+						last_page=total
+					}
+
+			 
+					const collection=[]
+					let report_name=''
+					console.log('jjjjjjjjjj','dddddddddddd',total_page,last_page,per_page)
+
+					let filter={
+						...filter_codex?{patient_code:parseInt(filter_codex)}:{}
+					}
+
+
+			for (var i = 0; i <= total_page; i++) {
+				var skip = i * per_page
+				var get_items = per_page
+				if (i == total_page) {
+					get_items = last_page
+				}
+
+				let com = parseInt(((i + 1) / total_page) * 100)
+			 
+				//setcompleted(com)
+
+				
+				console.log({hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}})
+				const data = await axios.post(apiConfig.PatientDpcList +'?skip='+skip+'&take='+per_page, {hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}});
+				 
+				console.log(data,'hhh')
+
+				for (var j = data.data.data.list.length - 1; j > -1; j--) {
+				 
+					var obj = data.data.data.list[j];
+
+					collection.push({
+						'患者 コード':obj.patient_code,
+						'病棟':obj.ward,
+						'入院日':obj.admission_date,
+						'退院 予定日':obj.discharge_date,
+						'入院 日数':obj.hospitalization_days,
+						'DPCコード':obj.dpc_6+obj.and_1+obj.age_1+obj.sur_2+obj.tre1_1+obj.tre2_1+obj.sec_1+obj.sco_1
+					});
+				} 
+			}; 
+
+				console.log(collection,'dddddddddddd')
+				Export(collection,'DPC EXPORT')
+ 
+				
+		} catch (error) {
+			console.log(error,'dddddddddddd')
+			//setFailAlert("Invalid File")
+		}
+	}
+
+
 	/*---------end common function shareable---------*/
 
 	function handleDataFromChild(data) {
@@ -185,11 +302,14 @@ function DPCAnalysis() {
 	function setVerified(val) {
 		setIs_verified(val)	 
 	}
-	function keyup(val) {
-		setFilterCode(val)
+	function keyup(event) {
+		setFilterCode(event.target.value)
+		setnewval(event.target.value)
+		console.log(event.target.value)
 	}
 	function verify() {
-		server(hospital,filter_code);   
+		server(hospital,filter_code);
+		
 
 		dispatch(showMessage({
 			message: 'データの更新に成功しました',
@@ -200,6 +320,23 @@ function DPCAnalysis() {
 			}
 		}))
 
+	}
+
+	function patientDetails(val) {
+		//let js=JSON.parse(val)
+	// console.log(dpc_data,'xxx')
+		//setsingle_patient(val)
+		let arr_amount=JSON.parse(val.arr_amount)
+		let arr_date=JSON.parse(val.arr_date)
+		let arr_dept=JSON.parse(val.arr_dept)
+		let arr_disease=JSON.parse(val.arr_disease)
+		let arr_doctor=JSON.parse(val.arr_doctor)
+		let arr_name=JSON.parse(val.arr_name)
+		let arr_receipt=JSON.parse(val.arr_receipt)
+
+		let obj_ = arr_receipt.map((value, index) => ({ receipt: value, name: arr_name[index], doctor: arr_doctor[index], disease: arr_disease[index], dept: arr_dept[index], date: arr_date[index], amount: arr_amount[index] }));
+		setsingle_patient({all:obj_,ward:val.ward,dpc_data:val})
+		 //console.log({all:obj_,ward:val.ward})
 	}
 
 	
@@ -228,11 +365,32 @@ function DPCAnalysis() {
 
 
 					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-						<Grid item xs={5}>
+						<Grid item xs={4}>
 							<ButtonThree setVerified={setVerified} c_n_verified={c_n_verified} c_verified={c_verified}/>
 						</Grid>
 						<Grid item xs={2}>
-							<Drawer keyup={keyup}/>
+<p style={{display:"none"}} >
+							 <Drawer single_patient={single_patient} keyup={keyup}  className="hidden"verify={verify}/> 
+
+</p>
+			 
+<TextField id="standard-basic" label="患者コード" className="ml-10" style={{width:'100%' }} onChange={keyup}	value={newval} variant="standard" />
+
+						</Grid>
+						<Grid item xs={1} className='text-right'>
+
+				 
+
+							<Button size="small" variant="" style={{'border':'1px'}}
+
+								onClick={() => {
+									download(hospital, filter_code)
+								}}
+
+
+								endIcon={<Close />}>
+								輸出
+							</Button>
 						</Grid>
 						<Grid item xs={5}>
 							<Paginate total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent}/>
@@ -244,13 +402,13 @@ function DPCAnalysis() {
 
 					{dpc_data?.map(single => (
 						<>
-							<TablePatient className="mt-24" sl={sl++} data={single}   verify={verify}/>
+							<TablePatient className="mt-24 " patientDetails={patientDetails} sl={sl++} data={single}   verify={verify}/>
 							<br/><br/>
 						</>
 					))}
 
 
-					{dpc_data.length == 0 &&
+					{dpc_data.length == 0 && loading==false &&
 						<>
 							<FuseSvgIcon className="text-48 mt-128" size={48} color="action">material-outline:error_outline</FuseSvgIcon>
 							<i className='mt-24'>何もデータが見つかりませんでした</i>

@@ -329,6 +329,20 @@ verified_by Int?
 verified_at String?
 
 
+
+
+
+arr_doctor String? @db.Text
+arr_receipt String? @db.Text
+arr_date String? @db.Text
+arr_name String? @db.Text
+arr_amount String? @db.Text
+arr_dept String? @db.Text
+arr_disease String? @db.Text
+
+
+
+
   created_at                   DateTime? @default(now()) 
   created_by                   Int            
   updated_at                   DateTime? @default(now()) 
