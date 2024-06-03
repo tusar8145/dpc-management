@@ -125,15 +125,15 @@ export const manage_create = async (req, res, next) => {
         admin_id:reg
       }
 
+      let hos=null
       if(reg>0){
         //create hospital
         req.body=hospital_data
         req.query.return=true
         req.params.table='hospitals'
-        let hos=await create(req, res, next)
+        hos=await create(req, res, next)
       }
-
-      response.list([],res)
+      response.create(hos,res)
   } catch (error) {
       response.error(error,res,next)    
   }
@@ -180,17 +180,17 @@ export const manage_logo =   async (req, res, next) => {
         const ssmyArray1_1 = myArray[0].split(":");
         var trimmedStr_1 = ssmyArray1_1[1].trimStart();
         trimmedStr_1 = trimmedStr_1.trimEnd();
-        const newFilepath_1 = `${uploadDir}/${trimmedStr_1}`;
+        const newFilepath_1 = `${uploadDir}/${'fff'+trimmedStr_1}`;
 
 
-        //console.log(newFilepath_1, newFilepath, 'newFilepath')
+        //console.log(trimmedStr,trimmedStr_1, 'yyyyyyyyyyy')
         fs.rename(newFilepath_1, newFilepath, err => err);
 
 
         //update hospital db
         const updatedHospital = await prisma.hospitals.update({
           where: { id: id },
-          data: { logo: trimmedStr },
+          data: { logo: trimmedStr_1 },
         });
 
 
@@ -257,9 +257,12 @@ export const manage_update = async (req, res, next) => {
          updated_by:updated_by,
       },
     });
+
+    let res_final=[]
+    if(update1){res_final=update1}else{res_final=update2}
  
 
-      response.list([],res)
+      response.update([],res)
   } catch (error) {
       response.error(error,res,next)    
   }
@@ -276,15 +279,16 @@ export const manage_remove = async (req, res, next) => {
       },
     })
     
- 
+
     //if success remove hospital
     let  delete_ =null
     if(delete_first){
-        let  delete_ =  await prisma.admins.delete({
+           delete_ =  await prisma.admins.delete({
           where: {
              email: admin_email 
           },
         })
+
 
         if(delete_){}else{
             //create again
@@ -298,7 +302,6 @@ export const manage_remove = async (req, res, next) => {
 
 
     } 
-  
       response.remove(delete_,res)
   } catch (error) {
       response.error(error,res,next)    

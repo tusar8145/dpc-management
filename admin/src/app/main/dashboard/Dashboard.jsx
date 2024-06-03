@@ -311,23 +311,23 @@ function Dashboard() {
 											animate="show"
 										>
 											<motion.div variants={item}>
-												<SummaryWidget count={count3rd}  color={''} title={t('3rd Day')} icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={count3rd} view={1} link={'3'} color={''} title={t('3rd Day')} icon={'material-outline:bedtime'}/>
 											</motion.div>
 				
 											<motion.div variants={item}>
-												<SummaryWidget count={count7th}   color={'cadetblue'}   title={t('7th Day')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={count7th} view={1} link={'7'}   color={'cadetblue'}   title={t('7th Day')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 				
 											<motion.div variants={item}>
-												<SummaryWidget count={countAll}   color={'violet'}   title={t('All  Patients')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countAll}  view={1} type={'all-active-patient'}  color={'violet'}   title={t('All  Patients')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 				
 											<motion.div variants={item}>
-												<SummaryWidget count={countDischarged}    color={'coral'}  title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countDischarged}  view={1}  type={'dis-patient'} color={'coral'}  title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 
 											<motion.div variants={item}>
-												<SummaryWidget count={countWithC}    color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countWithC}  view={1}  color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 										</motion.div>
 					}

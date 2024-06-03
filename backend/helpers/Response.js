@@ -1,9 +1,9 @@
 export const create = (result,res) => {
   try {   
-      let success=true
+      let success='success'
       let message="Created Successful"
       if(result.count==0){
-          success=false
+          success='error'
           message="Unable to create"
       }
       const gg=1
@@ -19,11 +19,11 @@ export const create = (result,res) => {
 
 export const update = (result,res) => {
   try {   
-      let success=true
+      let success='success'
       let message="Update Successful"
       if(result.count==0){
-          success=false
-          message="Unable to create"
+          success='error'
+          message="Unable to Update"
       }
       return res.status(200).json({
         success:success, message:message
@@ -36,10 +36,10 @@ export const update = (result,res) => {
 
 export const list = (data,res) => {
   try {   
-      let success=true
+      let success='success'
       let message="Data Fetch Successful"
       if(data.count==0){
-          success=false
+          success='error'
           message="Unable to Fetch"
       }
       return res.status(200).json({
@@ -54,10 +54,10 @@ export const list = (data,res) => {
 
 export const count = (data,res) => {
   try {   
-      let success=true
+      let success='success'
       let message="Data Count Successful"
       if(data.count==0){
-          success=false
+          success='error'
           message="Unable to Count"
       }
       return res.status(200).json({
@@ -72,10 +72,10 @@ export const count = (data,res) => {
 
 export const remove = (data,res) => {
   try {   
-      let success=true
+      let success='success'
       let message="Data Delete Successful"
       if(data.count==0){
-          success=false
+          success='error'
           message="Unable to Delete"
       }
       return res.status(200).json({
@@ -93,7 +93,7 @@ export const error = (error,res,next) => {
       let message="Something Went Wrong"
       //log_report(error)
       return res.status(200).json({
-        success:false, message:message
+        success:'error', message:message
       });
      }catch(error){
        return false

@@ -106,7 +106,8 @@ background-color: unset !important;
 
     @media screen and (max-width: 600px) {
         .logo_img {
-            max-width: 100%;
+           /*width: 100%;*/
+    
             height: auto;
         }
     }
@@ -114,11 +115,16 @@ background-color: unset !important;
     /* For larger screens */
     @media screen and (min-width: 601px) {
         .logo_img {
-            max-width: 80%; /* Adjust as needed */
+            /*width: 80%;*/ /* Adjust as needed */
+         
             height: auto;
         }
     }
 
 
 
- 
+    @media screen and (max-width: 600px) {
+        .dmnone {
+          display: none !important;
+        }
+      }

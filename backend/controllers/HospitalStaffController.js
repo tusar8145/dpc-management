@@ -110,7 +110,7 @@ export const manage_create = async (req, res, next) => {
       let reg=await registration(req, res, next)
       let clock=created_at()
  
-      response.list([],res)
+      response.create(reg,res)
   } catch (error) {
       response.error(error,res,next)    
   }
@@ -157,7 +157,7 @@ export const manage_logo =   async (req, res, next) => {
         const ssmyArray1_1 = myArray[0].split(":");
         var trimmedStr_1 = ssmyArray1_1[1].trimStart();
         trimmedStr_1 = trimmedStr_1.trimEnd();
-        const newFilepath_1 = `${uploadDir}/${trimmedStr_1}`;
+        const newFilepath_1 = `${uploadDir}/${'fff'+trimmedStr_1}`;
 
 
         //console.log(newFilepath_1, newFilepath, 'newFilepath')
@@ -167,7 +167,7 @@ export const manage_logo =   async (req, res, next) => {
         //update hospital db
         const updatedHospital = await prisma.admins.update({
           where: { id: id },
-          data: { photo: trimmedStr },
+          data: { photo: trimmedStr_1 },
         });
 
 
@@ -210,7 +210,7 @@ export const manage_update = async (req, res, next) => {
     });
  
 
-      response.list([],res)
+      response.update(update1,res)
   } catch (error) {
       response.error(error,res,next)    
   }

@@ -17,8 +17,8 @@ const locale = {
 
 	ICDtoDPC:'ICDからDPCへ',
 	AgeBirthWeight:'年齢出生体重',
-	Treatement1:'治療1',
-	Treatement2:'治療2',
+	Treatement1:'処置1',
+	Treatement2:'処置2',
 	SecondaryInjury:'二次損傷',
 	Surgery:'手術',
 

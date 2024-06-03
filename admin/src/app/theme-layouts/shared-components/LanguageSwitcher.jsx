@@ -8,7 +8,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { changeLanguage, selectCurrentLanguage, selectLanguages } from 'app/store/i18nSlice';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-
+import { lazy } from 'react';
+const Clock = lazy(() => import('../../shared-components/Clock'));
 /**
  * The language switcher.
  */
@@ -31,6 +32,9 @@ function LanguageSwitcher() {
 
 	return (
 		<>
+
+
+<Clock/>
 			<Button
 				className="h-40 w-64"
 				onClick={langMenuClick}

@@ -53,13 +53,13 @@ export default function TablePatient(props) {
             </div>  
 
             <div className='fxl pv5'> / </div> 
-            {c==null?  <div className='pv10'>{'未'}</div> : <div className='pv10'>{c}</div>  }
+            {c==null?  <div  style={(c==null || c=='')? {color : 'red'}:{color : '未'}}  className='pv10'  >{'未'}</div> : <div style={(c==null || c=='未')? {color : 'red'}:{color : ''}}  className='pv10'>{c}</div>  }
         
             {d &&
               <div  className='fxl pv5' > / </div>
             }
             {d &&
-              <div className='pv10'>{d}</div>  
+              <div  style={d=='未'? {color : 'red'}:{color : ''}}   className='pv10'>{d}</div>  
             }
 
           </span>
@@ -83,11 +83,11 @@ export default function TablePatient(props) {
       }
     }
 
-    setEdit
+     
     
     return ( 
-    <table  className={`dpc dpc-table p-10  ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
-      {props.basic !=1 &&
+    <table  className={`dpc dpc-table p-10 mt-20 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
+     
           <tr>
             <td className="b0 width_single text-right border-right-zero" colSpan={12}>
 
@@ -102,17 +102,18 @@ export default function TablePatient(props) {
               編集
             </Button>
 
-            <Button  size="small" variant="contained" onClick={() => {
+          {props.basic !=1 &&   <Button  size="small" variant="contained" onClick={() => {
+             localStorage.setItem("ld",data.id)
               props.patientDetails(data)
             }}
               endIcon={<CIcon />}>
               詳細
-            </Button>
+            </Button>  }
 
             </td>
           </tr>      
 
-      }
+    
 
 
         <tr>
@@ -144,25 +145,25 @@ export default function TablePatient(props) {
             <td className="b0 width_single text-center border-right-zero"></td>
         </tr>
         <tr>
-            <th colSpan={2}>{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
- {/*
- <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['1','2','3']}}  api={''}  complete={UpdateComplete}/>
+            <th colSpan={2} style={data.s_dpc_6 ? {color : 'red'}:{color : ''}} >{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
+ {/* <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['1','2','3']}}  api={''}  complete={UpdateComplete}/>
+*/}
 
- */}
+ 
 
 
 
             </th>
-            <th colSpan={2}>
+            <th colSpan={2} style={data.s_and_1 ? {color : 'red'}:{color : ''}} >
               <div className=" ">
-                {data.s_and_1? s_and_1 : data.and_1 }
+                {data.s_and_1? data.s_and_1 : data.and_1 }
                 {edit==1 && 
-                    <DPCEditModal data={{val:data.s_and_1? s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
+                    <DPCEditModal data={{val:data.s_and_1? data.s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
                 }
                 
               </div>
             </th>
-            <th>
+            <th style={data.s_age_1 ? {color : 'red'}:{color : ''}} >
               
               
               
@@ -174,21 +175,21 @@ export default function TablePatient(props) {
 
              
            </th>
-            <th>{data.s_sur_2? data.s_sur_2 : data.sur_2 }
+            <th style={data.s_sur_2 ? {color : 'red'}:{color : ''}} >{data.s_sur_2? data.s_sur_2 : data.sur_2 }
             {edit==1 && <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:['99','97','01','02','03','04','05','06']}}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th>{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
+            <th  style={data.s_tre1_1 ? {color : 'red'}:{color : ''}}  >{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
             {edit==1 && <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:['0','1','2','3','4','5']}}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th>{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
+            <th  style={data.s_tre2_1 ? {color : 'red'}:{color : ''}} >{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
             {edit==1 && <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:['0','1','2','3','4','5','6','7','8','9']}}  api={''}  complete={UpdateComplete}/>}
             </th>
 
-            <th>{data.s_sec_1? data.s_sec_1 : data.sec_1 }
+            <th style={data.s_sec_1 ? {color : 'red'}:{color : ''}} >{data.s_sec_1? data.s_sec_1 : data.sec_1 }
             {edit==1 && <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:['0','1','2']}}  api={''}  complete={UpdateComplete}/>}
             </th>
             
-            <th>{data.s_sco_1? data.s_sco_1 : data.sco_1 }
+            <th  style={data.s_sco_1 ? {color : 'red'}:{color : ''}} >{data.s_sco_1? data.s_sco_1 : data.sco_1 }
             {edit==1 && <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th className="b0 width_single text-center border-right-zero"></th>

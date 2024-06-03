@@ -21,9 +21,33 @@ import TextField from '@mui/material/TextField';
 import * as FileSaver from 'file-saver';
 import IconButton from '@mui/material/IconButton';
 import Close from '@mui/icons-material/Download';
+import Filter from '@mui/icons-material/FilterAlt';
+import { motion } from 'framer-motion';
+import Typography from '@mui/material/Typography';
+import * as XLSX from 'xlsx';
+
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+
+ 
+import ButtonGroup from '@mui/material/ButtonGroup';
+import { DatePicker } from 'antd';
+
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import {format} from 'date-fns';
  
 
-import * as XLSX from 'xlsx';
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+}));
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
@@ -33,6 +57,7 @@ const ButtonThree = lazy(() => import('./Button'));
 const TablePatient = lazy(() => import('../../shared-components/table/TablePatient'));
 const Paginate = lazy(() => import('../../shared-components/card/Paginate'));
 const Drawer = lazy(() => import('./Drawer'));
+const CenterItems = lazy(() => import('../../shared-components/card/CenterItems'));
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
 	'& .FusePageSimple-header': {
@@ -107,50 +132,133 @@ function DPCAnalysis() {
 	const [filter_days, setFilterDays] = useState(null);
 	const [filter_code, setFilterCode] = useState(null);
 	const [filter_ward, setFilterWard] = useState(null);
-	const [filter_hospitalized, setHospitalized] = useState(null);
+ 
 
 
 	const [single_patient, setsingle_patient]   = useState([]);
 
 	const [newval, setnewval] = useState('');
+	const [newvalHospi, setnewvalHospi] = useState('');
+
+	const [enableFilter, setEnableFilter] = useState(false);
+
+
+//////////////////Filter//////////////////
+const [range_start, setrange_start] = useState('');
+const [range_end, setrange_end] = useState('');
+const [date_type, setDateType] = useState('admission_date');
+const [patient_code, setPatientCode] = useState(null);
+const [hospitalized_days, setHospitalized] = useState('');
+const [dpcPattern, setDpcPattern] = useState('XXXXXX X X XX X X X X');
+const [typeDisPatient, setTypeDisPatient] = useState(null);
+///////////////////////////////////
+
+const queryParameters = new URLSearchParams(window.location.search)
+const gethospitalization_days = queryParameters.get("hospitalization-days")
+const getType = queryParameters.get("type")
+
+const [ signal, setSignal]  =useState('45');
+
+
+	const dateFormat = 'YYYY/MM/DD';
+
+	const [this_date, setthis_date] = useState(null);
+
+
+
+	const handleDateChange = (value) => {   
+    
+		if(value!=null){ 
+ 		  setrange_start(format(value[0].$d,'yyyy/MM/dd')); setrange_end(format(value[1].$d,'yyyy/MM/dd'));    
+		  setthis_date(format(value[0].$d,'yyyy/MM/dd')+","+format(value[1].$d,'yyyy/MM/dd'))
+		 } 
+		else{
+	 
+			setrange_start(null);
+			 setrange_end(null); 
+		}
+	  };
+	  const handleRadioChange = (event) => {   
+		setDateType(event.target.value)
+		//console.log(event.target.value)
+		/*if(value!=null){ 
+ 		  setrange_start(format(value[0].$d,'yyyy-MM-dd')); setrange_end(format(value[1].$d,'yyyy-MM-dd'));    
+		  setthis_date(format(value[0].$d,'yyyy-MM-dd')+","+format(value[1].$d,'yyyy-MM-dd'))
+		 } 
+		else{
+	 
+			setrange_start(null);
+			 setrange_end(null); 
+		}*/
+	  };
+
+	   
+	  
+ const { RangePicker } = DatePicker;
+
 
 	/*-----------start common function shareable------------*/
-	async function server(hospital,filter_codex) {
-				 						
-		console.log(filter_codex)
-
+	async function server(hospital) {
+ 
 		try {
+
+
+
+				console.log(typeDisPatient,'typeDisPatient')
+ 
 			 
 				let skip=rowP*pageP
 				let take=rowP
 				let filter={
-					...filter_codex?{patient_code:parseInt(filter_codex)}:{}
+					...range_start?{range_start:range_start}:{},
+					...range_end?{range_end:range_end}:{},
+					...date_type?{date_type:date_type}:{},
+					...patient_code?{patient_code:parseInt(patient_code)}:{},
+					...hospitalized_days?{hospitalized_days:parseInt(hospitalized_days)}:{},
+					...dpcPattern?{dpcPattern:dpcPattern}:{},
+					...typeDisPatient?{typeDisPatient:typeDisPatient}:{}
 				}
 				 
 
 				const data = await axios.post(apiConfig.PatientDpcList +'?skip='+skip+'&take='+take, {hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}});
 				 
 				let temp_count=data.data.data.count
-				setDpc_data(data.data.data.list)
-				setLoading(false)
+ 
+				let temp1=0 // for not verify
+				let temp2=0 // for verify
+				let tempTotal=0
 
-				let temp1=temp_count[0]?._count?.is_verified || 0
-				let temp2=temp_count[1]?._count?.is_verified || 0
+		 
 
+				for(let m=0; m<temp_count.length; m++){
+					if(temp_count[m].is_verified==1){
+						
+						temp2=temp_count[m]._count?.is_verified
+					}else{
+						temp1=temp_count[m]._count?.is_verified
+					}
+				}
 
-				setCNverified(temp1 || 0)
-				setCverified(temp2 || 0)
+				tempTotal=temp1+temp2
+
+				setCNverified(temp1)
+				setCverified(temp2)
+				setTotal_data(tempTotal)
 			
+	 
+				setDpc_data(data.data.data.list)
 
-				if(is_verified==1){ 
-					setTotal_data(temp2 || 0)
-				}
-				else if(is_verified==0){ 
-					setTotal_data(temp1 || 0)
-				}
-				else { 
-					setTotal_data(temp1+temp2)
-				}
+				let ld=localStorage.getItem("ld");
+				data.data.data.list?.map(single => {
+					if(ld){
+						if(parseInt(ld)==single.id){
+							patientDetails(single)
+						}					
+					}
+				})
+
+
+				setLoading(false)
 				
 		} catch (error) {
 			//setFailAlert("Invalid File")
@@ -163,8 +271,6 @@ function DPCAnalysis() {
 
 
 			 try {
-					console.log(exceldata,'collection',filename)
-				
 					const fileType= 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset-UTF-8';
 					const fileExtension = '.xlsx';
 			
@@ -182,11 +288,9 @@ function DPCAnalysis() {
 	  }
 
 
-	async function download(hospital,filter_codex) {
+	async function download() {
 		
-		try {
-
-	 
+		try {	 
 			var scale=50
 		  
 			let total=total_data
@@ -208,18 +312,24 @@ function DPCAnalysis() {
 			 
 					const collection=[]
 					let report_name=''
-					console.log('jjjjjjjjjj','dddddddddddd',total_page,last_page,per_page)
 
 					let filter={
-						...filter_codex?{patient_code:parseInt(filter_codex)}:{}
+						...range_start?{range_start:range_start}:{},
+						...range_end?{range_end:range_end}:{},
+						...date_type?{date_type:date_type}:{},
+						...patient_code?{patient_code:parseInt(patient_code)}:{},
+						...hospitalized_days?{hospitalized_days:parseInt(hospitalized_days)}:{},
+						...dpcPattern?{dpcPattern:dpcPattern}:{},
+						...typeDisPatient?{typeDisPatient:typeDisPatient}:{}
 					}
+					 
 
 
 			for (var i = 0; i <= total_page; i++) {
 				var skip = i * per_page
 				var get_items = per_page
 				if (i == total_page) {
-					get_items = last_page
+					per_page = last_page
 				}
 
 				let com = parseInt(((i + 1) / total_page) * 100)
@@ -227,10 +337,9 @@ function DPCAnalysis() {
 				//setcompleted(com)
 
 				
-				console.log({hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}})
-				const data = await axios.post(apiConfig.PatientDpcList +'?skip='+skip+'&take='+per_page, {hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}});
+ 				const data = await axios.post(apiConfig.PatientDpcList +'?skip='+skip+'&take='+per_page, {hospital_id:hospital.id, is_verified:is_verified, ...filter?{ filter:filter }:{}});
 				 
-				console.log(data,'hhh')
+				console.log(data,'llll')
 
 				for (var j = data.data.data.list.length - 1; j > -1; j--) {
 				 
@@ -248,7 +357,7 @@ function DPCAnalysis() {
 			}; 
 
 				console.log(collection,'dddddddddddd')
-				Export(collection,'DPC EXPORT')
+				Export(collection,'DPCエクスポート '+date_type+' '+range_start+' '+range_end+' '+hospitalized_days)
  
 				
 		} catch (error) {
@@ -302,15 +411,22 @@ function DPCAnalysis() {
 	function setVerified(val) {
 		setIs_verified(val)	 
 	}
-	function keyup(event) {
-		setFilterCode(event.target.value)
-		setnewval(event.target.value)
-		console.log(event.target.value)
-	}
-	function verify() {
-		server(hospital,filter_code);
-		
 
+	function keyup(event) {
+		setPatientCode(event.target.value)
+		setnewval(event.target.value)
+	}
+ 
+	function keyupHospitalization(event) {
+		setHospitalized(event.target.value)
+		setnewvalHospi(event.target.value)
+	}
+	function keyuDpcattern(event) {
+		setDpcPattern(event.target.value)
+	}
+
+	function verify() {
+		server(hospital);
 		dispatch(showMessage({
 			message: 'データの更新に成功しました',
 			autoHideDuration: 2000,
@@ -319,13 +435,9 @@ function DPCAnalysis() {
 				horizontal: 'right'
 			}
 		}))
-
 	}
 
 	function patientDetails(val) {
-		//let js=JSON.parse(val)
-	// console.log(dpc_data,'xxx')
-		//setsingle_patient(val)
 		let arr_amount=JSON.parse(val.arr_amount)
 		let arr_date=JSON.parse(val.arr_date)
 		let arr_dept=JSON.parse(val.arr_dept)
@@ -339,14 +451,47 @@ function DPCAnalysis() {
 		 //console.log({all:obj_,ward:val.ward})
 	}
 
-	
 	useEffect(() => { 
-		server(hospital,filter_code);  
+		setHospitalized(gethospitalization_days);  
+		setEnableFilter(true)
+		setnewvalHospi(gethospitalization_days)
+	}, [gethospitalization_days]);
+
+
+	useEffect(() => { 
+		if(getType){
+			setTypeDisPatient(getType)
+			setEnableFilter(true)
+		}
+	}, [getType]);	
+
+
+	useEffect(() => { 
+		server(hospital);  
 	
-	}, [pageP, rowP, is_verified,filter_code]);
+	}, [pageP, rowP, is_verified, range_start, range_end, date_type , patient_code, hospitalized_days, dpcPattern,typeDisPatient]);
 
 
 	useEffect(() => {  toggleTheme(t(headingTitle));   }, [t(headingTitle)]);
+
+	function FunEnableFilter() {
+		if(enableFilter==true){
+			setEnableFilter(false)	 
+		}else{
+			setEnableFilter(true)	
+		}
+		
+	}
+
+	///here from
+	useEffect(() => {  
+		
+		console.log(single_patient,'fffffffffff')
+
+	   }, [single_patient]);
+
+
+	
 
 	return (
 		<Root
@@ -356,68 +501,76 @@ function DPCAnalysis() {
 				</div>
 			}
 			content={
-				<div className="flex flex-col items-center p-24 sm:p-40 container">
 
- 
+
+				
+				<div className=" p-24 sm:p-40 container">
+
+
 					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
-					{failAlert != null &&  <ReportModal data={fail_count_list}/> }
+					{failAlert != null && <ReportModal data={fail_count_list} />}
+
+					<p style={{display:" none"}} >
+							 <Drawer single_patient={single_patient} keyup={keyup} signal={signal}  className="hidden"verify={verify}/> 
+
+					</p>					
+
+					<div class="grid md:grid-cols-6 xs:grid-cols-2 gap-4 mb-20" >
+						<div class="col-span-2 ...">	 
+							<ButtonThree setVerified={setVerified} x_n_verify={c_n_verified} x_y_verify={c_verified} x_T_data={total_data} c_n_verified={c_n_verified} c_verified={c_verified} />	 
+						</div>
+						<div class="col-span-2 ... items-center">
+							<div className="flex flex-col items-center justify-center  mx-auto w-full">
+								<ButtonGroup  variant="contained" aria-label="outlined primary button group" >
+									<Button onClick={() => { FunEnableFilter() }} endIcon={<Filter />}>フィルター</Button>
+									<Button size="small" variant="" style={{ 'border': '1px' }}
+									onClick={() => { download() }}
+									endIcon={<Close />}> 輸出 </Button>	 
+								</ButtonGroup>
+							</div>
+						</div>	
+						<div class=" col-span-2 ..."> 
+						<Paginate total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent} />
+						</div>
+					</div>
 
 
-					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-						<Grid item xs={4}>
-							<ButtonThree setVerified={setVerified} c_n_verified={c_n_verified} c_verified={c_verified}/>
-						</Grid>
-						<Grid item xs={2}>
-<p style={{display:"none"}} >
-							 <Drawer single_patient={single_patient} keyup={keyup}  className="hidden"verify={verify}/> 
+					{enableFilter &&
+					<motion.div>
+						 < hr/>	
+						<motion.div class="grid grid-cols-4 flex justify-between mb-10 mt-10 ...">
+							<motion.div><TextField id="standard-basic" label="患者コード" className="ml-10" style={{ width: '80%' }} onChange={keyup} value={newval} variant="standard" /></motion.div>
+							<motion.div><TextField type="number" inputProps={{ min: 0, max: 100 }} id="standard-basic" label="入院日数" className="ml-64" style={{ width: '50%' }} onChange={keyupHospitalization} value={newvalHospi} variant="standard" /></motion.div>
+							<motion.div><TextField id="standard-basic" label="DPCパターン" className="ml-64" style={{ width: '50%' }} onChange={keyuDpcattern} value={dpcPattern} variant="standard" /></motion.div>
 
-</p>
-			 
-<TextField id="standard-basic" label="患者コード" className="ml-10" style={{width:'100%' }} onChange={keyup}	value={newval} variant="standard" />
+							<motion.div>
+								<RangePicker style={{ width: "100%" }} onChange={handleDateChange} format={dateFormat} />
+								<RadioGroup onChange={handleRadioChange} value={date_type} row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
+									<FormControlLabel value="admission_date" control={<Radio />} label="入院日" />
+									<FormControlLabel value="discharge_date" control={<Radio />} label="退院日" />
+									<FormControlLabel value="date_of_birth" control={<Radio />} label="生年月日" />
+								</RadioGroup>
 
-						</Grid>
-						<Grid item xs={1} className='text-right'>
+							</motion.div>
+						</motion.div>		
+						< hr/>			
+					</motion.div>
 
-				 
-
-							<Button size="small" variant="" style={{'border':'1px'}}
-
-								onClick={() => {
-									download(hospital, filter_code)
-								}}
-
-
-								endIcon={<Close />}>
-								輸出
-							</Button>
-						</Grid>
-						<Grid item xs={5}>
-							<Paginate total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent}/>
-						</Grid>
-					</Grid>
-	
-
-					<br/><br/>
-
-					{dpc_data?.map(single => (
-						<>
-							<TablePatient className="mt-24 " patientDetails={patientDetails} sl={sl++} data={single}   verify={verify}/>
-							<br/><br/>
-						</>
-					))}
-
-
-					{dpc_data.length == 0 && loading==false &&
-						<>
-							<FuseSvgIcon className="text-48 mt-128" size={48} color="action">material-outline:error_outline</FuseSvgIcon>
-							<i className='mt-24'>何もデータが見つかりませんでした</i>
-						</>
 					}
 
+					
 
-
-
+					<div class="grid md:grid-cols-1 xs:grid-cols-1 gap-4 mt-32">
+						{dpc_data?.map(single => (
+							<TablePatient className="mt-24 " patientDetails={patientDetails} sl={sl++} data={single} verify={verify} />
+						))}
+					</div>
+ 
+					{dpc_data.length == 0 && loading == false &&
+ 						<CenterItems text1={'何もデータが見つかりませんでした'} icon={1}/>
+					}
+ 
 				</div>
 			}
 	/>

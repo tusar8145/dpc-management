@@ -10,18 +10,18 @@ import { useTranslation } from 'react-i18next';
 export default function ButtonThree(props) {
     const { t } = useTranslation('shared-components');
     const [value, setValue] = React.useState(0);
-    return (<Box sx={{ width: 500 }}>
+    return (<Box style={{width:'100%'}}>
       <BottomNavigation showLabels value={value} onChange={(event, newValue) => {
             setValue(newValue);
-            console.log(newValue)
+ 
             if(newValue==0){ props.setVerified(null)  }
             if(newValue==1){ props.setVerified(1)  }
             if(newValue==2){ props.setVerified(0)  }
 
         }}>
-        <BottomNavigationAction label={`全て (${props.c_n_verified+props.c_verified})`} icon={<BallotIcon />}/>
-        <BottomNavigationAction label={`チェック済み (${props.c_verified})`}  icon={<DoneAllIcon />}/>
-        <BottomNavigationAction label={`未検査 (${props.c_n_verified})`} icon={<PendingIcon />}/>
+        <BottomNavigationAction label={`全て (${props.x_T_data})`} icon={<BallotIcon />}/>
+        <BottomNavigationAction label={`チェック済み (${props.x_y_verify})`}  icon={<DoneAllIcon />}/>
+        <BottomNavigationAction label={`未検査 (${props.x_n_verify})`} icon={<PendingIcon />}/>
       </BottomNavigation>
     </Box>);
 }

@@ -6,12 +6,16 @@ import { memo, useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import FuseLoading from '@fuse/core/FuseLoading';
- 
+import Button from '@mui/material/Button';
+import CIcon from '@mui/icons-material/ChevronRight';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 /**
  * The SummaryWidget widget.
  */
 function SummaryWidget(props) {
-
+	const navigate = useNavigate();
+	const { t } = useTranslation('shared-components');
 	return (
 		<Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
 			<div className="flex items-center justify-between px-8 pt-12">
@@ -21,13 +25,43 @@ function SummaryWidget(props) {
 				>
 					{props.title}
 				</Typography>
-				<IconButton
+
+
+					{props.view==1 ?
+					<Button  size="small" variant="contained" onClick={() => {
+					//props.patientDetails(data)
+						if(props.link){
+							navigate('/hospital/dpc-analysis?hospitalization-days='+props.link);
+						}
+						
+						if(props.type){
+							navigate('/hospital/dpc-analysis?type='+props.type);
+						}
+					}}
+					endIcon={<CIcon />}>
+					{t('View Details')}
+					</Button>
+
+					:
+
+					<IconButton
+						aria-label="more"
+						size="large"
+						disabled="true"
+					>
+					<FuseSvgIcon  className="text-48" size={24} color="action" >{props.icon}</FuseSvgIcon>
+					</IconButton>		
+					}
+
+
+
+				{/*<IconButton
 					aria-label="more"
 					size="large"
 					disabled="true"
 				>
 					<FuseSvgIcon  className="text-48" size={24} color="action" >{props.icon}</FuseSvgIcon>
-				</IconButton>
+				</IconButton>*/}
 			</div>
 
 			<div className="text-center mt-8">

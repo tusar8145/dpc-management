@@ -42,7 +42,10 @@ export default function TemporaryDrawer(props) {
     right: false,
   });
   const toggleDrawer = (anchor, open) => (event) => {
-    console.log(anchor, open)
+    if(open==false){
+      localStorage.removeItem("ld");
+    }
+ 
     if (event.type === 'keydown' &&
       (event.key === 'Tab' ||
         event.key === 'Shift')) {
@@ -115,8 +118,7 @@ export default function TemporaryDrawer(props) {
     } catch (error) {
     }
 
-   
-
+ 
 
   }, [props.single_patient]);
 
@@ -124,6 +126,10 @@ export default function TemporaryDrawer(props) {
   function verify() {
     props.verify()
    // setIsRefetching(true)
+  }
+
+  function done() {
+    localStorage.removeItem("ld");
   }
 
   return (<div>
@@ -151,6 +157,8 @@ export default function TemporaryDrawer(props) {
 
 
             <Grid key={2} className="drawerTable drawer-table">
+
+   
             <table>
                 <tr style={{"border":"0px"}}>
                 <th className='width_single text-center bg-[#6d8fccf0] text-white mb-10' colSpan={8} style={{"border":"0px"}}>
@@ -158,7 +166,9 @@ export default function TemporaryDrawer(props) {
                 </th>
                 <th className='width_single text-right mb-10 bg-[#91abda]' colSpan={1} style={{"border":"0px"}}>
                     <Button  size="small" variant="contained"  
-                      onClick={toggleDrawer('top', false)}
+                   
+                     onClick={toggleDrawer('top', false)}
+
                       endIcon={<Close />}>
                       近い
                     </Button>                    
@@ -166,9 +176,11 @@ export default function TemporaryDrawer(props) {
                 </tr>
       
               </table>
+              
             <TablePatient className="mt-24 " patientDetails={null} sl={1} data={nTable} basic={1}    verify={verify}/>
+        
 
-<br/>
+            <br/>
               <table>
                 <tr style={{"border":"0px"}}>
                 <th className='width_single text-center bg-[#6d8fccf0] text-white mb-10' colSpan={5} style={{"border":"0px"}}>

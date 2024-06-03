@@ -27,6 +27,9 @@ import { styled } from '@mui/material/styles';
 const ImageUpModal = lazy(() => import('../modal/ImageUpModal')); 
 
 import AddIcon from '@mui/icons-material/Add';
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { useAppDispatch } from 'app/store/hooks';
+
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -48,6 +51,8 @@ i18next.addResourceBundle('ja', 'shared-components', ja);
 
 
 const Example = (props) => {
+
+  const dispatch = useAppDispatch();
  
   let tableName=props.tableName
   let keyConfig=props.keyConfig
@@ -526,8 +531,8 @@ function useCreateUser() {
     mutationFn: async (user) => {
       //send api update request here
       const response = await axios.post(apiConfig.hospitalStaffManageCreate,{...user, hospital_id:hospital.id});
-      setIsRefetching(true);
-      return Promise.resolve();
+      dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+      if(response.data.success=='error'){  fetchData(); }else{  setIsRefetching(true); return Promise.resolve(); }
       /*await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
       return Promise.resolve();*/
     },
@@ -545,16 +550,23 @@ function useCreateUser() {
   });
 }
 
+function validateEmail(email) {
+  // Regular expression for validating an email address
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  return regex.test(email);
+}
 
   function validateUser(params) {
     let tkeys = [];
     let ttype = [];
+    let tname = [];
     let trequired = [];
       for(let j=0 ; j<keyConfig.length;j++){
           let new_key = keyConfig[j]
         tkeys[j]=new_key.name
         ttype[j]=new_key.type
+        tname[j]=new_key.name
         trequired[j]=new_key.validate.required
       }
   
@@ -568,12 +580,36 @@ function useCreateUser() {
           if(trequired[index]==1){
   
             if(ttype[index]=='String'){
-                if(params[key].length>0){
-                  dynamicObject[key] = ''
-                }else{
+
+              if(tname[j]=='email'){ 
+
+                if (params[key].length > 0) {
+
+                  if (validateEmail(params[key]) == true) {
+                    dynamicObject[key] = ''
+                  } else {
+                    dynamicObject[key] = t('Invalid Email')
+                  }
+
+                } else {
                   dynamicObject[key] = t('This field is Required')
                 }
-            }else{
+
+                
+
+
+
+              }else{
+
+                    if(params[key].length>0){
+                      dynamicObject[key] = ''
+                    }else{
+                      dynamicObject[key] = t('This field is Required')
+                    }
+
+              }
+
+          }else{
               if(params[key]>0){
                 dynamicObject[key] = ''
               }else{
@@ -597,6 +633,9 @@ function useUpdateUser() {
   return useMutation({
     mutationFn: async (params) => {
       const response = await axios.post(apiConfig.hospitalStaffManageUpdate,{...params});
+      dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))
+      if(response.data.success=='error'){  fetchData(); }else{  setIsRefetching(true);  }
+
       return Promise.resolve();
     },
   });
@@ -611,7 +650,10 @@ function useDeleteUser() {
     mutationFn: async (illnessId) => {
       //send api update request here
       const response = await axios.post(apiConfig.hospitalStaffManageRemove,{...illnessId});
-      setIsRefetching(true);
+
+      dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))
+      if(response.data.success=='error'){  fetchData(); }else{  setIsRefetching(true);  }
+
       return Promise.resolve();
     },
   });

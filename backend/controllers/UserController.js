@@ -87,7 +87,8 @@ export const uploads = async (req, res, next) => {
           
 
     } catch (error) {
-        next(error)
+        //next(error)
+        response.error(error,res,next)
     }
 };
 
@@ -165,7 +166,8 @@ export const login = async (req, res, next) => {
             });
         }
     } catch (error) {
-        next(error)
+        //next(error)
+        response.error(error,res,next)
     }
 };
 
@@ -202,7 +204,8 @@ export const refresh = async (req, res, next) => {
         );
 
     } catch (error) {
-        next(error)
+        //next(error)
+        response.error(error,res,next)
     }
 };
 
@@ -211,7 +214,7 @@ export const refresh = async (req, res, next) => {
 export const registration = async (req, res, next) => {
     try {
         const { name, password, email, phone, role, hospital_id, created_by } = req.body;
-
+       
         // Check if the email is already in use
         const existingadmin = await prisma.admins.findUnique({
             where: {
@@ -220,7 +223,7 @@ export const registration = async (req, res, next) => {
         });
 
         if (existingadmin) {
-            return res.status(400).json({ success: false, message: 'Email already in use' });
+            return res.status(200).json({ success: 'error', message: 'Email already in use' });
         }
 
         // Hash the password
@@ -254,7 +257,9 @@ export const registration = async (req, res, next) => {
 
 
     } catch (error) {
-        next(error)
+   
+        response.error(error,res,next)
+        //next(error)
     }
 }; 
 

@@ -28,6 +28,9 @@ import { styled } from '@mui/material/styles';
 const ImageUpModal = lazy(() => import('../modal/ImageUpModal')); 
 
 import AddIcon from '@mui/icons-material/Add';
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { useAppDispatch } from 'app/store/hooks';
+
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -49,6 +52,9 @@ i18next.addResourceBundle('ja', 'shared-components', ja);
 
 
 const Example = (props) => {
+
+  const dispatch = useAppDispatch();
+
  
   let tableName=props.tableName
   let keyConfig=props.keyConfig
@@ -584,8 +590,12 @@ function useCreateUser() {
     mutationFn: async (user) => {
       //send api update request here
       const response = await axios.post(apiConfig.hospitalManageCreate,{...user});
-      setIsRefetching(true);
-      return Promise.resolve();
+      //
+      dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+      if(response.data.success=='error'){  fetchData(); }else{  setIsRefetching(true); return Promise.resolve(); }
+      //
+      
+
       /*await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
       return Promise.resolve();*/
     },
@@ -603,16 +613,26 @@ function useCreateUser() {
   });
 }
 
+function validateEmail(email) {
+  // Regular expression for validating an email address
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  return regex.test(email);
+}
+
+ 
+ 
 
   function validateUser(params) {
     let tkeys = [];
     let ttype = [];
+    let tname = [];
     let trequired = [];
       for(let j=0 ; j<keyConfig.length;j++){
           let new_key = keyConfig[j]
         tkeys[j]=new_key.name
         ttype[j]=new_key.type
+        tname[j]=new_key.name
         trequired[j]=new_key.validate.required
       }
   
@@ -624,13 +644,39 @@ function useCreateUser() {
           let key=tkeys[j]
           let index=j
           if(trequired[index]==1){
+
+
   
             if(ttype[index]=='String'){
-                if(params[key].length>0){
-                  dynamicObject[key] = ''
+
+                if(tname[j]=='admin_email'){ 
+
+                  if (params[key].length > 0) {
+
+                    if (validateEmail(params[key]) == true) {
+                      dynamicObject[key] = ''
+                    } else {
+                      dynamicObject[key] = t('Invalid Email')
+                    }
+
+                  } else {
+                    dynamicObject[key] = t('This field is Required')
+                  }
+
+                  
+
+
+
                 }else{
-                  dynamicObject[key] = t('This field is Required')
+
+                      if(params[key].length>0){
+                        dynamicObject[key] = ''
+                      }else{
+                        dynamicObject[key] = t('This field is Required')
+                      }
+
                 }
+
             }else{
               if(params[key]>0){
                 dynamicObject[key] = ''
@@ -655,10 +701,20 @@ function useUpdateUser() {
   return useMutation({
     mutationFn: async (params) => {
       const response = await axios.post(apiConfig.hospitalManageUpdate,{...params});
+      
+      //
+      dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))
+      if(response.data.success=='error'){  fetchData(); }else{  setIsRefetching(true);  }
+      //
+
       return Promise.resolve();
+
     },
   });
 }
+
+
+//success
 
 
 
@@ -668,8 +724,12 @@ function useDeleteUser() {
   return useMutation({
     mutationFn: async (illnessId) => {
       //send api update request here
+      console.log('reshereponse')
       const response = await axios.post(apiConfig.hospitalManageRemove,{...illnessId});
-      setIsRefetching(true);
+
+      dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))
+      if(response.data.success=='error'){  fetchData(); }else{  setIsRefetching(true);  }
+ 
       return Promise.resolve();
     },
   });

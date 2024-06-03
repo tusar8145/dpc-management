@@ -70,6 +70,7 @@ model hospitals {
   admin   admins    @relation(fields: [admin_id], references: [id])
   test test[] @relation("test")
   staff_admin admins[]   @relation("abc")
+  dpc_generate dpc_generate[] @relation("hospital")
 }
 
  
@@ -214,6 +215,7 @@ model treatment_1 {
   corres_code                  String
   receipt                      Int         
   name                         String
+  recept_main                 String?
   hospital_id                  Int?
   parent_id                    Int?
 
@@ -232,7 +234,8 @@ model treatment_2 {
   branch_code                  String
   receipt_code                 String
   corres_code                  String
-  receipt                      Int         
+  receipt                      Int       
+  recept_main                 String?  
   name                         String
   hospital_id                  Int?
   parent_id                    Int?
@@ -353,6 +356,8 @@ arr_disease String? @db.Text
 
   childs dpc_generate[] @relation("dpc")
   parents dpc_generate? @relation("dpc", fields: [parent_id], references: [id])
+
+  hospital hospitals? @relation("hospital", fields: [hospital_id], references: [id])
 }
 
 
