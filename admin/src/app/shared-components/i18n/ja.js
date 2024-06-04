@@ -155,6 +155,8 @@ const locale = {
 
 	'Contact form':'お問い合わせフォーム',
 
+	'DPC first 6 digits':'DPCの最初の６桁',
+
 
 };
 export default locale;
