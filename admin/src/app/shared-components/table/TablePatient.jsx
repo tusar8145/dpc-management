@@ -16,7 +16,10 @@ import { lazy } from 'react';
 import Button from '@mui/material/Button';
 import CIcon from '@mui/icons-material/ChevronRight';
 import Edit from '@mui/icons-material/Edit';
+import Eye from '@mui/icons-material/RemoveRedEye';
 import Grid from '@mui/material/Grid';
+
+
 
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
@@ -24,6 +27,8 @@ export default function TablePatient(props) {
     const { t } = useTranslation('shared-components');
     const [value, setValue] = React.useState(0);
     const [edit, setEdit] = React.useState(0);
+    const [judge, setJudge] = React.useState(0);
+
 
     async function verify(id,is_verified) {
       try {
@@ -91,6 +96,24 @@ export default function TablePatient(props) {
           <tr>
             <td className="b0 width_single text-right border-right-zero" colSpan={12}>
 
+
+{((data.s_dpc_6 != data.dpc_6 && data.s_dpc_6 != null) || (data.s_and_1  != data.and_1  && data.s_and_1 != null) || (data.s_age_1 != data.age_1 && data.s_age_1 != null) || (data.s_sur_2 != data.sur_2 && data.s_sur_2 != null) ||  (data.s_tre1_1 != data.tre1_1 && data.s_tre1_1 != null) ||   (data.s_tre2_1 != data.tre2_1 && data.s_tre2_1 != null)  ||  (data.s_sec_1 != data.sec_1 && data.s_sec_1 != null) || (data.s_sco_1 != data.sco_1 && data.s_sco_1 != null)) &&
+            <Button  className="mr-24" size="small" variant="contained" onClick={() => {
+                if(judge==1){
+                  setJudge(0)
+                }else{
+                  setJudge(1)
+                }
+            }}
+              endIcon={<Eye />}>
+             システムジャッジ
+            </Button>
+}
+
+
+
+
+
             <Button  className="mr-24" size="small" variant="contained" onClick={() => {
                 if(edit==1){
                   setEdit(0)
@@ -144,36 +167,25 @@ export default function TablePatient(props) {
             </td>
             <td className="b0 width_single text-center border-right-zero"></td>
         </tr>
+
+
+
+
         <tr>
             <th colSpan={2} style={data.s_dpc_6 ? {color : 'red'}:{color : ''}} >{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
- {/* <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['1','2','3']}}  api={''}  complete={UpdateComplete}/>
-*/}
-
- 
-
-
-
+                  {edit==1 &&  <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['999999']}}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th colSpan={2} style={data.s_and_1 ? {color : 'red'}:{color : ''}} >
               <div className=" ">
                 {data.s_and_1? data.s_and_1 : data.and_1 }
                 {edit==1 && 
                     <DPCEditModal data={{val:data.s_and_1? data.s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
-                }
-                
+                }                
               </div>
             </th>
             <th style={data.s_age_1 ? {color : 'red'}:{color : ''}} >
-              
-              
-              
-     
-          {data.s_age_1? data.s_age_1 : data.age_1 }
-          {edit==1 &&  <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}
-  
-
-
-             
+                {data.s_age_1? data.s_age_1 : data.age_1 }
+                {edit==1 &&  <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}           
            </th>
             <th style={data.s_sur_2 ? {color : 'red'}:{color : ''}} >{data.s_sur_2? data.s_sur_2 : data.sur_2 }
             {edit==1 && <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:['99','97','01','02','03','04','05','06']}}  api={''}  complete={UpdateComplete}/>}
@@ -194,6 +206,36 @@ export default function TablePatient(props) {
             </th>
             <th className="b0 width_single text-center border-right-zero"></th>
         </tr>
+
+{judge==1 &&
+
+<tr>
+<th style={{border:'0px'}}>システム
+</th>
+<th colSpan={2}>{data.dpc_6 }
+</th>
+<th colSpan={2}>
+    {data.and_1 }
+</th>
+<th>
+    {data.age_1 }
+</th>
+<th>{data.sur_2 }
+</th>
+<th>{data.tre1_1 }
+</th>
+<th>{data.tre2_1 }            
+</th>
+
+<th>{data.sec_1 }
+</th>
+
+<th>{data.sco_1 }
+</th>
+<th className="b0 width_single text-center border-right-zero"></th>
+</tr>
+}
+
         <tr> <td className="b0 width_single text-right border-right-zero border-right-zero" colSpan={12}></td> </tr>
     </table>
    );

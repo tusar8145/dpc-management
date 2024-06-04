@@ -445,8 +445,9 @@ const [ signal, setSignal]  =useState('45');
 		let arr_doctor=JSON.parse(val.arr_doctor)
 		let arr_name=JSON.parse(val.arr_name)
 		let arr_receipt=JSON.parse(val.arr_receipt)
+		let arr_color=JSON.parse(val.arr_color)
 
-		let obj_ = arr_receipt.map((value, index) => ({ receipt: value, name: arr_name[index], doctor: arr_doctor[index], disease: arr_disease[index], dept: arr_dept[index], date: arr_date[index], amount: arr_amount[index] }));
+		let obj_ = arr_receipt.map((value, index) => ({ receipt: value, name: arr_name[index], doctor: arr_doctor[index], color:arr_color[index], disease: arr_disease[index], dept: arr_dept[index], date: arr_date[index], amount: arr_amount[index] }));
 		setsingle_patient({all:obj_,ward:val.ward,dpc_data:val})
 		 //console.log({all:obj_,ward:val.ward})
 	}

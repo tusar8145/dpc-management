@@ -34,26 +34,19 @@ model admins {
   hospital_id                  Int?
   photo                        String?
 
-  customer_admin customers[] @relation("admin_con")
-  hospitalCreate hospitals[] @relation("admin_con")
+   hospitalCreate hospitals[] @relation("admin_con")
   hospital  hospitals? 
   admins  admins[] @relation("admin_con1")
   creator admins? @relation("admin_con1", fields: [created_by], references: [id])
   staff_hospital   hospitals?    @relation("abc", fields: [hospital_id], references: [id])
-}
 
-model customers {
-  id                           Int         @id @default(autoincrement())
-  name                         String
-  email                        String?      
-  address                      String?     @db.VarChar(300)
-  phone                        String?     @db.VarChar(20)
-  created_by                      Int            
-  created_at                   DateTime? @default(now()) 
-  updated_at                   DateTime? @default(now()) 
+ services_clients_issues_client_ services_clients_issues[] @relation("issue_client_")
+ services_clients_issues_creator_ services_clients_issues[] @relation("issue_creator_")
+  services_clients_issues_reply_by_ services_clients_issues[] @relation("issue_reply_by_")
+ services_clients_issues_reply_ services_clients_issues_reply[] @relation("issue_user_")
 
-  admins admins? @relation("admin_con", fields: [created_by], references: [id])
 }
+ 
 
 model hospitals {
   id                           Int         @id @default(autoincrement())
@@ -210,12 +203,12 @@ model surgery {
 model treatment_1 {
   id                           Int         @id @default(autoincrement())
   
-  branch_code                  String
-  receipt_code                 String
   corres_code                  String
-  receipt                      Int         
+  dpc_6digit                   String
   name                         String
   recept_main                 String?
+  receipt                      Int    
+
   hospital_id                  Int?
   parent_id                    Int?
 
@@ -231,12 +224,14 @@ model treatment_1 {
 
 model treatment_2 {
   id                           Int         @id @default(autoincrement())
-  branch_code                  String
-  receipt_code                 String
+
   corres_code                  String
-  receipt                      Int       
-  recept_main                 String?  
+  dpc_6digit                   String
   name                         String
+  recept_main                  String?  
+  receipt                      Int       
+
+
   hospital_id                  Int?
   parent_id                    Int?
 
@@ -342,7 +337,7 @@ arr_name String? @db.Text
 arr_amount String? @db.Text
 arr_dept String? @db.Text
 arr_disease String? @db.Text
-
+arr_color String? @db.Text
 
 
 
@@ -373,4 +368,48 @@ model test {
   hospital hospitals? @relation("test", fields: [hospital_id], references: [id])
   test test[] @relation("test2")
   parents test? @relation("test2", fields: [parent_id], references: [id])
+}
+
+
+
+
+model services_clients_issues {
+  id         Int     @id @default(autoincrement())
+  subject       String? 
+  issue  String? @db.MediumText()
+  reply  String? @db.MediumText()
+
+is_delete Int?    @default(0)
+  is_seen                  Int?    @default(0)
+  is_solved                  Int?    @default(0)
+
+  client_id                  Int? 
+  client_   admins?  @relation ("issue_client_", fields:[client_id], references:[id]) 
+
+  creator                      Int?
+  creator_   admins?  @relation ("issue_creator_", fields:[creator], references:[id]) 
+
+  reply_by                      Int?
+  reply_by_   admins?  @relation ("issue_reply_by_", fields:[reply_by], references:[id]) 
+
+  created                      String? @db.VarChar(40)
+  replied                      String? @db.VarChar(40)
+}
+ 
+
+
+model services_clients_issues_reply {
+  id         Int     @id @default(autoincrement())
+  user_id         Int
+    user_   admins?  @relation ("issue_user_", fields:[user_id], references:[id]) 
+  issue_user_id         Int
+  reply  String?
+ 
+  issue_id         Int?
+  is_seen                    Int?    @default(0)
+  is_active                    Int?    @default(1)
+  created                      String? @db.VarChar(40)
+  modified                     String? @db.VarChar(40)
+  creator                      Int?
+  modifier                     Int?
 }

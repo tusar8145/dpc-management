@@ -201,7 +201,7 @@ export default function TemporaryDrawer(props) {
                   <th className=' border width_double'>実施日</th>
                 </tr>
                 {single_patient_rec?.all?.map((_item) => (
-                  <tr>
+                  <tr style={{color:_item.color}}>
                     <td className=' border t-left'></td>
                     <td className=' border t-left'>{_item.disease}</td>
                     <td className=' border t-center'>{_item.receipt}</td>

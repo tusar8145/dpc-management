@@ -216,7 +216,7 @@ const navigationConfig = [
 		type: 'item',
 		icon: 'heroicons-solid:chat-alt-2',
 		auth: authRoles.hospitalAssistant_staff,
-		url: 'page'
+		url: 'contact-form'
 	},
 	{
 		id: '8',

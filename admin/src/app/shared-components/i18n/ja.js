@@ -153,6 +153,9 @@ const locale = {
 	'With Change':'変化とともに',
 
 
+	'Contact form':'お問い合わせフォーム',
+
+
 };
 export default locale;
 

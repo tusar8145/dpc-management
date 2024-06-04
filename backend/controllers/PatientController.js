@@ -141,6 +141,8 @@ export const dpc_create = async (req, res, next) => {
       let dept_obj = req_data_all[x].dept_obj
       let disease_obj = req_data_all[x].disease_obj
 
+      let color_obj=[]
+
       let icd = first_loop_collect.icd_code
 
       let uid_ = first_loop_collect.patient_code.toString() + '' + first_loop_collect?.admission_date.replaceAll("/", "") + '' + first_loop_collect.hospital_id.toString()
@@ -193,10 +195,12 @@ export const dpc_create = async (req, res, next) => {
       let temp_tre2_1 = 'X'
       let temp_sec_1 = 'X'
 
-
+      
       ////////////////////////////////////////////////////////////////////////////////////////////////
       for (let m = 0; m < items_obj.length; m++) {
         let fruit = items_obj[m]
+
+        color_obj.push('black')
 
         if (fruit) {
           let find_ = await prisma.treatment_1.findMany({
@@ -208,6 +212,8 @@ export const dpc_create = async (req, res, next) => {
           if (find_.length > 0) {
             //found t1
             temp_tre1_1 = find_[0].corres_code.toString()
+
+            color_obj.push('blue')
           } else {
             let find_ = await prisma.treatment_2.findMany({
               where: {
@@ -218,6 +224,7 @@ export const dpc_create = async (req, res, next) => {
             if (find_.length > 0) {
               //found t2
               temp_tre2_1 = find_[0].corres_code.toString()
+              color_obj.push('green')
             } else {
               let find_ = await prisma.secondary_injury.findMany({
                 where: {
@@ -226,6 +233,7 @@ export const dpc_create = async (req, res, next) => {
               })
               if (find_.length > 0) {
                 //found t3
+                color_obj.push('orange')
                 temp_sec_1 = '1'
               } else {
 
@@ -258,6 +266,8 @@ export const dpc_create = async (req, res, next) => {
         arr_amount: JSON.stringify(amount_obj),
         arr_dept: JSON.stringify(dept_obj),
         arr_disease: JSON.stringify(disease_obj),
+        arr_color: JSON.stringify(color_obj),
+
 
         //system
         "dpc_6": dpc_6,
@@ -325,11 +335,12 @@ export const dpc_create = async (req, res, next) => {
           arr_amount: true,
           arr_dept: true,
           arr_disease: true,
+          arr_color:true,
         }
       })
 
 
-
+      
 
       //update please
       if (find_) {
@@ -339,7 +350,7 @@ export const dpc_create = async (req, res, next) => {
         /*Start Analysis previous arrays*/
         //this admission date found?
         //admissionDate
-
+       
 
         let j_arr_doctor=null
         let j_arr_receipt=null
@@ -348,6 +359,7 @@ export const dpc_create = async (req, res, next) => {
         let j_arr_amount=null
         let j_arr_dept=null
         let j_arr_disease=null
+        let j_arr_color=null
 
         try {
           let k_arr_doctor=JSON.parse(find_.arr_doctor)
@@ -357,6 +369,7 @@ export const dpc_create = async (req, res, next) => {
           let k_arr_amount=JSON.parse(find_.arr_amount)
           let k_arr_dept=JSON.parse(find_.arr_dept)
           let k_arr_disease=JSON.parse(find_.arr_disease)
+          let k_arr_color=JSON.parse(find_.arr_color)
   
           let new_arr_doctor=[]
           let new_arr_receipt=[]
@@ -365,6 +378,7 @@ export const dpc_create = async (req, res, next) => {
           let new_arr_amount=[]
           let new_arr_dept=[]
           let new_arr_disease=[]
+          let new_arr_color=[]
   
   
           {
@@ -381,6 +395,7 @@ export const dpc_create = async (req, res, next) => {
                 new_arr_amount.push(k_arr_amount[index])
                 new_arr_dept.push(k_arr_dept[index])
                 new_arr_disease.push(k_arr_disease[index])
+                new_arr_color.push(k_arr_color[index])
               }
   
             }
@@ -402,6 +417,7 @@ export const dpc_create = async (req, res, next) => {
             j_arr_amount=JSON.stringify(new_arr_amount).slice(0, -1)+','+JSON.stringify(amount_obj).slice(1);
             j_arr_dept=JSON.stringify(new_arr_dept).slice(0, -1)+','+JSON.stringify(dept_obj).slice(1);
             j_arr_disease=JSON.stringify(new_arr_disease).slice(0, -1)+','+JSON.stringify(disease_obj).slice(1);
+            j_arr_color=JSON.stringify(new_arr_color).slice(0, -1)+','+JSON.stringify(color_obj).slice(1);
           }else{
             j_arr_doctor=JSON.stringify(doctor_obj);
             j_arr_receipt=JSON.stringify(receipt_obj);
@@ -410,6 +426,7 @@ export const dpc_create = async (req, res, next) => {
             j_arr_amount=JSON.stringify(amount_obj);
             j_arr_dept=JSON.stringify(dept_obj);
             j_arr_disease=JSON.stringify(disease_obj);
+            j_arr_color=JSON.stringify(color_obj);
           }
   
         } catch (error) {
@@ -431,6 +448,7 @@ export const dpc_create = async (req, res, next) => {
           arr_amount: j_arr_amount,
           arr_dept: j_arr_dept,
           arr_disease: j_arr_disease,
+          arr_color: j_arr_color,
 
           ...first_loop_collect.discharge_date ? { "discharge_date": first_loop_collect?.discharge_date?.toString(), } : {},
           ...hospitalization_days ? { "hospitalization_days": hospitalization_days, } : {},
@@ -599,14 +617,14 @@ export const dpc_list = async (req, res, next) => {
       ...response.list_paginate(req),
       where: {
 
-        ...dpc_6? { dpc_6: dpc_6 } : {},
-        ...and_1? { and_1: and_1 } : {},
-        ...age_1? { age_1: age_1 } : {},
-        ...sur_2? { sur_2: sur_2 } : {},
-        ...tre1_1? { tre1_1: tre1_1 } : {},
-        ...tre2_1? { tre2_1: tre2_1 } : {},
-        ...sec_1? { sec_1: sec_1 } : {},
-        ...sco_1? { sco_1: sco_1 } : {},
+        ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
+        ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
+        ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},
+        ...sur_2? { OR:[{sur_2: sur_2},{s_sur_2: sur_2}] }   : {},
+        ...tre1_1?{ OR:[{tre1_1: tre1_1 },{s_tre1_1: tre1_1}]}   : {},
+        ...tre2_1?{ OR:[{tre2_1: tre2_1 },{s_tre2_1: tre2_1 }]}  : {},
+        ...sec_1? { OR:[{sec_1: sec_1 },{s_sec_1: sec_1}]}   : {},
+        ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},
 
         ...date_type=='admission_date'?{ admission_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
         ...date_type=='discharge_date'?{ discharge_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
@@ -678,47 +696,11 @@ export const dpc_list = async (req, res, next) => {
         arr_amount: true,
         arr_dept: true,
         arr_disease: true,
+        arr_color: true,
 
       }
     })
-    console.log({
 
-      ...dpc_6? { dpc_6: dpc_6 } : {},
-      ...and_1? { and_1: and_1 } : {},
-      ...age_1? { age_1: age_1 } : {},
-      ...sur_2? { sur_2: sur_2 } : {},
-      ...tre1_1? { tre1_1: tre1_1 } : {},
-      ...tre2_1? { tre2_1: tre2_1 } : {},
-      ...sec_1? { sec_1: sec_1 } : {},
-      ...sco_1? { sco_1: sco_1 } : {},
-
-      ...date_type=='admission_date'?{ admission_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
-      ...date_type=='discharge_date'?{ discharge_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
-      ...date_type=='date_of_birth'?{ date_of_birth: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
-      ...patient_code? { patient_code: parseInt(patient_code) } : {},
-
-      ...typeDisPatient=='all-active-patient'? { discharge_date: null } : {},
-      ...typeDisPatient=='dis-patient'? { discharge_date:  {
-        not: null,
-      }, } : {},
-
-        ...hospitalization_days>-1? {
-          
-          discharge_date: null,
-          OR: [
-            { hospitalization_days: hospitalization_days.toString() },
-          ]
-          
-          //hospitalization_days: hospitalization_days.toString(),  discharge_date: null,
-           
-        
-        
-        } : {},
-
-      hospital_id: req.body?.hospital_id,
-      ...is_verified == 1 ? { is_verified: 1 } : {},
-      ...is_verified == 0 ? { is_verified: 0 } : {},
-    })
 
    // console.log(result_)
 
@@ -728,6 +710,16 @@ export const dpc_list = async (req, res, next) => {
         is_verified: true,
       },
       where: {
+
+        ...dpc_6? { dpc_6: dpc_6 } : {},
+        ...and_1? { and_1: and_1 } : {},
+        ...age_1? { age_1: age_1 } : {},
+        ...sur_2? { sur_2: sur_2 } : {},
+        ...tre1_1? { tre1_1: tre1_1 } : {},
+        ...tre2_1? { tre2_1: tre2_1 } : {},
+        ...sec_1? { sec_1: sec_1 } : {},
+        ...sco_1? { sco_1: sco_1 } : {},
+
         hospital_id: req.body?.hospital_id,
         ...date_type=='admission_date'?{ admission_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
         ...date_type=='discharge_date'?{ discharge_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},

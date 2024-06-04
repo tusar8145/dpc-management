@@ -12,9 +12,13 @@ import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 import en from '../i18n/en';
 import ja from '../i18n/ja';
-import IconButton from '@mui/material/IconButton';
+ 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
+import { useEffect, useState } from 'react';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import PendingIcon from '@mui/icons-material/Check';
+ 
 
 i18next.addResourceBundle('en', 'shared-components', en);
 i18next.addResourceBundle('ja', 'shared-components', ja);
@@ -75,8 +79,16 @@ export default function DPCEditModal(props) {
         
       }
     }
+    
+    const [newval, setnewval] = useState('');
+    function keyup(event) {
+      setnewval(event.target.value)
+    }
 
-
+    
+    async function update_step() {
+        update(props.data.id,'dpc_6',newval) 
+    }
     return (<div>
  
        <IconButton aria-label="PendingIcon"  onClick={handleOpen} color="error"><ArrowDropDownIcon/></IconButton>
@@ -96,7 +108,19 @@ export default function DPCEditModal(props) {
 						 <i>{props.val}</i>
 						</Typography>
 					</div>
- 
+
+          {props.data.options[0]=='999999'?
+          <div className='grid grid-cols-3  items-center'>
+          <TextField  id="standard-basic" label="変化" className="ml-10 col-span-2" style={{ width: '80%' }} onChange={keyup} value={newval} variant="standard" />
+          
+          <Button disabled={newval.length!=6}  aria-label="PendingIcon" 
+              onClick={() => {
+                update_step() 
+              }}
+              
+              color="success">保存</Button> 
+          </div>
+          :
           <Typography className="text-2xl font-semibold tracking-tight leading-6 text-center mt-24">
 
               {props.data.options?.map(single => (
@@ -109,7 +133,10 @@ export default function DPCEditModal(props) {
 
               ))}
 
-        </Typography>
+        </Typography>          
+          }
+ 
+
 
 
           <Typography id="modal-modal-description" className='text-center' sx={{ mt: 2 }}>

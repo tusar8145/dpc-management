@@ -242,7 +242,7 @@ try {
               <Button disabled={loading}
                 color="success" variant="contained" component="label" style={{ width: "600px", height: "400px", ...loading == true ? { opacity: ".3" } : {} }}>
                 <Icon> add_to_photos </Icon>&nbsp; {t('Choose XLSX')}
-                &nbsp;<input name="upload" id="upload" onChange={readUploadFile} accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" type="file" />
+                &nbsp;<input name="upload" id="upload" onChange={readUploadFile} accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" type="file" />
               </Button>
 
               {loading == true &&
