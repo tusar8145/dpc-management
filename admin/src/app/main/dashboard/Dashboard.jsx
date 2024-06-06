@@ -60,12 +60,12 @@ function Dashboard() {
 								"secondary": {
 									"main": "#FFD740",
 									"light": "#FFFF74",
-									"dark": "#C8A600",
+									"dark": "#009843",
 									"contrastText": "rgb(17, 24, 39)"
 								},
 								"background": {
 									"default": "#dcf2f2",
-									"paper": "#f2fdfa"
+									"paper": "#F2FDF4"
 								},
 								"text": {
 									"primary": "rgb(17, 24, 39)",
@@ -87,11 +87,11 @@ function Dashboard() {
 								"secondary": {
 									"main": "#FFD740",
 									"light": "#FFFF74",
-									"dark": "#C8A600",
+									"dark": "#009843",
 									"contrastText": "rgb(17, 24, 39)"
 								},
 								"background": {
-									"default": "#004D40",
+									"default": "#009843",
 									"paper": "#00544a"
 								},
 								"text": {
@@ -114,12 +114,12 @@ function Dashboard() {
 								"secondary": {
 									"main": "#FFD740",
 									"light": "#FFFF74",
-									"dark": "#C8A600",
+									"dark": "#009843",
 									"contrastText": "rgb(17, 24, 39)"
 								},
 								"background": {
 									"default": "#dcf2f2",
-									"paper": "#f2fdfa"
+									"paper": "#F2FDF4"
 								},
 								"text": {
 									"primary": "rgb(17, 24, 39)",
@@ -141,11 +141,11 @@ function Dashboard() {
 								"secondary": {
 									"main": "#FFD740",
 									"light": "#FFFF74",
-									"dark": "#C8A600",
+									"dark": "#009843",
 									"contrastText": "rgb(17, 24, 39)"
 								},
 								"background": {
-									"default": "#004D40",
+									"default": "#009843",
 									"paper": "#00544a"
 								},
 								"text": {

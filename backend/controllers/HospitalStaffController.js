@@ -37,6 +37,7 @@ const __dirname = path.dirname(__filename);
 
 export const manage_list = async (req, res, next) => {
   try {
+    console.log(req.body)
 
     let f_columnFilters = req.body?.filter?.f_columnFilters
     let globalFilter = req.body?.filter?.globalFilter
@@ -121,6 +122,68 @@ export const image =   async (req, res, next) => {
   res.sendFile(path.join(__dirname.replace("\controllers", "") + "./uploads/"+image));
 };
 
+
+export const manage_issue_file =   async (req, res, next) => {
+
+  console.log('req')
+  let img_name=''
+  const uploadDir = path.join(__dirname.replace("\controllers", "") + '/uploads'); 
+ 
+  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, '0777', true);
+  const customOptions = { uploadDir: uploadDir, keepExtensions: true, allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024 * 1024, multiples: true };
+  const form = new IncomingForm(customOptions);
+ // console.log(form)
+  let file_count = req.query.counts
+
+  let id=parseInt(req.query.id)
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    for (let x = 0; x < file_count; x++) {
+      try {
+
+        const file = files['file-' + x.toString()]
+        let str = file.toString()
+        const myArray = str.split(",");
+
+
+        const ssmyArray1 = myArray[1].split(":");
+        var trimmedStr = ssmyArray1[1].trimStart();
+        trimmedStr = trimmedStr.trimEnd();
+        const newFilepath = `${uploadDir}/${trimmedStr}`;
+
+
+
+        const ssmyArray1_1 = myArray[0].split(":");
+        var trimmedStr_1 = ssmyArray1_1[1].trimStart();
+        trimmedStr_1 = trimmedStr_1.trimEnd();
+        const newFilepath_1 = `${uploadDir}/${'fff'+trimmedStr_1}`;
+
+
+        //console.log(newFilepath_1, newFilepath, 'newFilepath')
+        fs.rename(newFilepath_1, newFilepath, err => err);
+        img_name=trimmedStr_1
+
+        //update hospital db
+        /*const updatedHospital = await prisma.admins.update({
+          where: { id: id },
+          data: { photo: trimmedStr_1 },
+        });*/
+
+
+      } catch (error) {
+        console.log(error, 'error')
+      }
+
+
+      //console.log(file.name,'file-'+x.toString())
+    }
+    res.status(200).json({img_name:img_name});
+  });
+};
 
 export const manage_logo =   async (req, res, next) => {
  

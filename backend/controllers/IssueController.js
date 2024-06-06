@@ -22,14 +22,25 @@ import axios from 'axios';
 
 export const post_issue = async (req, res, next) => {
     try {
-        const services_clients_issues = await prisma.services_clients_issues.createMany({
-            data: req.body,
-            skipDuplicates: true,
+        const services_clients_issues = await prisma.services_clients_issues.create({
+            data: req.body, 
         })
-        res.json({
-            success: true,
-            result:services_clients_issues,
-          })
+
+        console.log(req.body,services_clients_issues)
+
+        let rep={
+            issue_id: services_clients_issues.id,
+            user_id: user_id,
+            issue_user_id: user_id,
+            link: req.body.link,
+            reply: req.body.issue,
+            created: req.body.created
+          }
+
+          const services_clients_issues_reply = await prisma.services_clients_issues_reply.create({
+            data: rep,
+        })
+  
         response.create(services_clients_issues, res)
     } catch (error) {
         response.error(error, res, next)
@@ -79,6 +90,8 @@ export const post_issue_reply = async (req, res, next) => {
             data: req.body,
             skipDuplicates: true,
         })
+
+        console.log(req.body)
 
         res.json({
             success: true,
@@ -134,8 +147,11 @@ export const get_issue_reply = async (req, res, next) => {
                         select: {
                             name: true,
                             id: true,
+                            photo:true,
                         }
-                    }
+                    },
+                    issue:true
+
                 }
             }
         )
@@ -155,17 +171,17 @@ export const get_issue_reply = async (req, res, next) => {
 export const get_issue = async (req, res, next) => {
 
     try {
-        var user_id = req.body.user_id
+        //var user_id = req.body.user_id
         const result = await prisma.services_clients_issues.findMany(
             {
                 orderBy: {
                     id: 'desc',
                 },
                 where: {
-                    ...(user_id > 0 ? { creator: user_id, } : {}),
+                    //...(user_id > 0 ? { creator: user_id, } : {}),
                     ...(req.body.is_solved != null ? { is_solved: req.body.is_solved, } : {}),
                     ...(req.body.is_seen != null ? { is_seen: req.body.is_seen, } : {}),
-
+                    access_users:{contains:user_id+','.toString()},
                     is_delete: 0,
                 },
                 include: {
@@ -181,6 +197,13 @@ export const get_issue = async (req, res, next) => {
                             id: true,
                         }
                     },
+
+  
+                        _count: {
+                          select: { issues_reply: true },
+                        },
+             
+
                 },
             }
         )
@@ -214,11 +237,13 @@ export const update_issues = async (req, res, next) => {
 
             },
         })
-        res.json({
-            success: wallet_transaction,
-            message: "Operation Successful2", 
-            })
-        response.update(wallet_transaction, res)
+ 
+        if(req.body.is_delete==1){
+            response.delete(wallet_transaction, res)
+        }else{
+            response.update(wallet_transaction, res)
+        }
+        
     } catch (error) {
         response.error(error, res, next)
     }

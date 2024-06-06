@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import _ from '@lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef,  useState } from 'react';
 import { lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../context/ThemeContext';
@@ -9,7 +9,7 @@ import FusePageSimple from '@fuse/core/FusePageSimple';
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
 import Alert from '@mui/material/Alert';
-import {createdAt} from '../../helpers/timeHelpers';
+import {createdAt, timeBeauty} from '../../helpers/timeHelpers';
 import {filterItemsEqual} from '../../helpers/commonHelpers';
 
 import Box from '@mui/material/Box';
@@ -21,9 +21,10 @@ import TextField from '@mui/material/TextField';
 import { useAppSelector } from 'app/store/hooks';
 import { selectUserRole, selectUser } from '../../auth/user/store/userSlice';
 
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { useAppDispatch } from 'app/store/hooks';
 
-
- 
+import { Link } from 'react-router-dom';
  
  
 import Autocomplete from '@mui/material/Autocomplete';
@@ -34,6 +35,12 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 
  import Box1 from '@mui/material/Box';
+
+
+ import Chip from '@mui/material/Chip';
+ import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+
+
  const Table = lazy(() => import('../../shared-components/table/IssueTable'));
 
  const Root = styled(FusePageSimple)(({ theme }) => ({
@@ -53,9 +60,58 @@ import CardContent from '@mui/material/CardContent';
 
  
 function Issue() {
+
+	const [staff, setStaff] = useState([]);
+	const [access_users, setAccessUsers] = useState([]);
+	const [newrows, setNewRows] = useState(null);
+	
+	const [scroll_refresh, setScrollRefresh] = useState(null);
+	const divRef = useRef(null);
+	const scrollToBottom = () => {
+		if (divRef.current) {
+		  divRef.current.scrollTop = divRef.current.scrollHeight;
+		}
+	  };
+
+	  useEffect(() => {
+		scrollToBottom();
+	}, [scroll_refresh]);
+
+	
+	async function getstaff(){
+		let filter = {
+			others: {role:'staff',hospital_id:hospital.id},
+		  }
+
+		const response = await axios.post(apiConfig.hospitalStaffManageList, { filter });
+        let new_data = []
+        let get_data = response.data.data
+console.log(get_data,'get_data')
+		for(let k=0; k<get_data.length; k++){
+			let this_=get_data[k]
+			new_data.push({
+				title: this_.name,
+				id:this_.id
+
+			})
+		}
+
+		setStaff(new_data)
+	}
+
+	useEffect(() => {  getstaff()  }, []);
+
+ 
+
+	const fileInputRef = useRef(null);
+	const fileInputRef2 = useRef(null);
+
+  const [fileName, setFileName] = useState('');
+
  
 	let headingTitle='Contact form'
- 
+	const dispatch = useAppDispatch();
+
 	const { t } = useTranslation('shared-components');
 
 	const { theme, toggleTheme } = useTheme();
@@ -83,7 +139,7 @@ function Issue() {
 	const [postreply, setpostreply] = useState('');
 	const [issolved, setissolved] = useState(0);
   
-	const postIssueReply = (event) => {
+	const postIssueReply = async (event) => {
 	 if(postreply==''){seterror2(1)}else{
 	 
 		const current = new Date();
@@ -91,30 +147,45 @@ function Issue() {
 		var this_unique=new Date().valueOf().toString();
   
 		
-		const master_submit = {
-		  "issue_id":issue_id,
-		  "user_id":user.uid,
-		  "issue_user_id":user.uid,
-		  "reply":postreply,
-		  "created":date
+
+		setuploading(1)
+		var formData = new FormData();
+		const fileInput = document.querySelector('input[type="file"]');
+		for (let y = 0; y < fileInput.files.length; y++) {
+			formData.append(`file-${y}`, fileInput.files[y], fileInput.files[y].name);
 		}
-  
+		const response = await axios.post(apiConfig.base_url + 'issue/issue-file' + '?id=' + '1' + '&&counts=' + fileInput.files.length, formData);
+ 
+		 console.log('888888888888888888888888888888','ffff')
+			fileInputRef2.current.value = '';
+			setFileName('');
+		 
+
+		const master_submit = {
+			"issue_id":issue_id,
+			"user_id":user.uid,
+			"issue_user_id":user.uid,
+			link:response.data.img_name || null,
+			"reply":postreply,
+			"created":createdAt(),
+		  }
   
 		const res = axios.post(base_url + "post_issue_reply", master_submit).then(async (response) => {
 		  //alert('Request Submitted')
 		  setpostreply('')
+
+
    
 		  var firsr_page_jsonreply = {
 			"issue_id":issue_id
 		  } 
-	  console.log(firsr_page_jsonreply,'firsr_page_jsonreply')
-  
+   
 		  await axios.post(base_url + "get_issue_reply", firsr_page_jsonreply).then((res) => {
-			console.log(res,'res')
+			
 			setgetreply(res.data.result)
-	
-			var objDiv = document.getElementById("hjk");
-			objDiv.scrollTop = objDiv.scrollHeight;
+
+			setScrollRefresh(Math.random())
+	 
 		}).catch(function (error) { if (error.response) { console.log(error.response.data); } });    
   
   
@@ -127,30 +198,48 @@ function Issue() {
 	  } 
 	  
 	 };
+	 
+
+	 const [uploading, setuploading] = useState(0);
   
-  
-  
-	const postIssue = (event) => {
+	const postIssue = async (event) => {
 	  if(subject=='' || issue==''){seterror(1)}else{
 		console.log(subject,issue,'res')
   
 		const current = new Date();
 		const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 		var this_unique=new Date().valueOf().toString();
-  
+
+		setuploading(1)
+		var formData = new FormData();
+		const fileInput = document.querySelector('input[type="file"]');
+		for (let y = 0; y < fileInput.files.length; y++) {
+			formData.append(`file-${y}`, fileInput.files[y], fileInput.files[y].name);
+		}
+		const response = await axios.post(apiConfig.base_url + 'issue/issue-file' + '?id=' + '1' + '&&counts=' + fileInput.files.length, formData);
 		
+		console.log('888888888888888888888888888888','ffff')
+		fileInputRef.current.value = '';
+		setFileName('');
+
 		const master_submit = {
 		  subject: subject,
 		  issue: issue,
-		  created: date,
+		  created: createdAt(),
+		  link:response.data.img_name || null,
 		  creator:  user.uid,
+		  access_users:access_users,
 		}
-  
-		const res = axios.post(base_url + "post_issue", master_submit).then((response) => {
-		  alert('Request Submitted')
-		  setsubject('')
-		  setissue('')
-		  get_issue();
+
+		console.log(master_submit,'master_submit')
+ 
+		const res = await axios.post(base_url + "post_issue", master_submit).then((response) => {
+		dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+		setuploading(0)
+		setsubject('')
+		setissue('')
+		get_issue();
+ 
 		}).catch(function (error) {
 		  if (error.response) {  console.log(error.response.data, 'error'); } 
 		});  
@@ -229,8 +318,9 @@ function Issue() {
 						is_solved: get_[i].is_solved,
 						creator_: get_[i].creator_?.name,
 						...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-						created: get_[i].created, 
-						status_date: get_[i].replied, 
+						created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+						status_date: timeBeauty(get_[i].replied), 
+						reply_count: get_[i]?._count?.issues_reply || 0
 				  }
 				  my_json.push(x_data);
 				  console.log(x_data,'x_data')
@@ -281,22 +371,23 @@ function Issue() {
 	}
 	}
   
+	console.log('pppppppppp',get_[i])
   
-  
-					var x_data = {
-						  id: get_[i].id,
-						  subject: get_[i].subject, 
-						  issue: get_[i].issue, 
-						  reply: get_[i].reply, 
-						  have_new:have_new,
-						  status:status,
-						  is_seen: get_[i].is_seen,
-						  is_solved: get_[i].is_solved,
-						  creator_: get_[i].creator_.name,
-						  ...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_.name , } : {reply_by_:''}), 
-						  created: get_[i].created, 
-						  status_date: get_[i].replied, 
-					}
+							var x_data = {
+								id: get_[i].id,
+								subject: get_[i].subject, 
+								issue: get_[i].issue, 
+								reply: get_[i].reply, 
+								have_new:have_new,
+								status:status,
+								is_seen: get_[i].is_seen,
+								is_solved: get_[i].is_solved,
+								creator_: get_[i].creator_?.name,
+								...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
+								created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+								status_date: timeBeauty(get_[i].replied), 
+								reply_count: get_[i]?._count?.issues_reply || 0
+						}
 					my_json.push(x_data);
 					console.log(x_data,'x_data')
 				} 
@@ -355,21 +446,23 @@ function Issue() {
 			have_new=' New ✉ found'
 		  }
 		  }
-  
+		  					console.log('pppppppppp',get_[i])
 		  
 						  var x_data = {
-								id: get_[i].id,
-								subject: get_[i].subject, 
-								issue: get_[i].issue, 
-								reply: get_[i].reply, 
-								have_new:have_new,
-								status:status,
-								is_seen: get_[i].is_seen,
-								is_solved: get_[i].is_solved,
-								creator_: get_[i].creator_.name,
-								...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_.name , } : {reply_by_:''}), 
-								created: get_[i].created, 
-								status_date: get_[i].replied, 
+							id: get_[i].id,
+							subject: get_[i].subject, 
+							issue: get_[i].issue, 
+							reply: get_[i].reply, 
+							have_new:have_new,
+							status:status,
+							is_seen: get_[i].is_seen,
+							is_solved: get_[i].is_solved,
+							creator_: get_[i].creator_?.name,
+							...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
+							created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+							status_date: timeBeauty(get_[i].replied), 
+							reply_count: get_[i]?._count?.issues_reply || 0
+
 						  }
 						  my_json.push(x_data);
 						  console.log(x_data,'x_datax_data')
@@ -407,7 +500,7 @@ function Issue() {
 					
 				
 					  await axios.post(base_url + "get_issue", firsr_page_json).then((res) => {
-							console.log(res,'res')
+							console.log(res,'resc')
 							const my_json = []
 							var get_ = res.data.result;
 							for (var i=0; i < get_.length; i++) {
@@ -435,18 +528,19 @@ function Issue() {
 				}
 				
 								var x_data = {
-									  id: get_[i].id,
-									  subject: get_[i].subject, 
-									  issue: get_[i].issue, 
-									  reply: get_[i].reply, 
-									  have_new:have_new,
-									  status:status,
-									  is_seen: get_[i].is_seen,
-									  is_solved: get_[i].is_solved,
-									  creator_: get_[i].creator_.name,
-									  ...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_.name , } : {reply_by_:''}), 
-									  created: get_[i].created, 
-									  status_date: get_[i].replied, 
+									id: get_[i].id,
+									subject: get_[i].subject, 
+									issue: get_[i].issue, 
+									reply: get_[i].reply, 
+									have_new:have_new,
+									status:status,
+									is_seen: get_[i].is_seen,
+									is_solved: get_[i].is_solved,
+									creator_: get_[i].creator_?.name,
+									...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
+									created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+									status_date: timeBeauty(get_[i].replied), 
+									reply_count: get_[i]?._count?.issues_reply || 0
 								}
 								my_json.push(x_data);
 								console.log(x_data,'x_data')
@@ -503,17 +597,22 @@ function Issue() {
   
   const markSeen = (event) => {
 	var done=0
-	if(selected_rows.length>0){
+ 
+	let c=0
+	for (var key in newrows) { c++ }
+
+	if(c!=0){
 	  const current = new Date();
 	  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   
-		for (var i = 0; i < selected_rows.length; i++) {
+	  for (var key in newrows) {
 			
   
-			var filter = filterItemsequal(get_issues, 'id', parseInt(selected_rows[i]));
-  
+			var filter =get_issues[parseInt(key)] //filterItemsequal(get_issues, 'id', parseInt(selected_rows[i]));
+ 
+
 				  const data1 = {
-					  id: filter[0].id,
+					  id: filter.id,
 					  is_seen:1,
 					  is_solved:0,
 					  reply_by:user.uid,
@@ -521,10 +620,11 @@ function Issue() {
 					  is_delete:0,
 				  }
   
-				  console.log(data1, 'data1');
-				  console.log(data1,'data1')
+			 
 				  const res = axios.post(base_url + "update_issues", data1).then((response) => {
-					  console.log(response.data, 'res');
+					  console.log(response.data, 'res9');
+					  dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+
 					  done=1
 					  get_issue();
 				  }).catch(function (error) {
@@ -532,71 +632,77 @@ function Issue() {
 						  done=0
 						  console.log(done, 'done');
 					  }
-				  }); 
+				  });  
+
+
+
+
+
 		} 
    
 	}else{
-	  alert('Nothing Selected')
-	setalert_def_txt('Nothing Selected')
-	setalert_def_class('warning')
-	handleClick()
+	  dispatch(showMessage({  message: t('Nothing Selected'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
 	}
   };
   
   const markSolved= (event) => {
 	var done=0
-	if(selected_rows.length>0){
+	let c=0
+	for (var key in newrows) { c++ }
+
+	if(c!=0){
 	  const current = new Date();
 	  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   
-		for (var i = 0; i < selected_rows.length; i++) {
+	  for (var key in newrows) {
 			
   
-			var filter = filterItemsequal(get_issues, 'id', parseInt(selected_rows[i]));
+		var filter =get_issues[parseInt(key)] 
   
 				  const data1 = {
-					  id: filter[0].id,
+					  id: filter.id,
 					  is_seen:1,
 					  is_solved:1,
 					  reply_by:user.uid,
 					  replied:date,
 				  }
   
-				  console.log(data1, 'data1');
-				  console.log(data1,'data1')
+ 
 				  const res = axios.post(base_url + "update_issues", data1).then((response) => {
-					  console.log(response.data, 'res');
+					dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+
 					  done=1
 					  get_issue();
 				  }).catch(function (error) {
 					  if (error.response) { 
 						  done=0
-						  console.log(done, 'done');
+				 
 					  }
 				  }); 
 		} 
    
 	}else{
-	  alert('Nothing Selected')
-	setalert_def_txt('Nothing Selected')
-	setalert_def_class('warning')
-	handleClick()
+		dispatch(showMessage({  message: t('Nothing Selected'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
 	}
   };
   
   const markDelete= (event) => {
 	var done=0
-	if(selected_rows.length>0){
+ 
+	let c=0
+	for (var key in newrows) { c++ }
+
+	if(c!=0){
 	  const current = new Date();
 	  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   
-		for (var i = 0; i < selected_rows.length; i++) {
+	  for (var key in newrows) {
 			
   
-			var filter = filterItemsequal(get_issues, 'id', parseInt(selected_rows[i]));
-			  if(filter[0].status=='Pending'){
+		var filter =get_issues[parseInt(key)] 
+			  if(filter.status=='Pending'){
 								const data1 = {
-								  id: filter[0].id,
+								  id: filter.id,
 								  is_delete:1,
 							  }
 							  const res = axios.post(base_url + "update_issues", data1).then((response) => {
@@ -610,16 +716,15 @@ function Issue() {
 								  }
 							  });
 			  }else{
-				alert('ID : ' + filter[0].id + ' Not Deleted. Only issue with pending status can be deleted')
+				dispatch(showMessage({  message: 'ID : ' + filter.id + t('Not Deleted. Only issue with pending status can be deleted'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
+
 			  }
    
 		} 
    
 	}else{
-	  alert('Nothing Selected')
-	setalert_def_txt('Nothing Selected')
-	setalert_def_class('warning')
-	handleClick()
+		dispatch(showMessage({  message: t('Nothing Selected'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
+
 	}
   };
   
@@ -635,18 +740,51 @@ function Issue() {
 		"issue_id":data
 	  } 
 
-	await axios.post(base_url + "get_issue_reply", firsr_page_jsonreply).then((res) => {
+	    await axios.post(base_url + "get_issue_reply", firsr_page_jsonreply).then((res) => {
+
+		 console.log(res.data.result,'jjjjjjj')
+			
 		setreplytime(1)
 		setgetreply(res.data.result)
-		var objDiv = document.getElementById("hjk");
-		objDiv.scrollTop = objDiv.scrollHeight;
+		setScrollRefresh(Math.random())
+
+		 setissolved(res.data.result[0].issue.is_solved)
+
 	}).catch(function (error) { if (error.response) { console.log(error.response.data); } });  
 
 
 
   }
 
+  const [img_col, setimg_col] = useState(null);
+  const [loading_pod,setloading_pod]  = useState(0);
 
+
+  const onFileChange = function (e) {
+
+    e.preventDefault();
+
+	  if (e.target.files.length > 0) {
+		setFileName(e.target.files[0].name);
+	  } else {
+		setFileName('');
+	  }
+
+
+    console.log(55555)
+    setimg_col(e.target.files)
+  }
+
+  function selectedRows(data){
+	console.log(data.length)
+	setNewRows(data)
+
+ 
+
+	  for (var key in data) {
+		console.log(data[key],key)
+	}
+  }
 	return (
 		<Root
 			header={
@@ -661,45 +799,64 @@ function Issue() {
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
 					{failAlert != null && <ReportModal data={fail_count_list} />*/}
 
-					<div class="grid md:grid-cols-3 xs:grid-cols-2 gap-4 mb-20" >
-						<div class="col-span-1  ...">
+					<div class="grid md:grid-cols-5 xs:grid-cols-1 gap-4 mb-20" >
+						<div class="col-span-2  ...">
 
-						{replytime==0 && <div class="grid md:grid-cols-1 xs:grid-cols-1 gap-4 mt-96 mb-64" >
+							    {replytime == 0 && <div class=" mt-20" style={{"padding":"15px", "background":"white", "border-radius":"5px"}} >
 
-						<TextField type="text" name="subject" id="standard-basic" value={subject} onChange={handleSubject} label="Write Subject*" />
-                    	{subject=='' && error==1 && <p style={{color:"red",marginTop: "-1%",marginBottom: "4%"}}>"Write  Subject" field is required *</p> }
-                    
+								{staff.length > 0 &&
+									<Autocomplete multiple
 
-						<TextField type="text"
-						multiline
-						className='mt-20'
-						rows={5}
-						maxRows={8}
-						name="issue" id="standard-basic" value={issue} onChange={handleIssue} label="Write Issue*" />
-						{issue=='' && error==1 && <p style={{color:"red",marginTop: "-1%",marginBottom: "4%"}}>"Write Issue" field is required *</p> }
-                   
-				   
-						<div className='mt-20'>{getreply.length==0 &&
-							<Button color="primary"   data-id={1} onClick={postIssue} variant="contained" style={{marginTop:"3px"}}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>Submit New Issue</span>  </Button>  
-						}
-						</div>
+										onChange={(event, value) => {
 
+											let ids = user.uid.toString()
+											for (let x = 0; x < value.length; x++) {
+												if (ids == "") {
+													ids = value[x].id.toString()
+												} else {
+													ids = ids + ',' + value[x].id
+												}
+											}
+											setAccessUsers(ids + ',')
+										}}
 
-
-						</div>}
+										id="tags-outlined" options={staff} getOptionLabel={(option) => option.title} filterSelectedOptions renderInput={(params) => (<TextField {...params} label={t("Author*")} placeholder="Access by" />)} />
+								}
 
 
-							<div class="grid md:grid-cols-1 xs:grid-cols-1 gap-4 mt-96 mb-64" >
-							<div class="col-span-1  ...">
- 
+								<TextField fullWidth className="mt-20" type="text" name="subject" id="standard-basic" value={subject} onChange={handleSubject} label={t("Write Subject*")} />
+								{subject == '' && error == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>"Write  Subject" field is required *</p>}
+
+
+								<TextField type="text"
+									multiline
+									fullWidth
+									className='mt-20'
+									rows={5}
+									maxRows={8}
+									name="issue" id="standard-basic" value={issue} onChange={handleIssue} label={t("Write Issue*")} />
+								{issue == '' && error == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>"Write Issue" field is required *</p>}
+
+
+								<div className=" " style={{ "margin-bottom": "20px", "margin-top": "20px", "padding": "15px", "border": "1px dashed gray" }}>
+									<input ref={fileInputRef} onChange={onFileChange} type="file" name="imgCollection" multiple />
+								</div>
+
+								<div className='mt-40'>
+									{getreply.length == 0 &&
+										<Button color="secondary" data-id={1} onClick={postIssue} variant="contained" style={{ marginTop: "3px" }}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Submit New Issue")}</span>  </Button>
+									}
+								</div>
+							    </div>}
 
 								{getreply.length > 0 &&
-									<div id={"hjk"}
+								<div class=" mt-20" style={{"padding":"15px", "background":"white", "border-radius":"5px"}} >
+									<div ref={divRef}
 										style={{
 
 											height: "420px",
 											overflowY: "scroll",
-											padding: "5px",
+											padding: "15px",
 											border: "2px solid lightskyblue",
 											borderRadius: "5px",
 
@@ -709,135 +866,147 @@ function Issue() {
 											<>
 												<Card sx={{ minWidth: 275 }}>
 													<CardContent>
-														<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 
-															<x style={{
-																fontWeight: "bold",
-																color: "black"
-															}}>
-																{item.user_.name.toString()}
-															</x>
+														<div className="flex-container">
+															<div className="flex-item">
+																{ item.user_.photo ?
+																															<img
+																															src={apiConfig.base_url + 'issue/image/' + item.user_.photo}
+																															alt="beach"
+																															style={{
+																																maxWidth: '34px',
+																														 
+																															}}
+																															className="rounded-6"
+																														/>	
 
-															<p style={{ textAlign: "right", marginTop: "-20px" }}><i>{'Date:'} {item.created}</i> </p>
-														</Typography>
+																														:
+																														<img
+																														src={apiConfig.base_url + 'issue/image/' + 'user.png'}
+																														alt="beach"
+																														style={{
+																															maxWidth: '34px',
+																														 
+																														}}
+																														className="rounded-6"
+																													/>	
 
-														<Typography variant="body2">
-															{item.reply.toString()}
-														</Typography>
+
+																}
+
+															</div>
+															<div className="flex-item">
+
+																<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+
+																	<x style={{
+																		fontWeight: "bold",
+																		color: "black"
+																	}}>
+																		{item.user_.name.toString()}
+																	</x>
+
+																	<p  ><span> 🕐 {timeBeauty(item.created)}</span> </p>
+																</Typography>
+
+																<Typography variant="body2">
+																	{item.reply.toString()}
+																</Typography>
+
+
+																{item.link ?
+																	<div className='mt-10' >
+																	<Link to={apiConfig.base_url + 'issue/image/' + item.link} target="_blank" > Attachment File {item.link?.split(".").slice(-1)} </Link>
+																	</div>
+																	:
+																	<></>
+																}															
+														
+														</div>
+														</div>
+
+
+
+
+												 
+
+
+ 
 													</CardContent>
 												</Card><br></br>
 											</>
 										))}
 									</div>
 
-								}
+								
 								<br></br>
 
 
-									{issolved != "Solved" && issue_id > 0 &&
+									{issolved != 1 && issue_id > 0 &&
 										<TextField type="text"
 										fullWidth
 											multiline
 											rows={4}
 											maxRows={8}
-											name="issue" id="standard-basic2" value={postreply} onChange={handleIssueReply} label="Write Issue Reply*" />
+											name="issue" id="standard-basic2" value={postreply} onChange={handleIssueReply} label={t("Write Issue Reply*")} />
 									}
-									{issolved != "Solved" && issue_id > 0 &&
 
-										<>{postreply == '' && error2 == 1 && <p style={{ color: "red", marginTop: "-1%", marginBottom: "4%" }}>"Write Issue" field is required *</p>}</>
+{issolved != 1 && issue_id > 0 &&
+
+<>{postreply == '' && error2 == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>"Write Issue" field is required *</p>}</>
+}
+									{issolved != 1 && issue_id > 0 &&
+									<div className=" "style={{"margin-bottom": "20px", "margin-top": "20px", "padding": "15px", "border": "1px dashed gray" }}>
+									<input ref={fileInputRef2} onChange={onFileChange} type="file" name="imgCollection" multiple />
+									</div>
 									}
+
+
+
 										<br></br>
-									{issolved != "Solved" && issue_id > 0 &&
-										<Button className="mt-10" color="primary" data-id={1} onClick={postIssueReply} variant="contained" style={{ marginTop: "3px" }}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>Submit</span>  </Button>
+									{issolved != 1 && issue_id > 0 &&
+										<Button className="mt-10" color="secondary" data-id={1} onClick={postIssueReply} variant="contained" style={{ marginTop: "3px" }}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Submit Reply")}</span>  </Button>
 
 									}
-
-
-
-							</div>
-							</div>
+							</div>}
 
 
 
 
 						</div>
-						<div class="col-span-2 ml-20 ...">
-						<div class="p-20 ...">
-                        <Button color="primary" data-id2={1} onClick={get_issue} variant="contained" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>View All</span></Button>
-                        &nbsp;&nbsp;
-                        <Button color="primary" data-id2={2} onClick={get_issue2} variant="contained" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>View Pending</span></Button>  
-                        &nbsp;&nbsp;
-                        <Button color="primary" data-id2={3} onClick={get_issue3} variant="contained" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>View Seen</span></Button>  
-                        &nbsp;&nbsp;
-                        <Button color="primary" data-id2={4} onClick={get_issue4} variant="contained" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>View Solved</span></Button>  
-						&nbsp;&nbsp;
-						<Icon style={{cursor:"pointer", float: "right"}} onClick={get_issue}>refresh</Icon> 
-						</div>
+						<div class="col-span-3 ml-20 ...">
+							<div class="p-20 ...">
+							<Button color="secondary" data-id2={1} onClick={get_issue} variant="outlined" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("View All")}</span></Button>
+							&nbsp;&nbsp;
+							<Button color="secondary" data-id2={2} onClick={get_issue2} variant="outlined" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("View Pending")}</span></Button>  
+							&nbsp;&nbsp;
+							<Button color="secondary" data-id2={3} onClick={get_issue3} variant="outlined" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("View Seen")}</span></Button>  
+							&nbsp;&nbsp;
+							<Button color="secondary" data-id2={4} onClick={get_issue4} variant="outlined" style={{marginTop:"3px"}}> <Icon>remove_red_eye</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("View Solved")}</span></Button>  
+							&nbsp;&nbsp;
+							<Icon style={{cursor:"pointer", float: "right"}} onClick={get_issue}>refresh</Icon> 
+							</div>
 
-						<Table idSend={idSend} data={get_issues}/>
+							<Table selectedRows={selectedRows} idSend={idSend} data={get_issues}/>
+
+{!get_issues.length>0 &&
+							<Typography variant="body2" className='text-center text-amber-400' style={{'padding':'5%'}}>
+								<i>No Record Found</i>
+							</Typography>
+
+}
+
+
+							{/*footer*/}
+							<div class="p-20 ...">
+							<Button color="secondary" data-id={1} onClick={markSeen} variant="outlined" style={{marginTop:"3px"}}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Mark as Seen")}</span></Button>
+							&nbsp;&nbsp;
+							<Button color="secondary" data-id={1} onClick={markSolved} variant="outlined" style={{marginTop:"3px"}}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Mark as Solved")}</span></Button>  
+							&nbsp;&nbsp;
+							<Button color="error" data-id={1} onClick={markDelete} variant="outlined" style={{marginTop:"3px"}}> <Icon>delete</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Delete")}</span></Button>  
+							</div>
 						</div>
 					</div>
-
-
-
-					<Grid container spacing={2} style={{paddingRight:"15px"}}>
-      <Grid xs={5} style={{padding:"5px", paddingRight:"15px"}}>
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-                 </Grid>
-
-
-
-
-
-
-
-
-
-      <Grid xs={7}>
-
-
-                     
- 
-
-
-                    {(user.is_issue==1 && user.is_marchant!=1 ) &&
-                    <>
-                        <Button color="primary" data-id={1} onClick={markSeen} variant="contained" style={{marginTop:"3px"}}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>Mark as Seen</span></Button>
-                        &nbsp;&nbsp;
-                        <Button color="primary" data-id={1} onClick={markSolved} variant="contained" style={{marginTop:"3px"}}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>Mark as Solved</span></Button>  
-  
-                    </>
-                    } 
-
-                    {user.is_marchant==1 &&
-                    <>
-                         <Button color="secondary" data-id={1} onClick={markDelete} variant="contained" style={{marginTop:"3px"}}> <Icon>delete</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>Delete</span></Button>  
- 
-                    </>
-                    }                      
-
-      </Grid>
-</Grid>
-
-
-
-
-
-
-
 				</div>
 			}
 	/>

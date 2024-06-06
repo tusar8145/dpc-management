@@ -379,9 +379,13 @@ model services_clients_issues {
   issue  String? @db.MediumText()
   reply  String? @db.MediumText()
 
-is_delete Int?    @default(0)
+  link String?
+
+  is_delete Int?    @default(0)
   is_seen                  Int?    @default(0)
   is_solved                  Int?    @default(0)
+
+  access_users String? 
 
   client_id                  Int? 
   client_   admins?  @relation ("issue_client_", fields:[client_id], references:[id]) 
@@ -394,6 +398,8 @@ is_delete Int?    @default(0)
 
   created                      String? @db.VarChar(40)
   replied                      String? @db.VarChar(40)
+
+  issues_reply services_clients_issues_reply[] @relation("issues_reply")
 }
  
 
@@ -401,15 +407,16 @@ is_delete Int?    @default(0)
 model services_clients_issues_reply {
   id         Int     @id @default(autoincrement())
   user_id         Int
-    user_   admins?  @relation ("issue_user_", fields:[user_id], references:[id]) 
   issue_user_id         Int
-  reply  String?
- 
-  issue_id         Int?
+  reply   String? @db.MediumText()
+  link String?
+  issue_id         Int
   is_seen                    Int?    @default(0)
   is_active                    Int?    @default(1)
   created                      String? @db.VarChar(40)
   modified                     String? @db.VarChar(40)
   creator                      Int?
   modifier                     Int?
+  issue   services_clients_issues  @relation ("issues_reply", fields:[issue_id], references:[id])
+  user_   admins?  @relation ("issue_user_", fields:[user_id], references:[id]) 
 }

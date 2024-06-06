@@ -157,6 +157,32 @@ const locale = {
 
 	'DPC first 6 digits':'DPCの最初の６桁',
 
+	'Author*':'著者*',
+	'Write Subject*':'件名を記入*',
+	'Write Issue*':'問題を書く*',
+	'Submit New Issue':'新しい問題を提出する',
+	'Write Issue Reply*':'問題への返信を書く*',
+	'Submit Reply':'返信を送信',
+
+	'View All':'すべて表示',
+	'View Seen':'見たものを見る',
+	'View Pending':'保留中の表示',
+	'View Solved':'解決済みを表示',
+	'Mark as Seen':'既読としてマーク',
+	'Mark as Solved':'解決済みとしてマーク',
+	'Delete':'消去',
+
+
+	'Subject':'主題',
+	'Created':'作成した',
+	'Status':'状態',
+	'Reply':'返事',
+	'View':'ビュー',
+
+	'Pending':'保留中',
+	'Seen':'見た',
+	'Solved':'解決済み',
+
 
 };
 export default locale;

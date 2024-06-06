@@ -17,67 +17,39 @@ function SummaryWidget(props) {
 	const navigate = useNavigate();
 	const { t } = useTranslation('shared-components');
 	return (
-		<Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
-			<div className="flex items-center justify-between px-8 pt-12">
-				<Typography
-					className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
-					color="text.secondary"
-				>
-					{props.title}
-				</Typography>
-
-
-					{props.view==1 ?
-					<Button  size="small" variant="contained" onClick={() => {
-					//props.patientDetails(data)
-						if(props.link){
-							navigate('/hospital/dpc-analysis?hospitalization-days='+props.link);
-						}
-						
-						if(props.type){
-							navigate('/hospital/dpc-analysis?type='+props.type);
-						}
-					}}
-					endIcon={<CIcon />}>
-					{t('View Details')}
-					</Button>
-
-					:
-
-					<IconButton
-						aria-label="more"
-						size="large"
-						disabled="true"
-					>
-					<FuseSvgIcon  className="text-48" size={24} color="action" >{props.icon}</FuseSvgIcon>
-					</IconButton>		
+		<Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden cursor-pointer" style={{"height":"100%"}}
+		   onClick={() => {
+			//props.patientDetails(data)
+				if(props.view==1 ){
+					if(props.link){
+						navigate('/hospital/dpc-analysis?hospitalization-days='+props.link);
 					}
+					
+					if(props.type){
+						navigate('/hospital/dpc-analysis?type='+props.type);
+					}
+				}
+			}}
+		>
+	 
+			
+			<div class="grid grid-cols-2 gap-20 p-32">
+				<div className="text-center p-1">
+					<Typography className="text-3xl font-medium text-blue-600 dark:text-blue-500" style={{ color: props.color }}>
+						{props.title}
+					</Typography>
 
-
-
-				{/*<IconButton
-					aria-label="more"
-					size="large"
-					disabled="true"
-				>
-					<FuseSvgIcon  className="text-48" size={24} color="action" >{props.icon}</FuseSvgIcon>
-				</IconButton>*/}
+				</div>
+				<div className="text-center bg-slate-300" style={{ "background-color": "rgb(103 14 166 / 5%)"}}>
+					<Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500" style={{ color: props.color }}>
+						{props.count}
+					</Typography>
+				</div>
 			</div>
 
-			<div className="text-center mt-8">
-				<Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500" style={{color:props.color}}>
-				{props.count}
-				</Typography>
-			 
-				{props.title && <Typography className="text-lg font-medium text-blue-600 dark:text-blue-500">{props.title}</Typography> }
-			</div>
+ 
 
-			<Typography
-				className="flex items-baseline justify-center w-full mt-20 mb-24"
-				color="text.secondary"
-			>
-				 
-			</Typography>
+ 
 		</Paper>
 	);
 }

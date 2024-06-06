@@ -1,6 +1,8 @@
  
- import { useMemo } from 'react';
-
+ 
+ import { useMemo, useState,useEffect } from 'react';
+ import * as React from 'react';
+ import Badge from '@mui/material/Badge';
 import {
     MRT_GlobalFilterTextField,
     MRT_TableBodyCellValue,
@@ -21,8 +23,14 @@ import {
     Typography,
   } from '@mui/material';
   import Button from '@mui/material/Button';
-
+  import MailIcon from '@mui/icons-material/Mail';
+  import '../../../styles/custom-basic.css';
+  import Chip from '@mui/material/Chip';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
   const Example = (props) => {
+
+    const { t } = useTranslation('shared-components');
 
     const data = props.data;
 
@@ -31,68 +39,125 @@ import {
             {
                 accessorFn: (row) => ` `, //accessorFn used to join multiple data into a single cell
                 id: 'action', //id is still required when using accessorFn instead of accessorKey
-                header: 'Action',
+                header: t('Reply'),
                 enableEditing: false,
                 required: false,
                 size: 50,
                 Cell: ({ renderedCellValue, row }) => (
                   <> 
+
+
+
+                        <div className="flex-container">
+                       
+                            <div className="flex-item"><Badge badgeContent={row.original.reply_count} color="primary">
+                                <Button onClick={() => { props.idSend(row.original.id) }} variant="contained" size="small"> {t('View')} </Button>
+                            </Badge></div>
+     {row.original.have_new == " New ✉ found" &&
+                                <div className="flex-item">
+                                    <Badge  onClick={() => { props.idSend(row.original.id) }}  color="secondary" badgeContent={'new'}>
+                                        <MailIcon />
+                                    </Badge>
+                                </div>
+                            }
+                        </div>
+
      
              
-     <Button 	onClick={() => {
-						 
-                        props.idSend(row.original.id)
-					}}
-                    variant="contained" size="small">
-          View
-        </Button>
+                        
     
                   </>
                 ),
               },
           {
             accessorKey: 'subject', //access nested data with dot notation
-            header: 'Subject',
+            header: t('Subject'),
             size: 150,
           },
-          {
-            accessorKey: 'issue',
-            header: 'Issue',
-            size: 150,
-          },
+ 
           {
             accessorKey: 'created', //normal accessorKey
-            header: 'Created',
+            header: t('Created'),
             size: 200,
           },
+ 
+        
           {
-            accessorKey: 'creator_',
-            header: 'Creator',
+            accessorFn: (row) => ` `, //accessorFn used to join multiple data into a single cell
+            id: 'action1', //id is still required when using accessorFn instead of accessorKey
+            header: t('Status'),
+            enableEditing: false,
+            required: false,
             size: 150,
+            Cell: ({ renderedCellValue, row }) => (
+              <> 
+
+
+
+                 
+                    
+                         {row.original.status=='Pending' &&
+                         <Chip label={t(row.original.status)}  size="small"  color="default" variant=" "/>
+                         }
+
+                        {row.original.status=='Seen' &&
+                         <Chip label={t(row.original.status)}  size="small"  color="secondary" variant=" "/>
+                         }
+
+                        {row.original.status=='Solved' &&
+                         <Chip label={t(row.original.status)}  size="small"  color="success" variant=" "/>
+                         }
+ 
+                        
+                        <div className="">{row.original.status_date}</div>
+ 
+                       
+                    
+                 
+
+ 
+         
+                    
+
+              </>
+            ),
           },
-          {
-            accessorKey: 'status',
-            header: 'Status',
-            size: 150,
-          },
-          {
-            accessorKey: 'status_date',
-            header: 'Status Date',
-            size: 150,
-          },
-          {
-            accessorKey: 'have_new',
-            header: 'New Reply',
-            size: 150,
-          },
+  
         ],
         [],
       );
+      const [rowSelection, setRowSelection] = useState({});
+
+      useEffect(() => {
+        console.log(rowSelection,'rowSelection')
+		props.selectedRows(rowSelection);
+	}, [rowSelection]);
+
+
     const table = useMaterialReactTable({
       columns,
       data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
       //MRT display columns can still work, optionally override cell renders with `displayColumnDefOptions`
       enableRowSelection: true,
+
+
+      getRowId: (row) => row.userId,
+      muiTableBodyRowProps: ({ row }) => ({
+        //implement row selection click events manually
+        onClick: () =>
+          setRowSelection((prev) => ({
+            ...prev,
+            [row.original.id]: !prev[row.original.id], //this is a simple toggle implementation
+          })),
+        selected: rowSelection[row.original.id],
+        sx: {
+          cursor: 'pointer',
+        },
+      }),
+      onRowSelectionChange: setRowSelection,
+      state: { rowSelection },
+
+
       initialState: {
         pagination: { pageSize: 5, pageIndex: 0 },
         showGlobalFilter: true,
@@ -145,7 +210,7 @@ import {
             </TableHead>
             <TableBody>
               {table.getRowModel().rows.map((row, rowIndex) => (
-                <TableRow key={row.id} selected={row.getIsSelected()}>
+                <TableRow key={row.original.id} selected={row.getIsSelected()}>
                   {row.getVisibleCells().map((cell, _columnIndex) => (
                     <TableCell align="center" variant="body" key={cell.id}>
                       {/* Use MRT's cell renderer that provides better logic than flexRender */}

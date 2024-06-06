@@ -8,6 +8,9 @@ router.post("/hospital-staff-manage/create", auth,   HospitalStaffController.man
 router.post("/hospital-staff-manage/remove", auth,   HospitalStaffController.manage_remove);
 router.post("/hospital-staff-manage/update", auth,   HospitalStaffController.manage_update);
 router.post("/hospital-staff-manage/logo",           HospitalStaffController.manage_logo);
+router.post("/issue/issue-file",     HospitalStaffController.manage_issue_file);
+router.get("/issue/image/:image",    HospitalStaffController.image);
+
 router.get("/hospital-staff-manage/image/:image",    HospitalStaffController.image);
 export { router as HospitalStaffRoute };  
 
