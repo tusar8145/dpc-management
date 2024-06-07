@@ -66,5 +66,7 @@ const apiConfig = {
     IssueGetIssueReply:base_url+'issue/get_issue_reply',
     IssueGetIssue:base_url+'issue/get_issue',
     IssueUpdateIssues:base_url+'issue/update_issues',
+
+    updatePassword:base_url+'admin/update_password',
 }
 export default apiConfig;

@@ -182,6 +182,26 @@ const locale = {
 	'Pending':'保留中',
 	'Seen':'見た',
 	'Solved':'解決済み',
+	'My Profile':'私のプロフィール',
+	'Sign out':'サインアウト',
+	'Profile':'プロフィール',
+
+	'Write current password':'現在のパスワードを入力',
+	'Write new password':'新しいパスワードを入力',
+	'Retype new password':'新しいパスワードを再入力',
+	'Update Password':'パスワードを更新',
+
+	'This field is required':'このフィールドは必須です',
+	'Submit':'送信',
+
+	'General Information':'一般情報',
+	'Hospital Info':'病院情報',
+
+	
+	'Phone':'電話',
+	'Hospital Name':'病院名',
+	'About':'について',
+	
 
 
 };

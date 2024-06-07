@@ -32,6 +32,7 @@ const locale = {
  
 	CCPM:'CCPM',
 	DataManagement:'データ管理',
+	
 
 
 

@@ -34,7 +34,7 @@ button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconBut
     width: 100%;
     }
 
-    .MuiBox-root.muiltr-1uj2axd {
+    .MuiBox-root  {
         
     }
 
@@ -75,6 +75,14 @@ button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorError.MuiIconBut
         min-height: 45px;
         background: white;
     }
+
+
+    
+    .MuiBox-root .muiltr-qpxlqp {
+        min-height: 45px;
+        position: relative;
+    }
+
 
     .disabled{
 opacity: .3;

@@ -1,5 +1,5 @@
 // src/components/FileUpload.js
-import React, { useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
 import Button from '@mui/material/Button';
@@ -25,7 +25,7 @@ const FileUpload = (props) => {
     setimg_col(e.target.files)
   }
 
-  
+  const fileInputRef = useRef(null);
   const { t } = useTranslation('shared-components');
 
   const doSomething = function (e) {
@@ -62,9 +62,14 @@ const FileUpload = (props) => {
             props.complete(true)
         })
         .catch((err) => console.error(err, '2'));  
+
+        fileInputRef.current.value = '';
   }
 
   
+
+
+
 
   return (
     <div> 
@@ -72,7 +77,7 @@ const FileUpload = (props) => {
         {/*loading_pod == 1 && <ReactLoading type="bubbles" color="blue" />*/}
 
         <div className=" "style={{"margin-bottom": "30px", "margin-top": "30px", "padding": "40px", "border": "1px dashed gray" }}>
-          <input accept=".png,.jpg,.jpeg" onChange={onFileChange} type="file" name="imgCollection" multiple />
+          <input  ref={fileInputRef}  accept=".png,.jpg,.jpeg" onChange={onFileChange} type="file" name="imgCollection" multiple />
         </div>
 
         <div className=" " style={{ marginLeft: "15%" }}>

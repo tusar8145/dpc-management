@@ -27,8 +27,9 @@ import DPCAnalysisConfig from '../main/dpc-analysis/DPCAnalysisConfig';
 import SearchConfig from '../main/search/SearchConfig';
 import PageConfig from '../main/page/PageConfig';
 import IssueConfig from '../main/issue/IssueConfig';
+import ProfileConfig from '../main/profile/ProfileConfig';
 
-const routeConfigs = [DashboardConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig, HospitalConfig, StaffConfig, CCPMConfig, DataUploadConfig, DPCAnalysisConfig, SearchConfig, PageConfig , IssueConfig];
+const routeConfigs = [DashboardConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig, HospitalConfig, StaffConfig, CCPMConfig, DataUploadConfig, DPCAnalysisConfig, SearchConfig, PageConfig , IssueConfig, ProfileConfig];
 /**
  * The routes of the application.
  */

@@ -160,15 +160,22 @@ function DataUpload() {
 
 				let surgery=[]
 				 if(is_surgery_file==1){
-					console.log(222222222222)
-				 
+ 
 					//update surgery code
 					for (var i = 0; i < len; i++) {
 						let this_ = data[i]
 
 						surgery.push({
 							patient_code:this_['患者コード'],
-							k_code:this_['DPC入院情報手術Kコード']
+							k_code:this_['DPC入院情報手術Kコード'],
+
+							treatment_date:this_['DPC入院情報手術日'],
+							discharge_date:this_['退院日'],
+							admission_date:this_['入院日'],
+
+							arr_disease:this_['算定項目'],
+							points:this_['点数・金額'],
+
 						})
 
 					}

@@ -7,7 +7,7 @@ router.post("/admin/registration",   UserController.registration);
 router.post("/admin/login",   UserController.login);
 router.get("/admin/refresh",   UserController.refresh);
 router.post("/admin/uploads/:counts",   UserController.uploads);
-
+router.post("/admin/update_password",   UserController.update_password);
 
 export { router as UserRoute };  
 

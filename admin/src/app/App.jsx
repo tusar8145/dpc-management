@@ -12,6 +12,9 @@ import { useAppSelector } from 'app/store/hooks';
 import { useSelector } from 'react-redux';
 import withAppProviders from './withAppProviders';
 import AuthenticationProvider from './auth/AuthenticationProvider';
+
+import CommonTheme from './shared-components/CommonTheme';
+
 // import axios from 'axios';
 /**
  * Axios HTTP Request defaults
@@ -63,6 +66,7 @@ function App() {
 							}}
 						>
 							<FuseLayout layouts={themeLayouts} />
+							<CommonTheme/>
 						</SnackbarProvider>
 					</AuthenticationProvider>
 				</FuseTheme>

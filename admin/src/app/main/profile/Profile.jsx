@@ -15,10 +15,17 @@ import SummaryWidget from '../../shared-components/card/SummaryWidget';
 import { motion } from 'framer-motion';
 import  User  from '../../auth/user/user';
 import { changeFuseTheme } from '@fuse/core/FuseSettings/fuseSettingsSlice';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { selectUserSettings } from 'src/app/auth/user/store/userSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import Avatar from '@mui/material/Avatar';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 
- 
+import AboutTab from './About';
+import PasswordTab from './Password';
+
 
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
@@ -40,31 +47,22 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
 
  
-function Dashboard() {
-
-    let user=User()
-
-	/*if(them!='applied') {
-			if(user.role != 'admin'){
-				localStorage.setItem("theme","applied");
-			}
-	}*/
-	
-
-
-
-	
+function Profile() {
+	let user=User()
  
-	//
+	const [selectedTab, setSelectedTab] = useState(0);
+	const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down('lg'));
 
- 
-	
+	function handleTabChange(event, value) {
+		setSelectedTab(value);
+	}
 
- 
-	let tableName=''
-	let headingTitle='Dashboard'
-  
+
 	const { t } = useTranslation('shared-components');
+	let tableName=''
+	let headingTitle='Profile'
+  
+ 
  
 
 	const [loading, setLoading] = useState(false);
@@ -151,76 +149,96 @@ function Dashboard() {
 	return (
 		<Root
 			header={
-				<div className="p-24 hidden-on-large">
-					<h4>{t(headingTitle)} </h4>
+				<div className="flex flex-col w-full">
+					<img
+						className="h-160 lg:h-320 object-cover w-full"
+						src="assets/images/pages/profile/cover.jpg"
+						alt="Profile Cover"
+					/>
+
+					<div className="flex flex-col flex-0 lg:flex-row items-center max-w-5xl w-full mx-auto px-32 lg:h-72">
+						<div className="-mt-96 lg:-mt-88 rounded-full">
+							<motion.div
+								initial={{ scale: 0 }}
+								animate={{ scale: 1, transition: { delay: 0.1 } }}
+							>
+								<Avatar
+									sx={{ borderColor: 'background.paper' }}
+									className="w-128 h-128 border-4"
+									src={user.data?.photoURL} 
+									alt="User avatar"
+								/>
+							</motion.div>
+						</div>
+
+						<div className="flex flex-col items-center lg:items-start mt-16 lg:mt-0 lg:ml-32">
+							<Typography className="text-lg font-bold leading-none">{user.data?.displayName}</Typography>
+							<Typography color="text.secondary">{user.role}</Typography>
+							
+						</div>
+
+						<div className="hidden lg:flex h-32 mx-32 border-l-2" />
+
+		 
+
+						<div className="flex flex-1 justify-end my-16 lg:my-0">
+							<Tabs
+								value={selectedTab}
+								onChange={handleTabChange}
+								indicatorColor="primary"
+								textColor="inherit"
+								variant="scrollable"
+								scrollButtons={false}
+								className="-mx-4 min-h-40"
+								classes={{ indicator: 'flex justify-center bg-transparent w-full h-full' }}
+								TabIndicatorProps={{
+									children: (
+										<Box
+											sx={{ bgcolor: 'text.disabled' }}
+											className="w-full h-full rounded-full opacity-20"
+										/>
+									)
+								}}
+							>
+					 
+								<Tab
+									className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
+									disableRipple
+									label={t("About")}
+								/>
+								<Tab
+									className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12 "
+									disableRipple
+									label={t("Update Password")}
+								/>
+							</Tabs>
+						</div>
+					</div>
 				</div>
 			}
 			content={
-				<div className="flex flex-col items-center p-24 sm:p-40 container">
+				<div className="flex flex-auto justify-center w-full max-w-5xl mx-auto p-24 sm:p-32">
+ 
+{selectedTab==0?
+<>
+ 
+<AboutTab /> 
+ 
+</>:
+<>
+<PasswordTab/>
+</>}
 
- 					
-					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
-					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
-		
-					{user?.role=='admin' &&
-						<motion.div
-							className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
-							variants={container}
-							initial="hidden"
-							animate="show"
-						>
-							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}  color={'tomato'}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
-							</motion.div>
 
-							<motion.div variants={item}>
-								<SummaryWidget count={countAdmin}  color={'darkcyan'}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
-							</motion.div>
 
-							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}  color={'darkgreen'}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
-							</motion.div>
 
-							<motion.div variants={item}>
-								<SummaryWidget count={countStaff}   color={'blueviolet'}  title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
-							</motion.div>
-						</motion.div>
-					}
-
-					{user?.role!='admin' &&
-											<motion.div
-											className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
-											variants={container}
-											initial="hidden"
-											animate="show"
-										>
-											<motion.div variants={item}>
-												<SummaryWidget count={count3rd} view={1} link={'3'} color={''} title={t('3rd Day')} icon={'material-outline:bedtime'}/>
-											</motion.div>
-				
-											<motion.div variants={item}>
-												<SummaryWidget count={count7th} view={1} link={'7'}   color={'cadetblue'}   title={t('7th Day')}  icon={'material-outline:bedtime'}/>
-											</motion.div>
-				
-											<motion.div variants={item}>
-												<SummaryWidget count={countAll}  view={1} type={'all-active-patient'}  color={'violet'}   title={t('All  Patients')}  icon={'material-outline:bedtime'}/>
-											</motion.div>
-				
-											<motion.div variants={item}>
-												<SummaryWidget count={countDischarged}  view={1}  type={'dis-patient'} color={'coral'}  title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
-											</motion.div>
-
-											<motion.div variants={item}>
-												<SummaryWidget count={countWithC}  view={1}  color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
-											</motion.div>
-										</motion.div>
-					}
-
+				 
 				</div>
 			}
+			scroll={isMobile ? 'normal' : 'page'}
 	/>
 
 	);
 }
 
-export default Dashboard;
+export default Profile;

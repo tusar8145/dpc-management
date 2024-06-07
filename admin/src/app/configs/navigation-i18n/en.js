@@ -30,6 +30,7 @@ const locale = {
 	StaffManagement:'Staff management',
 	CCPM:'CCPM',
 	DataManagement:'Data management',
+	Profile:'プロフィール',
 
 };
 export default locale;

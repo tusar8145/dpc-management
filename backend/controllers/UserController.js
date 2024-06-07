@@ -92,6 +92,50 @@ export const uploads = async (req, res, next) => {
     }
 };
 
+export const update_password = async (req, res, next) => {
+    try {
+
+        let  password=req.body.password
+        let  old_password=req.body.old_password
+        let id=req.body.id
+
+        var admins = null;
+        admins = await prisma.admins.findMany({
+            where: {
+                id: id,
+                password: md5(old_password),
+            }
+        });
+
+        if(admins.length>0){
+            const update1 = await prisma.admins.updateMany({
+                where: {
+                id: id,
+                },
+                data: {
+                ...password?{password:md5(password)}:{},
+                },
+            });
+
+            res.status(200).json({
+                success: 'success',
+                message: 'Password updated successful',
+            });
+
+        }else{
+            res.status(200).json({
+                success: 'error',
+                message: 'Invalid current password',
+            });
+        }
+
+
+
+    } catch (error) {
+        //next(error)
+        response.error(error,res,next)
+    }
+};     
 
 export const login = async (req, res, next) => {
     try {
@@ -114,19 +158,32 @@ export const login = async (req, res, next) => {
                 email: email,
                 password: md5(password),
             },
-            include:{hospital:{select:{logo:true, name: true, id:true}}}
+            include:{hospital:{select:{logo:true, name: true, address:true, id:true}}}
         });
 
-    
+        let hospital=null
+        if(admins[0]?.hospital_id>0){
+              hospital = await prisma.hospitals.findUnique({
+                where: {
+                    id: admins[0]?.hospital_id, 
+                }, 
+            });
 
+          
+        }
+
+ 
         if (Object.keys(admins).length > 0) {
+
+ 
+            let this_user = admins[0]
+
             const authorization = jwt.sign(
-                { ...admins[0] },
+                { ...admins[0],  ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id, name:hospital?.name, logo:hospital?.logo, address:hospital?.address}}:{"hospital":this_user?.hospital,}, },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_VALIDITY }
-            );
+            );           
 
-            let this_user = admins[0]
             const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
             let logo = this_user.photo || 'brian-hughes.jpg'
             res.status(200).json(
@@ -138,6 +195,7 @@ export const login = async (req, res, next) => {
                         "role": this_user.role,
                         "data": {
                             "displayName": this_user.name,
+                            "phone":this_user.phone,
                             "photoURL": url.origin+'/api/hospital-manage/image/'+logo,
                             "email": this_user.email,
                             "settings": {
@@ -151,7 +209,7 @@ export const login = async (req, res, next) => {
                             ]
                         },
                         
-                        ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id}}:{"hospital":this_user?.hospital,},
+                        ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id, name:hospital?.name, logo:hospital?.logo, address:hospital?.address}}:{"hospital":this_user?.hospital,},
                         "title": "hi"
                     },
                     "access_token": authorization
@@ -180,6 +238,9 @@ export const refresh = async (req, res, next) => {
         const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
         let logo = user.photo || 'brian-hughes.jpg'
 
+
+        console.log(user,'user')
+
         res.status(200).json(
             {
 
@@ -187,6 +248,7 @@ export const refresh = async (req, res, next) => {
                 "role": user.role,
                 "data": {
                     "displayName": user.name,
+                    "phone":user.phone,
                     "photoURL": url.origin+'/api/hospital-manage/image/'+logo,
                     "email": user.email,
                     "settings": {
@@ -199,7 +261,8 @@ export const refresh = async (req, res, next) => {
                         "apps.contacts"
                     ]
                 },
-                ...user.hospital_id?{"hospital":{id:user.hospital_id}}:{"hospital":user?.hospital,},
+
+                hospital:user.hospital
             }
         );
 

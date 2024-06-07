@@ -213,7 +213,7 @@ export const dpc_create = async (req, res, next) => {
             //found t1
             temp_tre1_1 = find_[0].corres_code.toString()
 
-            color_obj.push('blue')
+            color_obj.push('Blue')
           } else {
             let find_ = await prisma.treatment_2.findMany({
               where: {
@@ -224,7 +224,7 @@ export const dpc_create = async (req, res, next) => {
             if (find_.length > 0) {
               //found t2
               temp_tre2_1 = find_[0].corres_code.toString()
-              color_obj.push('green')
+              color_obj.push('Brown')
             } else {
               let find_ = await prisma.secondary_injury.findMany({
                 where: {
@@ -233,7 +233,7 @@ export const dpc_create = async (req, res, next) => {
               })
               if (find_.length > 0) {
                 //found t3
-                color_obj.push('orange')
+                color_obj.push('Green')
                 temp_sec_1 = '1'
               } else {
 
@@ -489,9 +489,23 @@ export const dpc_update_code = async (req, res, next) => {
     let up = 0
     //console.log(req.body)
 
+    /*patient_code:this_['患者コード'],
+    k_code:this_['DPC入院情報手術Kコード'],
+
+    treatment_date:this_['DPC入院情報手術日'],
+    discharge_date:this_['退院日'],
+    admission_date:this_['入院日'],
+
+    arr_disease:this_['算定項目'],
+    points:this_['点数・金額'],*/
+
+
+
     let surgery = req.body.data
     for (let x = 0; x < surgery.length; x++) {
       let this_ = surgery[x]
+
+
 
       let temp1 = await prisma.surgery.findMany({
         where: {
@@ -502,7 +516,106 @@ export const dpc_update_code = async (req, res, next) => {
 
       if (temp1.length > 0) {
 
-        
+        //push on dpc_management
+        const find_ = await prisma.dpc_generate.findMany({
+          where: {
+            patient_code: parseInt(this_.patient_code),
+            admission_date:this_.admission_date
+          },
+          select: {
+            id: true,
+            patient_code:true,
+
+            arr_doctor: true,
+            arr_receipt: true,
+            arr_date: true,
+            arr_name: true,
+            arr_amount: true,
+            arr_dept: true,
+            arr_disease: true,
+            arr_color:true,
+          }
+        })
+
+        console.log(find_[0].patient_code)
+
+        if(find_.length>0){
+          let k_arr_doctor=JSON.parse(find_[0].arr_doctor)
+          let k_arr_receipt=JSON.parse(find_[0].arr_receipt)
+          let k_arr_date=JSON.parse(find_[0].arr_date)
+          let k_arr_name=JSON.parse(find_[0].arr_name)
+          let k_arr_amount=JSON.parse(find_[0].arr_amount)
+          let k_arr_dept=JSON.parse(find_[0].arr_dept)
+          let k_arr_disease=JSON.parse(find_[0].arr_disease)
+          let k_arr_color=JSON.parse(find_[0].arr_color)
+
+          let new_arr_doctor=[]
+          let new_arr_receipt=[]
+          let new_arr_date=[]
+          let new_arr_name=[]
+          let new_arr_amount=[]
+          let new_arr_dept=[]
+          let new_arr_disease=[]
+          let new_arr_color=[]
+
+         // console.log(k_arr_doctor)
+
+          if(k_arr_doctor!=null){
+
+            {
+              k_arr_date.map((date, index) => {
+    
+                if ((this_.treatment_date == k_arr_date[index]) && (this_.arr_disease==k_arr_name[index])) {
+                  //old data not carry
+                  console.log('existing removed')
+    
+                }else{
+                  new_arr_doctor.push(k_arr_doctor[index])
+                  new_arr_receipt.push(k_arr_receipt[index])
+                  new_arr_date.push(k_arr_date[index])
+                  new_arr_name.push(k_arr_name[index])
+                  new_arr_amount.push(k_arr_amount[index])
+                  new_arr_dept.push(k_arr_dept[index])
+                  new_arr_disease.push(k_arr_disease[index])
+                  new_arr_color.push(k_arr_color[index])
+                }
+    
+              })
+            }
+
+            new_arr_doctor.push("   ")
+            new_arr_receipt.push("   ")
+            new_arr_date.push(this_.treatment_date)
+            new_arr_name.push(this_.arr_disease)
+            new_arr_amount.push(this_.points)
+            new_arr_dept.push(" ")
+            new_arr_disease.push(" ")
+            new_arr_color.push("Purple")       
+              
+              let update_req_data = {  
+                  arr_doctor: JSON.stringify(new_arr_doctor),
+                  arr_receipt: JSON.stringify(new_arr_receipt),
+                  arr_date: JSON.stringify(new_arr_date),
+                  arr_name: JSON.stringify(new_arr_name),
+                  arr_amount: JSON.stringify(new_arr_amount),
+                  arr_dept: JSON.stringify(new_arr_dept),
+                  arr_disease: JSON.stringify(new_arr_disease),
+                  arr_color: JSON.stringify(new_arr_color),  
+              }
+              
+              const updateUser = await prisma.dpc_generate.update({
+                where: {
+                  id: find_[0].id,
+                },
+                data: update_req_data,
+              })            
+          }
+
+
+
+        }
+ 
+
 
         up++
         let temp2 = await prisma.dpc_generate.updateMany({
@@ -555,7 +668,7 @@ export const dpc_update = async (req, res, next) => {
 
 export const dpc_verify = async (req, res, next) => {
   try {
-    console.log(req.body)
+    //console.log(req.body)
     const update = await prisma.dpc_generate.update({
       where: { id: req.body.id }, // specify the unique identifier of the record to update
       data: {

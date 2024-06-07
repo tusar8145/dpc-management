@@ -12,8 +12,8 @@ import { selectUser } from 'src/app/auth/user/store/userSlice';
 import useAuth from 'src/app/auth/useAuth';
 import { darken } from '@mui/material/styles';
 import { useAppSelector } from 'app/store/hooks';
+ 
 import { useTranslation } from 'react-i18next';
-
 /**
  * The user menu.
  */
@@ -118,6 +118,22 @@ function UserMenu() {
 						</MenuItem>
 					</>
 				) : (
+<>
+
+					<MenuItem
+					component={Link}
+					to="/profile"
+					onClick={userMenuClose}
+					role="button"
+					>
+					<ListItemIcon className="min-w-40">
+						<FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
+					</ListItemIcon>
+					<ListItemText primary={t("My Profile")} />
+				   </MenuItem>
+
+
+
 					<MenuItem
 						onClick={() => {
 							signOut();
@@ -126,8 +142,12 @@ function UserMenu() {
 						<ListItemIcon className="min-w-40">
 							<FuseSvgIcon>heroicons-outline:logout</FuseSvgIcon>
 						</ListItemIcon>
-						<ListItemText primary="Sign out" />
+						<ListItemText primary={t("Sign out")} />
 					</MenuItem>
+
+</>
+
+
 				)}
 			</Popover>
 		</>

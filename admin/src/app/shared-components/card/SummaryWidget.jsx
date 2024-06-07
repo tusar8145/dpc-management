@@ -40,7 +40,7 @@ function SummaryWidget(props) {
 					</Typography>
 
 				</div>
-				<div className="text-center bg-slate-300" style={{ "background-color": "rgb(103 14 166 / 5%)"}}>
+				<div className="text-center bg-slate-300" style={{ "background-color": "rgb(103 14 166 / 5%)", "text-shadow": ".5px .5px 1px #000000"}}>
 					<Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500" style={{ color: props.color }}>
 						{props.count}
 					</Typography>
