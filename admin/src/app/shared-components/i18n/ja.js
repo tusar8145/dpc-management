@@ -1,7 +1,7 @@
 const locale = {
 	'Drag and drop':'ドラッグアンドドロップ',
 	'Import XLSX':'XLSXのインポート',
-	'Choose XLSX':'XLSXを選択してください',
+	'Choose XLSX':'XLSX/CSVを選択してください',
 	'Or refer to a local file upload':'または、ローカル ファイルのアップロードを参照してください',
 	'No data found!':'何もデータが見つかりませんでした',
 	'items found!':'アイテムが見つかりました！',

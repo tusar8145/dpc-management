@@ -125,10 +125,10 @@ export default function DPCEditModal(props) {
 
               {props.data.options?.map(single => (
 
-                <Button variant="contained" disabled={single==props.data.val} className='m-4' onClick={() => {
-                  update(props.data.id,props.data.key,single) 
+                <Button variant="contained" disabled={single.toUpperCase()==props.data.val} className='m-4' onClick={() => {
+                  update(props.data.id,props.data.key,single.toUpperCase()) 
                 }} color="success">
-                  {single}
+                  {single.toUpperCase()}
                 </Button>
 
               ))}

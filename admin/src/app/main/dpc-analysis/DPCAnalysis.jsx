@@ -248,6 +248,8 @@ const [ signal, setSignal]  =useState('45');
 	 
 				setDpc_data(data.data.data.list)
 
+				//console.log(data.data.data.list,'data.data.data.list')
+
 				let ld=localStorage.getItem("ld");
 				data.data.data.list?.map(single => {
 					if(ld){

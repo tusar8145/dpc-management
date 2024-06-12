@@ -32,7 +32,7 @@ const locale = {
  
 	CCPM:'CCPM',
 	DataManagement:'データ管理',
-	
+	DiseaseClassification:'DPC 疾患分類',
 
 
 

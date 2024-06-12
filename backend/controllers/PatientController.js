@@ -811,11 +811,14 @@ export const dpc_list = async (req, res, next) => {
         arr_disease: true,
         arr_color: true,
 
+        dpc_disease_classi:true,
+        dpc_disease_classi2:true,
+
       }
     })
 
 
-   // console.log(result_)
+   // console.log(JSON.stringify(result_[0].dpc_disease_classi))
 
     const groupBy = await prisma.dpc_generate.groupBy({
       by: ['is_verified'],

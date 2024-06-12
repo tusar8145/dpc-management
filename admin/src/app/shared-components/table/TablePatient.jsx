@@ -178,31 +178,37 @@ export default function TablePatient(props) {
             <th colSpan={2} style={data.s_and_1 ? {color : 'red'}:{color : ''}} >
               <div className=" ">
                 {data.s_and_1? data.s_and_1 : data.and_1 }
-                {edit==1 && 
-                    <DPCEditModal data={{val:data.s_and_1? data.s_and_1 : data.and_1,id:data.id, key:'and_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>
+                {edit==1 &&  data?.dpc_disease_classi?.and_1?.split(",").length>0 &&  data?.dpc_disease_classi?.and_1 !='x' && 
+                    <DPCEditModal data={{val:data.s_and_1? data.s_and_1 : data.and_1,id:data.id, key:'and_1', options:data?.dpc_disease_classi?.and_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>
                 }                
               </div>
             </th>
             <th style={data.s_age_1 ? {color : 'red'}:{color : ''}} >
                 {data.s_age_1? data.s_age_1 : data.age_1 }
-                {edit==1 &&  <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}           
+                {edit==1 &&   data?.dpc_disease_classi?.age_1?.split(",").length>0 &&  data?.dpc_disease_classi?.age_1 !='x' && 
+                 <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:data?.dpc_disease_classi?.age_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}           
            </th>
             <th style={data.s_sur_2 ? {color : 'red'}:{color : ''}} >{data.s_sur_2? data.s_sur_2 : data.sur_2 }
-            {edit==1 && <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:['99','97','01','02','03','04','05','06']}}  api={''}  complete={UpdateComplete}/>}
+            {edit==1 &&   data?.dpc_disease_classi?.sur_2?.split(",").length>0 &&  data?.dpc_disease_classi?.sur_2 !='x' && 
+            <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:data?.dpc_disease_classi?.sur_2?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th  style={data.s_tre1_1 ? {color : 'red'}:{color : ''}}  >{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
-            {edit==1 && <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:['0','1','2','3','4','5']}}  api={''}  complete={UpdateComplete}/>}
+            {edit==1 &&   data?.dpc_disease_classi?.tre1_1?.split(",").length>0 &&  data?.dpc_disease_classi?.tre1_1 !='x' && 
+            <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:data?.dpc_disease_classi?.tre1_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th  style={data.s_tre2_1 ? {color : 'red'}:{color : ''}} >{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
-            {edit==1 && <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:['0','1','2','3','4','5','6','7','8','9']}}  api={''}  complete={UpdateComplete}/>}
+            {edit==1 &&   data?.dpc_disease_classi?.tre2_1?.split(",").length>0 &&  data?.dpc_disease_classi?.tre2_1 !='x' && 
+            <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:data?.dpc_disease_classi?.tre2_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
             </th>
 
             <th style={data.s_sec_1 ? {color : 'red'}:{color : ''}} >{data.s_sec_1? data.s_sec_1 : data.sec_1 }
-            {edit==1 && <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:['0','1','2']}}  api={''}  complete={UpdateComplete}/>}
+            {edit==1 &&   data?.dpc_disease_classi?.sec_1?.split(",").length>0 &&  data?.dpc_disease_classi?.sec_1 !='x' && 
+            <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:data?.dpc_disease_classi?.sec_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
             </th>
             
             <th  style={data.s_sco_1 ? {color : 'red'}:{color : ''}} >{data.s_sco_1? data.s_sco_1 : data.sco_1 }
-            {edit==1 && <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:['0','1']}}  api={''}  complete={UpdateComplete}/>}
+            {edit==1 &&   data?.dpc_disease_classi?.sco_1?.split(",").length>0 &&  data?.dpc_disease_classi?.sco_1 !='x' && 
+            <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:data?.dpc_disease_classi?.sco_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th className="b0 width_single text-center border-right-zero"></th>
         </tr>

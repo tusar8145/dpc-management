@@ -158,6 +158,15 @@ const navigationConfig = [
 				url: 'page',
 				end: true
 			},
+			{
+				id: 'e-commerce-orders1991',
+				title: 'Disease Classification',
+				translate: 'DiseaseClassification',
+				type: 'item',
+				icon: 'material-outline:event',
+				url: 'dpc-management/dieases-classification',
+				end: true
+			},
 		]
 	},
 
@@ -367,6 +376,15 @@ const navigationConfig = [
 					url: 'page',
 					end: true
 				},*/
+				{
+					id: 'e-commerce-orders19912',
+					title: 'Disease Classification',
+					translate: 'DiseaseClassification',
+					type: 'item',
+					icon: 'material-outline:event',
+					url: 'dpc-management/dieases-classification',
+					end: true
+				},
 			]
 		},	
 
