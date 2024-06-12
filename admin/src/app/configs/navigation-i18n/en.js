@@ -13,7 +13,7 @@ const locale = {
 	A2layers:'2 layers',
 	A3layers:'3 layers',
 	DaysAndScoreSettings:'Days and score settings',
-	medicalpractice:'医療行為',
+	medicalpractice:'Medical practice',
 
 	ICDtoDPC:'ICD to DPC',
 	AgeBirthWeight:'Age birth weight',
@@ -30,7 +30,9 @@ const locale = {
 	StaffManagement:'Staff management',
 	CCPM:'CCPM',
 	DataManagement:'Data management',
-	Profile:'プロフィール',
+	Profile:'Profile',
+
+	DiseaseClassification:'Disease Classification',
 
 };
 export default locale;

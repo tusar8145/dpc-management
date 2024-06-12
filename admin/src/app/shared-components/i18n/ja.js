@@ -201,6 +201,8 @@ const locale = {
 	'Phone':'電話',
 	'Hospital Name':'病院名',
 	'About':'について',
+
+	'DPC Disease Classification':'DPC 疾患分類',
 	
 
 
