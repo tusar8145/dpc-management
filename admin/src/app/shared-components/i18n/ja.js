@@ -68,7 +68,7 @@ const locale = {
 	'Drug name: Treatment name':'薬剤名: 処置名',
 	'Treatment 1':'処置1',
 	'Branch code':'支店コード',
-	'Name':'点数表名称',
+	'Name':'名前',
 	'Treatment 2':'処置2',
 	'File Info':'ファイル情報',
 	'Not Used':'使用されていない',
