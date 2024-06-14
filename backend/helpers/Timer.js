@@ -85,7 +85,8 @@ export const currentTimeValue = () => {
 
 
 
-  export const created_at = () => {
+  export const created_at = (abc=0) => {
+
     try {   
 
       let options = {
@@ -99,7 +100,15 @@ export const currentTimeValue = () => {
       },
       
       myDate = new Intl.DateTimeFormat([], options);
-      let pro_date=myDate.format(new Date())
+
+      var d = new Date(); // today!
+      d.setDate(d.getDate() - abc);
+
+
+
+      let pro_date=myDate.format(d)
+
+
       const date_str = new Date(pro_date);
       
  
@@ -163,5 +172,12 @@ export const currentTimeValue = () => {
   export const timeBeauty = (time) => {
     const date = new Date(time);
     const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    return formattedDate;
+  }
+
+
+  export const timeStable = (time) => {
+    const date = new Date(time);
+    const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
     return formattedDate;
   }

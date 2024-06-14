@@ -4,7 +4,7 @@ import { user_id } from '../middleware/Auth.js';
 import { rand } from '../helpers/RandomHash.js';
 import { currentTimeValue } from '../helpers/Timer.js';
 const prisma = new PrismaClient();
-import { created_at, timeBeauty } from '../helpers/Timer.js';
+import { created_at, timeBeauty, timeStable } from '../helpers/Timer.js';
 
 import jwt from "jsonwebtoken";
 import md5 from "md5";
@@ -36,26 +36,31 @@ const __dirname = path.dirname(__filename);
 
 export const dashboard_count = async (req, res, next) => {
 
-  //console.log(req.body)
+
+
+  let d1=timeStable(created_at())
+  let d2=timeStable(created_at(2))
+  let d3=timeStable(created_at(6))
+
+ 
 
   try {
+ 
     const total_3_hospitalized_count = await prisma.dpc_generate.count({
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
-        OR: [
-          { "hospitalization_days": "3" },
-        ]
+        admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d2 ? { gte: d2 } : {}),},
       }
     });
+
+
 
     const total_7_hospitalized_count = await prisma.dpc_generate.count({
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
-        OR: [
-          { "hospitalization_days": "7" },
-        ]
+        admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d3 ? { gte: d3 } : {}),},
       }
     });
 
@@ -698,7 +703,12 @@ export const dpc_list = async (req, res, next) => {
     var hospitalization_days=req.body.filter.hospitalized_days
     var dpcPattern=req.body.filter.dpcPattern
     var typeDisPatient=req.body.filter.typeDisPatient
-    
+
+
+
+    let d1=timeStable(created_at()) || null
+    let d2=timeStable(created_at(hospitalization_days-1)) || null
+     
 
     let dpc_6 = null
     let and_1 = null
@@ -752,7 +762,9 @@ export const dpc_list = async (req, res, next) => {
 
 
 
-        ...hospitalization_days>-1? { hospitalization_days: hospitalization_days.toString(),  discharge_date: null,
+           ...hospitalization_days>-1? { 
+              admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d2 ? { gte: d2 } : {}),},
+              discharge_date: null,
            } : {},
 
 
@@ -848,9 +860,11 @@ export const dpc_list = async (req, res, next) => {
           not: null,
         }, } : {},
 
+        ...hospitalization_days>-1? { 
+          admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d2 ? { gte: d2 } : {}),},
+          discharge_date: null,
+       } : {},
 
-        ...hospitalization_days>-1? { hospitalization_days: hospitalization_days.toString(),  discharge_date: null,
-        } : {},
 
       }
     })

@@ -203,6 +203,8 @@ const locale = {
 	'About':'について',
 
 	'DPC Disease Classification':'DPC 疾患分類',
+
+	'Invalid file':'無効なファイル',
 	
 
 

@@ -11,7 +11,8 @@ import apiConfig from '../../configs/apiConfig';
 import Alert from '@mui/material/Alert';
 import {createdAt} from '../../helpers/timeHelpers';
 import {filterItemsEqual} from '../../helpers/commonHelpers';
- 
+import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
+import { useAppDispatch } from 'app/store/hooks';
 
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
@@ -35,7 +36,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 function DataUpload() {
 
 
-
+	const dispatch = useAppDispatch();
 
 	let tableName='new'
 	let headingTitle='Data Upload'
@@ -71,7 +72,7 @@ function DataUpload() {
 	const [fail_count_list, setFail_count_list] = useState(null);
 
 	const { hospital, toggleHospital } = useTheme();
-
+	const [ser_error, setser_error] = useState(false);
  
 	const [is_surgery_file, setis_surgery_file] = useState(null);
 
@@ -81,7 +82,7 @@ function DataUpload() {
 
 		try {
 				//const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
- 
+				console.log( 'responsezz1')
 
 				let clock=createdAt()
 				let fail_count=0
@@ -246,6 +247,14 @@ function DataUpload() {
 								const response = await axios.post(apiConfig.PatientDpcCreate, final_data);
 								final_data = []
 								operation_count = 0
+
+								if(response.data.success=='error'){
+									console.log('responsezz')
+									dispatch(showMessage({  message: t('Invalid file'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+									setser_error(true)
+								}
+
+								
 							}
 						}
 				 }
@@ -269,6 +278,7 @@ function DataUpload() {
 				setProgress(0)		
 				setShowUpload(1)	
 		} catch (error) {
+			console.log( 'responsezz12')
 			console.log(error,'error')
 			setProgress(0)	
 			setFailAlert("Invalid File")
@@ -331,9 +341,9 @@ function DataUpload() {
 			content={
 				<div className="flex flex-col items-center p-24 sm:p-40 container">
 
-					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
-					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
-					{failAlert != null &&  <ReportModal data={fail_count_list}/> }
+					{successAlert != null && ser_error==false && <Alert severity="success">{t(successAlert)}.</Alert>}
+					{failAlert != null &&  ser_error==false && <Alert severity="error">{t(failAlert)}..</Alert>}
+					{failAlert != null &&   ser_error==false && <ReportModal data={fail_count_list}/> }
 
 					
 

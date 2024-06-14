@@ -316,6 +316,46 @@ export const remove_all =  async (req, res, next) => {
 
 export const test =  async (req, res, next) => {
     try {   
+
+
+
+let clock=created_at()
+
+console.log(clock)
+
+
+
+        var range_start=req.body.filter.range_start
+        var range_end=req.body.filter.range_end
+        var date_type=req.body.filter.date_type
+
+        let findMany = await prisma.dpc_generate.findMany({
+            ...response.list_paginate(req),
+            where: {
+      
+              ...date_type=='admission_date'?{ admission_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
+ 
+            },
+            select: {
+              id: true,
+              "hospital_id": true,
+              "patient_code": true,
+              "doctor": true,
+              "receipt_obj": true,
+              "items_obj": true,
+              "amount_obj": true,
+              "ward": true,
+              "icd_code": true,
+              "admission_date": true,
+              "discharge_date": true,
+              "treatment_date": true,
+              "date_of_birth": true,
+      
+ 
+      
+            }
+          })
+
        /* let hospital_id=req.body.hospital_id
         const findMany = await prisma.test.findMany({
             where: {
@@ -338,13 +378,13 @@ export const test =  async (req, res, next) => {
             }
         })*/
 
-        const findMany = await prisma.injuries.findMany({"skip":0,"take":10,"orderBy":{"id":"asc"},
+        /*const findMany = await prisma.injuries.findMany({"skip":0,"take":10,"orderBy":{"id":"asc"},
         "where":{
         OR:[
             {"icd":{"contains":"8848425"}},{"name":{"contains":"8848425"}},{"receipt":8848425}            
         ]}
 
-        })
+        })*/
 
         return res.status(200).json({
             success:true,  findMany:findMany
