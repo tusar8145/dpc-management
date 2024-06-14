@@ -39,10 +39,10 @@ export const dashboard_count = async (req, res, next) => {
 
 
   let d1=timeStable(created_at())
-  let d2=timeStable(created_at(2))
-  let d3=timeStable(created_at(6))
+  let d2=timeStable(created_at(3))
+  let d3=timeStable(created_at(7))
 
- 
+ console.log(d2,'d2')
 
   try {
  
@@ -50,7 +50,7 @@ export const dashboard_count = async (req, res, next) => {
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
-        admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d2 ? { gte: d2 } : {}),},
+        admission_date: d2,
       }
     });
 
@@ -60,7 +60,7 @@ export const dashboard_count = async (req, res, next) => {
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
-        admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d3 ? { gte: d3 } : {}),},
+        admission_date: d3,
       }
     });
 
@@ -707,8 +707,9 @@ export const dpc_list = async (req, res, next) => {
 
 
     let d1=timeStable(created_at()) || null
-    let d2=timeStable(created_at(hospitalization_days-1)) || null
+    let d2=timeStable(created_at(hospitalization_days)) || null
      
+    console.log('x',d2)
 
     let dpc_6 = null
     let and_1 = null
@@ -763,7 +764,7 @@ export const dpc_list = async (req, res, next) => {
 
 
            ...hospitalization_days>-1? { 
-              admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d2 ? { gte: d2 } : {}),},
+              admission_date:d2,
               discharge_date: null,
            } : {},
 
@@ -861,7 +862,7 @@ export const dpc_list = async (req, res, next) => {
         }, } : {},
 
         ...hospitalization_days>-1? { 
-          admission_date: { ...(d1 ? { lte: d1 } : {}),  ...(d2 ? { gte: d2 } : {}),},
+          admission_date: d2,
           discharge_date: null,
        } : {},
 

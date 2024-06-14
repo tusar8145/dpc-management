@@ -18,12 +18,23 @@ import CIcon from '@mui/icons-material/ChevronRight';
 import Edit from '@mui/icons-material/Edit';
 import Eye from '@mui/icons-material/RemoveRedEye';
 import Grid from '@mui/material/Grid';
-
+import {createdAt} from '../../helpers/timeHelpers';
 
 
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
 export default function TablePatient(props) {
+
+  function calculateHospitalizationDays(admissionDate) {
+    let clock=createdAt()
+    const admission = new Date(admissionDate);
+    const discharge = new Date(clock);
+    const differenceInTime = discharge.getTime() - admission.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    return parseInt(differenceInDays);
+  }
+
+
     const { t } = useTranslation('shared-components');
     const [value, setValue] = React.useState(0);
     const [edit, setEdit] = React.useState(0);
@@ -146,7 +157,7 @@ export default function TablePatient(props) {
             <td className="width_single">{part3('病棟', null, data.ward, null)}</td>
             <td className="width_double">{part3('入院日', null, data.admission_date, null)}</td>
             <td className="width_double">{part3('退院', '予定日', data.discharge_date, null)}</td>
-            <td className="width_single">{part3('入院', '日数', data.hospitalization_days, null)}</td>
+            <td className="width_single">{part3('入院', '日数', calculateHospitalizationDays(data.admission_date), null)}</td>
             <td className="width_single">{part3('今期', '患者数', '未', null)}</td>
             <td className="width_single">{part3('過去', '患者数', '未', null)}</td>
             <td className="width_single">{part3('入院', '期間Ⅱ', '16', null)}</td>
