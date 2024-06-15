@@ -24,6 +24,8 @@ import {
   } from '@mui/material';
   import Button from '@mui/material/Button';
   import MailIcon from '@mui/icons-material/Mail';
+  import FileIcon from '@mui/icons-material/SpeakerNotes';
+  
   import '../../../styles/custom-basic.css';
   import Chip from '@mui/material/Chip';
 import { t } from 'i18next';
@@ -50,13 +52,18 @@ import { useTranslation } from 'react-i18next';
 
                         <div className="flex-container">
                        
-                            <div className="flex-item"><Badge badgeContent={row.original.reply_count} color="primary">
-                                <Button onClick={() => { props.idSend(row.original.id) }} variant="contained" size="small"> {t('View')} </Button>
+ 
+
+                            <div className="flex-item cursor-pointer" ><Badge badgeContent={row.original.reply_count} color="primary">
+
+                            <FileIcon onClick={() => { props.idSend(row.original.id) }}  color="action"/>
+                                {/*<Button onClick={() => { props.idSend(row.original.id) }} variant="contained" size="small"> {t('View')} </Button>*/}
                             </Badge></div>
+
      {row.original.have_new == " New ✉ found" &&
                                 <div className="flex-item">
                                     <Badge  onClick={() => { props.idSend(row.original.id) }}  color="secondary" badgeContent={'new'}>
-                                        <MailIcon />
+                                       
                                     </Badge>
                                 </div>
                             }
@@ -77,7 +84,7 @@ import { useTranslation } from 'react-i18next';
  
           {
             accessorKey: 'created', //normal accessorKey
-            header: t('Created'),
+            header: t('Last Reply'),
             size: 200,
           },
  

@@ -111,7 +111,7 @@ export default function DPCEditModal(props) {
 
           {props.data.options[0]=='999999'?
           <div className='grid grid-cols-3  items-center'>
-          <TextField  id="standard-basic" label="変化" className="ml-10 col-span-2" style={{ width: '80%' }} onChange={keyup} value={newval} variant="standard" />
+          <TextField  id="standard-basic" label="編集" className="ml-10 col-span-2" style={{ width: '80%' }} onChange={keyup} value={newval} variant="standard" />
           
           <Button disabled={newval.length!=6}  aria-label="PendingIcon" 
               onClick={() => {

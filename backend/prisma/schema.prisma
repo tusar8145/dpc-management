@@ -94,6 +94,7 @@ model medical_practices {
   score                        Int      
   hospital_id                  Int?
   parent_id                    Int?
+treat_code String?
 
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
@@ -249,7 +250,7 @@ model treatment_2 {
 
 model secondary_injury {
   id                           Int         @id @default(autoincrement())
-  corres_code                  String
+  corres_code                  String?
   dpc                          String
   disease_name                 String  
   receipt                      Int         

@@ -42,11 +42,12 @@ function MedicalPractice() {
 	let keyConfig=[
 			{name:'name', type:'String', header:'Medical practice name',edit:1, validate:{required:1},	 xlsx:'nama'},
 			{name:'class', type:'String', header:'Classification', edit:1, validate:{required:1},	 	 xlsx:'class'},
+			{name:'treat_code', type:'String', header:'Treatment code', edit:1, validate:{required:0},	 	 xlsx:'__EMPTY_111'},
 			{name:'score', type:'Integer', header:'Score', edit:1, validate:{required:1},	 			 xlsx:'score'},  
 			{name:'receipt', type:'Integer', header:'Receipt',edit:0, validate:{required:0},	 		 xlsx:'receipt code'},
 	]
 
-
+	  
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {

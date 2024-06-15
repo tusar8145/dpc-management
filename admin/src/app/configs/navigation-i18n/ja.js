@@ -19,19 +19,19 @@ const locale = {
 	AgeBirthWeight:'年齢出生体重',
 	Treatement1:'処置1',
 	Treatement2:'処置2',
-	SecondaryInjury:'二次損傷',
+	SecondaryInjury:'副傷病',
 	Surgery:'手術',
 
 
-	HospitalManagement:'病院経営',
+	HospitalManagement:'病院の管理',
 	DPCAnalysis:'DPC分析',
 	Search:'検索',
 	DataUpload:'データのアップロード',
-	ContactForm:'お問い合わせフォーム',
+	ContactForm:'連絡票',
 	StaffManagement:'スタッフ管理',
  
 	CCPM:'CCPM',
-	DataManagement:'データ管理',
+	DataManagement:'DPC rules',
 	DiseaseClassification:'DPC 疾患分類',
 
 

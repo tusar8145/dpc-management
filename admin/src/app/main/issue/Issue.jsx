@@ -965,7 +965,16 @@ console.log(get_data,'get_data')
 
 										<br></br>
 									{issolved != 1 && issue_id > 0 &&
-										<Button className="mt-10" color="secondary" data-id={1} onClick={postIssueReply} variant="contained" style={{ marginTop: "3px" }}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Submit Reply")}</span>  </Button>
+									<div class="flex justify-between ">
+																			<Button className="mt-10" color="secondary" data-id={1} onClick={postIssueReply} variant="contained" style={{ marginTop: "3px" }}> <Icon>check</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Submit Reply")}</span>  </Button>
+																			<Button className="mt-10" color="secondary" data-id={1}  onClick={() =>{
+setgetreply([])
+setreplytime(0)
+
+				 
+																				}} variant="contained" style={{ marginTop: "3px" }}> <Icon>arrow_back_ios</Icon> <span sx={{ pl: 1, textTransform: "capitalize" }}>{t("Back")}</span>  </Button>
+
+									</div>
 
 									}
 							</div>}

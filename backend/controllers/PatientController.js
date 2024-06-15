@@ -191,9 +191,9 @@ export const dpc_create = async (req, res, next) => {
       }
 
       //Query + age calculate
-      const age = calculateAge(first_loop_collect?.date_of_birth);
-      if (age < 10) { age_1 = "0" } else { age_1 = "1" }
-
+     // const age = calculateAge(first_loop_collect?.date_of_birth);
+     // if (age < 10) { age_1 = "0" } else { age_1 = "1" }
+      age_1 = "X" 
 
       //Query Layer 3
       let temp_tre1_1 = 'X'

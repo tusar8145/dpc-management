@@ -74,6 +74,7 @@ export const post_issue_reply = async (req, res, next) => {
             who = 'mar_new'
         }
 
+        let hh=timeBeauty(created_at())
 
         const updateUser = await prisma.services_clients_issues.update({
             where: {
@@ -81,6 +82,7 @@ export const post_issue_reply = async (req, res, next) => {
             },
             data: {
                 reply: who,
+                created:hh
             },
         })
 

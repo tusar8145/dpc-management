@@ -38,7 +38,7 @@ const locale = {
 
 	'Medical practice name':'医療行為名',
 	'Score':'スコア',
-	'Classification':'条件区分',
+	'Classification':'分類区分',
 	'Search : Write & press Enter':'',
 	'Write classification/class/receipt & press Enter':'分類/クラス/領収書を入力して Enter を押します',
 	'Pharmaceutical name':'医薬品名',
@@ -84,17 +84,17 @@ const locale = {
 	'Admin':'管理者',
 	'Hospital Assistant':'病院助手',
 	'Hospital Staff':'病院スタッフ',
-	'Hospital Management':'病院経営',
+	'Hospital Management':'病院の管理',
 
 	'Create':'+新しい',
 	'ID':'ID', 
 	'Logo':'ロゴ',
 	'Address':'住所',
-	'Assistant Name':'アシスタント名',
-	'Assistant Phone':'アシスタントフォン',
-	'Assistant Email':'アシスタントの電子メール',
-	'Assistant Password':'アシスタントのパスワード',
-	'Created By':'によって作成された',
+	'Assistant Name':'病院管理者',
+	'Assistant Phone':'管理者電話番号',
+	'Assistant Email':'管理者メール',
+	'Assistant Password':'管理者パスワード',
+	'Created By':'作成者',
 	'Created At':'作成日',
 	'Updated At':'更新日',
 	'Edit Hospital':'病院を編集する',
@@ -102,7 +102,7 @@ const locale = {
 
 	'Upload Logo':'ロゴをアップロードする',
 	'Upload':'アップロード',
-	'Change':'変化',
+	'Change':'編集',
 
 	'3rd Day':'3日目',
 	'7th Day':'7日目',
@@ -150,10 +150,10 @@ const locale = {
 	'Something Went Wrong':'問題が発生しました',
 	'Invalid Email':'無効なメール',
 	'View Details':'詳細を見る',
-	'With Change':'変化とともに',
+	'With Change':'変更あり',
 
 
-	'Contact form':'お問い合わせフォーム',
+	'Contact form':'連絡票',
 
 	'DPC first 6 digits':'DPCの最初の６桁',
 
@@ -168,19 +168,20 @@ const locale = {
 	'View Seen':'見たものを見る',
 	'View Pending':'保留中の表示',
 	'View Solved':'解決済みを表示',
-	'Mark as Seen':'既読としてマーク',
+	'Mark as Seen':'協議中としてマーク',
 	'Mark as Solved':'解決済みとしてマーク',
 	'Delete':'消去',
 
+	'Last Reply':'最後の返信',
 
-	'Subject':'主題',
-	'Created':'作成した',
+	'Subject':'本題',
+	'Created':'作成者',
 	'Status':'状態',
-	'Reply':'返事',
+	'Reply':'コメント',
 	'View':'ビュー',
 
 	'Pending':'保留中',
-	'Seen':'見た',
+	'Seen':'協議中',
 	'Solved':'解決済み',
 	'My Profile':'私のプロフィール',
 	'Sign out':'サインアウト',
@@ -205,6 +206,11 @@ const locale = {
 	'DPC Disease Classification':'DPC 疾患分類',
 
 	'Invalid file':'無効なファイル',
+
+	'Treatment code':'治療コード',
+
+
+	'Back':'戻る',
 	
 
 
