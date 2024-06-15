@@ -142,6 +142,7 @@ function DPCAnalysis() {
 
 	const [enableFilter, setEnableFilter] = useState(false);
 
+	const [loading_, setLoading_] = useState(false);
 
 //////////////////Filter//////////////////
 const [range_start, setrange_start] = useState('');
@@ -458,6 +459,7 @@ const [ signal, setSignal]  =useState('45');
 		setHospitalized(gethospitalization_days);  
 		setEnableFilter(true)
 		setnewvalHospi(gethospitalization_days)
+		setTimeout(myTimer, 1000);
 	}, [gethospitalization_days]);
 
 
@@ -465,14 +467,27 @@ const [ signal, setSignal]  =useState('45');
 		if(getType){
 			setTypeDisPatient(getType)
 			setEnableFilter(true)
+			setTimeout(myTimer, 1000);
 		}
 	}, [getType]);	
 
 
 	useEffect(() => { 
+		//console.log(hospitalized_days,'hospitalized_days')
 		server(hospital);  
 	
-	}, [pageP, rowP, is_verified, range_start, range_end, date_type , patient_code, hospitalized_days, dpcPattern,typeDisPatient]);
+	}, [pageP, rowP, is_verified, range_start, range_end, date_type , patient_code, dpcPattern,typeDisPatient, hospitalized_days, loading_]);
+
+ 
+	
+
+	function myTimer() {
+		//if(hospitalized_days>-1){
+			console.log('xxx',9)
+				setLoading_(true)
+	//	}
+		
+	}
 
 
 	useEffect(() => {  toggleTheme(t(headingTitle));   }, [t(headingTitle)]);
@@ -565,6 +580,9 @@ const [ signal, setSignal]  =useState('45');
 					
 
 					<div class="grid md:grid-cols-1 xs:grid-cols-1 gap-4 mt-32">
+
+
+
 						{dpc_data?.map(single => (
 							<TablePatient className="mt-24 " patientDetails={patientDetails} sl={sl++} data={single} verify={verify} />
 						))}
