@@ -210,7 +210,7 @@ model treatment_1 {
   corres_code                  String
   dpc_6digit                   String
   name                         String
-  recept_main                 String?
+  recept_main                 Int?
   receipt                      Int    
 
   hospital_id                  Int?
@@ -232,7 +232,7 @@ model treatment_2 {
   corres_code                  String
   dpc_6digit                   String
   name                         String
-  recept_main                  String?  
+  recept_main                  Int?  
   receipt                      Int       
 
 

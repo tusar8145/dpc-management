@@ -13,7 +13,7 @@ import {createdAt} from '../../helpers/timeHelpers';
 import {filterItemsEqual} from '../../helpers/commonHelpers';
 import { showMessage } from '@fuse/core/FuseMessage/fuseMessageSlice';
 import { useAppDispatch } from 'app/store/hooks';
-
+import {excelSerialNumberToJSDate} from '../../helpers/commonHelpers';
 
 const FileChoose = lazy(() => import('../../shared-components/file-choose/FileChoose'));
 const SearchInput = lazy(() => import('../../shared-components/search-input/SearchInput'));
@@ -34,8 +34,7 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
  
 function DataUpload() {
-
-
+ 
 	const dispatch = useAppDispatch();
 
 	let tableName='new'
@@ -75,6 +74,9 @@ function DataUpload() {
 	const [ser_error, setser_error] = useState(false);
  
 	const [is_surgery_file, setis_surgery_file] = useState(null);
+
+
+
 
 	/*-----------start common function shareable------------*/
 	async function server(type,hospital) {
@@ -125,15 +127,16 @@ function DataUpload() {
 					
 						//data only first loop
 						if(first_loop_collect.length==0){
+ 
 							first_loop_collect.push({
 								patient_code:this_['患者コード'],
 								doctor:this_['医師(会計)'],
 								ward:this_['病棟'],
 								icd_code:this_['医療資源を最も投入した傷病のＩＣＤコード'],
-								admission_date:this_['入院日(DPC入院情報)'],
-								discharge_date:this_['退院日(DPC入院情報)'],
-								treatment_date:this_['会計日'],
-								date_of_birth:this_['生年月日'],
+								admission_date:excelSerialNumberToJSDate(this_['入院日(DPC入院情報)']),
+								discharge_date:excelSerialNumberToJSDate(this_['退院日(DPC入院情報)']),
+								treatment_date:excelSerialNumberToJSDate(this_['会計日']),
+								date_of_birth:excelSerialNumberToJSDate(this_['生年月日']),
 
 								hospitalization_days:3,
 								hospital_id:hospital.id,
@@ -170,9 +173,9 @@ function DataUpload() {
 							patient_code:this_['患者コード'],
 							k_code:this_['DPC入院情報手術Kコード'],
 
-							treatment_date:this_['DPC入院情報手術日'],
-							discharge_date:this_['退院日'],
-							admission_date:this_['入院日'],
+							treatment_date:excelSerialNumberToJSDate(this_['DPC入院情報手術日']),
+							discharge_date:excelSerialNumberToJSDate(this_['退院日']),
+							admission_date:excelSerialNumberToJSDate(this_['入院日']),
 
 							arr_disease:this_['算定項目'],
 							points:this_['点数・金額'],
@@ -242,8 +245,7 @@ function DataUpload() {
 							if ((operation_count == 10) || (i == parseInt(len) - 1)) {
 								var cal_per = parseInt((done / len) * 100)
 								setProgress(cal_per)
-
-
+ 
 								const response = await axios.post(apiConfig.PatientDpcCreate, final_data);
 								final_data = []
 								operation_count = 0

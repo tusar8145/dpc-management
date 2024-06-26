@@ -125,7 +125,7 @@ export const image =   async (req, res, next) => {
 
 export const manage_issue_file =   async (req, res, next) => {
 
-  console.log('req')
+  console.log('333333')
   let img_name=''
   const uploadDir = path.join(__dirname.replace("\controllers", "") + '/uploads'); 
  

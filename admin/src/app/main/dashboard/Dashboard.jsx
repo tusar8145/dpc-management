@@ -170,19 +170,19 @@ function Dashboard() {
 							animate="show"
 						>
 							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}  color={'tomato'}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
+								<SummaryWidget count={countHospital} admin={1} color={'tomato'}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countAdmin}  color={'darkcyan'}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
+								<SummaryWidget count={countAdmin}  admin={1}   color={'darkcyan'}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}  color={'darkgreen'}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
+								<SummaryWidget count={countHospital}   admin={1}  color={'darkgreen'}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
 							</motion.div>
 
 							<motion.div variants={item}>
-								<SummaryWidget count={countStaff}   color={'blueviolet'}  title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
+								<SummaryWidget count={countStaff}  admin={1}   color={'blueviolet'}  title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
 							</motion.div>
 						</motion.div>
 					}

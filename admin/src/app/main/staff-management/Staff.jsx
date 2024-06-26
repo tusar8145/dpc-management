@@ -41,7 +41,7 @@ function Staff() {
 	let headingTitle='Staff Management'
  
 	let keyConfig=[
-		{name:'photo', type:'String', header:'Photo', edit:1, validate:{required:1}, globalF:1},
+		{name:'photo', type:'String', header:'Photo', edit:0, validate:{required:1}, globalF:1},
 		{name:'name', type:'String', header:'Name', edit:1, validate:{required:1}, globalF:1},
 		{name:'phone', type:'String', header:'Phone',edit:1, validate:{required:0}, globalF:1},
 		{name:'email', type:'String', header:'Email',edit:1, validate:{required:1}, globalF:1},

@@ -50,19 +50,19 @@ import { useTranslation } from 'react-i18next';
 
 
 
-                        <div className="flex-container">
+                        <div className="flex-container cursor-pointer" onClick={() => { props.idSend(row.original.id) }} >
                        
  
 
-                            <div className="flex-item cursor-pointer" ><Badge badgeContent={row.original.reply_count} color="primary">
+                            <div className="flex-item" ><Badge badgeContent={row.original.reply_count} color="primary">
 
-                            <FileIcon onClick={() => { props.idSend(row.original.id) }}  color="action"/>
+                            <FileIcon color="action"/>
                                 {/*<Button onClick={() => { props.idSend(row.original.id) }} variant="contained" size="small"> {t('View')} </Button>*/}
                             </Badge></div>
 
      {row.original.have_new == " New ✉ found" &&
                                 <div className="flex-item">
-                                    <Badge  onClick={() => { props.idSend(row.original.id) }}  color="secondary" badgeContent={'new'}>
+                                    <Badge   color="secondary" badgeContent={'new'}>
                                        
                                     </Badge>
                                 </div>

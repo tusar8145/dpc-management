@@ -44,7 +44,7 @@ function Treatment1() {
 			{name:'corres_code', type:'String', header:'Correspondence code', edit:1, validate:{required:1}, xlsx:'対応ｺｰﾄﾞ'},
 			{name:'dpc_6digit', type:'String', header:'DPC first 6 digits', edit:1, validate:{required:1},	     xlsx:'__EMPTY'},
 			{name:'name', type:'String', header:'Name', edit:1, validate:{required:1},						 xlsx:'処置等（１）'},
-			{name:'recept_main', type:'String', header:'Receipt code', edit:1, validate:{required:1},		  xlsx:'__EMPTY_1'},
+			{name:'recept_main', type:'Integer', header:'Receipt code', edit:1, validate:{required:1},		  xlsx:'__EMPTY_1'},
 			{name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},						 xlsx:'<auto>'}
 	]
 

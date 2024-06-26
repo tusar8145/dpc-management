@@ -356,6 +356,8 @@ console.log(f_globalFilters,'f_globalFilters')
             accessorFn: (row) => ` `, //accessorFn used to join multiple data into a single cell
             id: 'logo', //id is still required when using accessorFn instead of accessorKey
             header: t('Logo'),
+            ...new_key.edit==1?{enableEditing: true,}:{enableEditing: false, Edit: () => null,},
+
             enableEditing: false,
             required: false,
             size: 50,
@@ -395,8 +397,10 @@ console.log(f_globalFilters,'f_globalFilters')
       col_key.push({
         accessorKey: new_key.name,
         header: t(new_key.header),
-        ...new_key.edit==1?{enableEditing: true,}:{enableEditing: false,},
+        
+        ...new_key.edit==1?{enableEditing: true,}:{enableEditing: false, Edit: () => null,},
         size: 200,
+         //disable editing on this column and hide it
         muiEditTextFieldProps: {
           ...new_key.validate.required==1?{required: true,}:{required: false,},
           error: !!validationErrors[new_key.name],
@@ -496,7 +500,13 @@ console.log(f_globalFilters,'f_globalFilters')
     },
     /**/enablePagination: true,
  
-    initialState: { showColumnFilters: true },
+    initialState: { showColumnFilters: true,
+
+      columnVisibility: {
+         'admin_password': false, //hide row expand column by default
+      },
+
+     },
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,

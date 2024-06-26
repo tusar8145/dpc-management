@@ -186,12 +186,19 @@ console.log(get_data,'get_data')
 
 			setScrollRefresh(Math.random())
 	 
-		}).catch(function (error) { if (error.response) { console.log(error.response.data); } });    
+		}).catch(function (error) { 
+			console.log('master_submit2')
+			if (error.response) { console.log(error.response.data); 
+
+		 } });    
   
   
   
   
 		}).catch(function (error) {
+			dispatch(showMessage({  message: t('Invalid Data'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
+
+			console.log('master_submit4')
 		  if (error.response) {  console.log(error.response.data, 'error'); } 
 		});  
   
@@ -231,7 +238,7 @@ console.log(get_data,'get_data')
 		  access_users:access_users,
 		}
 
-		console.log(master_submit,'master_submit')
+		
  
 		const res = await axios.post(base_url + "post_issue", master_submit).then((response) => {
 		dispatch(showMessage({  message: t(response.data.message), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
@@ -241,7 +248,11 @@ console.log(get_data,'get_data')
 		get_issue();
  
 		}).catch(function (error) {
-		  if (error.response) {  console.log(error.response.data, 'error'); } 
+			console.log('master_submit1')
+		  if (error.response) {  console.log(error.response.data, 'error'); 
+		  dispatch(showMessage({  message: t('Invalid Data'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
+
+		  } 
 		});  
   
 	  }
@@ -616,7 +627,7 @@ console.log(get_data,'get_data')
 					  is_seen:1,
 					  is_solved:0,
 					  reply_by:user.uid,
-					  replied:date,
+					  replied:createdAt(),
 					  is_delete:0,
 				  }
   
@@ -664,7 +675,7 @@ console.log(get_data,'get_data')
 					  is_seen:1,
 					  is_solved:1,
 					  reply_by:user.uid,
-					  replied:date,
+					  replied:createdAt(),
 				  }
   
  
@@ -716,7 +727,7 @@ console.log(get_data,'get_data')
 								  }
 							  });
 			  }else{
-				dispatch(showMessage({  message: 'ID : ' + filter.id + t('Not Deleted. Only issue with pending status can be deleted'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
+				dispatch(showMessage({  message: 'ID : ' + filter.id + ' ' + t('Not Deleted. Only issue with pending status can be deleted'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: 'error' }))    
 
 			  }
    
@@ -915,9 +926,27 @@ console.log(get_data,'get_data')
 
 
 																{item.link ?
-																	<div className='mt-10' >
-																	<Link to={apiConfig.base_url + 'issue/image/' + item.link} target="_blank" > Attachment File {item.link?.split(".").slice(-1)} </Link>
-																	</div>
+															 
+<div class="flex justify-between mt-10 ...">
+<Link to={apiConfig.base_url + 'issue/image/' + item.link} target="_blank" > Attachment File {item.link?.split(".").slice(-1)} </Link>
+<>{(item.link?.split(".").slice(-1)=='png' ||item.link?.split(".").slice(-1)=='PNG'  || item.link?.split(".").slice(-1)=='jpg'  || item.link?.split(".").slice(-1)=='jpeg') &&
+																		<img
+																			src={apiConfig.base_url + 'issue/image/' + item.link}
+																			alt="beach"
+																			style={{
+																				maxWidth: '154px',
+																				padding: '10px'
+
+																			}}
+																			className="rounded-6"
+																		/>
+}</>
+</div>
+
+
+	
+
+																 
 																	:
 																	<></>
 																}															

@@ -28,7 +28,7 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';			
-
+import Papa from 'papaparse';
 
 i18next.addResourceBundle('en', 'shared-components', en);
 i18next.addResourceBundle('ja', 'shared-components', ja);
@@ -99,19 +99,55 @@ function FileChoose(props) {
         try {
               setLoading(true)
               if (e.target.files) { 
-                  const reader = new FileReader(); 
-                  reader.onload = (e) => { 
-                  const data = e.target.result; 
-                  const workbook = XLSX.read(data, { type: "array" }); 
-                  const sheetName = workbook.SheetNames[0]; 
+             const reader = new FileReader(); 
+
+ const file = e.target.files[0];
+                 const fileExt = file.name.split('.').pop();
+
+            reader.onload = (e) => { 
+                let json =[]
+
+               
+
+                 /*if(fileExt!='csv'){
+                        Papa.parse(file, {
+                          header: true,
+                          dynamicTyping: true,
+                          complete: (results) => {
+                            json=results.data
+                            console.log(json,'7773')
+                            setLoading(false)
+                            setMessage(Object.keys(json).length+" "+t("items found!") || "none")                     
+                            setData(json)
+                            fileInputRef.current.value = '';
+                          },
+                          error: (error) => {
+                            console.error('Error parsing CSV:', error);
+                          }
+                        });
+                 }else{*/
+             
+                      const data = e.target.result; 
+                      const workbook = XLSX.read(data, { type: "array" }); 
+                      const sheetName = workbook.SheetNames[0]; 
+                    
+                      const worksheet = workbook.Sheets[sheetName];
+                        json = XLSX.utils.sheet_to_json(worksheet); 
+                        console.log(json,'777')
+                      setLoading(false)
+                      setMessage(Object.keys(json).length+" "+t("items found!") || "none")                     
+                      setData(json)
+                      fileInputRef.current.value = '';
+                 //}
                  
-                  const worksheet = workbook.Sheets[sheetName];
-                  const json = XLSX.utils.sheet_to_json(worksheet); 
-                  setLoading(false)
-                  setMessage(Object.keys(json).length+" "+t("items found!") || "none")
-                   
-                    setData(json)
-fileInputRef.current.value = '';
+    
+
+
+
+
+
+
+
 
  
 
@@ -244,7 +280,7 @@ try {
             >
               <Button disabled={loading}
                 color="success" variant="contained" component="label" style={{ width: "600px", height: "400px", ...loading == true ? { opacity: ".3" } : {} }}>
-                <Icon> add_to_photos </Icon>&nbsp; {t('Choose XLSX')}
+                <Icon> add_to_photos </Icon>&nbsp; {t('Choose XLSX/CSV')}
                 &nbsp;<input  ref={fileInputRef}  name="upload" id="upload" onChange={readUploadFile} accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" type="file" />
               </Button>
 

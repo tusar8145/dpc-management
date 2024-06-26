@@ -17,7 +17,7 @@ function SummaryWidget(props) {
 	const navigate = useNavigate();
 	const { t } = useTranslation('shared-components');
 	return (
-		<Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden cursor-pointer" style={{"height":"100%"}}
+		<paper className="flex flex-col flex-auto hover:shadow rounded-2xl overflow-hidden cursor-pointer transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300" style={{"height":"100%", "border-radius":"15px"}}
 		   onClick={() => {
 			//props.patientDetails(data)
 				if(props.view==1 ){
@@ -28,6 +28,9 @@ function SummaryWidget(props) {
 					if(props.type){
 						navigate('/hospital/dpc-analysis?type='+props.type);
 					}
+				}
+				if(props.admin==1 ){
+					navigate('/hospital-management');
 				}
 			}}
 		>
@@ -50,7 +53,7 @@ function SummaryWidget(props) {
  
 
  
-		</Paper>
+		</paper>
 	);
 }
 

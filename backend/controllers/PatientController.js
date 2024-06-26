@@ -202,15 +202,15 @@ export const dpc_create = async (req, res, next) => {
 
       
       ////////////////////////////////////////////////////////////////////////////////////////////////
-      for (let m = 0; m < items_obj.length; m++) {
-        let fruit = items_obj[m]
+      for (let m = 0; m < receipt_obj.length; m++) {
+        let fruit = receipt_obj[m]
 
         color_obj.push('black')
 
         if (fruit) {
           let find_ = await prisma.treatment_1.findMany({
             where: {
-              name: { equals: fruit },
+              recept_main:  fruit ,
             },
           })
 
@@ -220,28 +220,33 @@ export const dpc_create = async (req, res, next) => {
 
             color_obj.push('Blue')
           } else {
-            let find_ = await prisma.treatment_2.findMany({
+            let find_ =  await prisma.treatment_2.findMany({
               where: {
-                name: { equals: fruit },
+                recept_main:  fruit ,
               },
             })
 
             if (find_.length > 0) {
               //found t2
+              //console.log(find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
               temp_tre2_1 = find_[0].corres_code.toString()
               color_obj.push('Brown')
             } else {
-              let find_ = await prisma.secondary_injury.findMany({
-                where: {
-                  drug_name: { equals: fruit },
-                },
-              })
-              if (find_.length > 0) {
-                //found t3
-                color_obj.push('Green')
-                temp_sec_1 = '1'
-              } else {
+              
+              let itm=items_obj[m]
+              if(itm){
+                  let find_ = await prisma.secondary_injury.findMany({
+                  where: {
+                    drug_name: { equals: itm },
+                  },
+                  })
+                  if (find_.length > 0) {
+                    //found t3
+                    color_obj.push('Green')
+                    temp_sec_1 = '1'
+                  } else {
 
+                  }
               }
             }
           }
