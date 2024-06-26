@@ -29,7 +29,7 @@ const locale = {
 	ContactForm:'Contact form',
 	StaffManagement:'Staff management',
 	CCPM:'CCPM',
-	DataManagement:'Data management',
+	DPCRules:'DPC rules',
 	Profile:'Profile',
 
 	DiseaseClassification:'Disease Classification',

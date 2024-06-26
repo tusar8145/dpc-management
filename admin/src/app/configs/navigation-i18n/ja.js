@@ -31,7 +31,7 @@ const locale = {
 	StaffManagement:'スタッフ管理',
  
 	CCPM:'CCPM',
-	DataManagement:'DPC rules',
+	DPCRules:'DPC rules',
 	DiseaseClassification:'DPC 疾患分類',
 
 

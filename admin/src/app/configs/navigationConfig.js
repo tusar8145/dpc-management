@@ -241,8 +241,8 @@ const navigationConfig = [
 //hospital
 {
 	id: '28',
-	title: 'Data Management',
-	translate: 'DataManagement',
+	title: 'DPC rules',
+	translate: 'DPCRules',
 	type: 'collapse',
 	icon: 'material-outline:assignment_turned_in',
 	auth: authRoles.hospitalAssistant_staff,
