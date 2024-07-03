@@ -155,7 +155,7 @@ const navigationConfig = [
 				translate: 'DaysAndScoreSettings',
 				type: 'item',
 				icon: 'material-outline:event',
-				url: 'page',
+				url: 'dpc-management/days-score',
 				end: true
 			},
 			{
@@ -376,6 +376,15 @@ const navigationConfig = [
 					url: 'page',
 					end: true
 				},*/
+				{
+					id: 'e-commerce-orders1888',
+					title: 'Days and score settings',
+					translate: 'DaysAndScoreSettings',
+					type: 'item',
+					icon: 'material-outline:event',
+					url: 'dpc-management/days-score',
+					end: true
+				},
 				{
 					id: 'e-commerce-orders19912',
 					title: 'Disease Classification',

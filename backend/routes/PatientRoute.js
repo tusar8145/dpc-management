@@ -9,6 +9,10 @@ router.post("/patient/dpc-verify", auth,  PatientController.dpc_verify);
 router.post("/patient/dpc-update", auth,  PatientController.dpc_update);
 router.post("/patient/dashboard-count", auth,  PatientController.dashboard_count);
 router.post("/patient/dpc-update-code", auth,  PatientController.dpc_update_code);
+router.post("/patient/dpc_measure", auth,  PatientController.dpc_measure);
+
+router.get("/patient/dpc_migrate", auth,  PatientController.dpc_migrate);
+
 export { router as PatientRoute };  
 
 

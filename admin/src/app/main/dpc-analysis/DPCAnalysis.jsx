@@ -534,35 +534,17 @@ const [ signal, setSignal]  =useState('45');
 
 					</p>					
 
-					<div class="grid md:grid-cols-6 xs:grid-cols-2 gap-4 mb-20" >
+					<div class="grid md:grid-cols-6 xs:grid-cols-2 gap-4 mb-5" >
 						<div class="col-span-2 ...">	 
 							<ButtonThree setVerified={setVerified} x_n_verify={c_n_verified} x_y_verify={c_verified} x_T_data={total_data} c_n_verified={c_n_verified} c_verified={c_verified} />	 
 						</div>
 						<div class="col-span-2 ... items-center">
-							<div className="flex flex-col items-center justify-center  mx-auto w-full">
-								<ButtonGroup  variant="contained" aria-label="outlined primary button group" >
-									<Button onClick={() => { FunEnableFilter() }} endIcon={<Filter />}>フィルター</Button>
-									<Button size="small" variant="" style={{ 'border': '1px' }}
-									onClick={() => { download() }}
-									endIcon={<Close />}> 輸出 </Button>	 
-								</ButtonGroup>
-							</div>
+ 
 						</div>	
 						<div class=" col-span-2 ..."> 
-						<Paginate total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent} />
-						</div>
-					</div>
+						
 
 
-					{enableFilter &&
-					<motion.div>
-						 < hr/>	
-						<motion.div class="grid grid-cols-4 flex justify-between mb-10 mt-10 ...">
-							<motion.div><TextField id="standard-basic" label="患者コード" className="ml-10" style={{ width: '80%' }} onChange={keyup} value={newval} variant="standard" /></motion.div>
-							<motion.div><TextField type="number" inputProps={{ min: 0, max: 100 }} id="standard-basic" label="入院日数" className="ml-64" style={{ width: '50%' }} onChange={keyupHospitalization} value={newvalHospi} variant="standard" /></motion.div>
-							<motion.div><TextField id="standard-basic" label="DPCパターン" className="ml-64" style={{ width: '50%' }} onChange={keyuDpcattern} value={dpcPattern} variant="standard" /></motion.div>
-
-							<motion.div>
 								<RangePicker style={{ width: "100%" }} onChange={handleDateChange} format={dateFormat} />
 								<RadioGroup onChange={handleRadioChange} value={date_type} row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
 									<FormControlLabel value="admission_date" control={<Radio />} label="入院日" />
@@ -570,23 +552,94 @@ const [ signal, setSignal]  =useState('45');
 									<FormControlLabel value="date_of_birth" control={<Radio />} label="生年月日" />
 								</RadioGroup>
 
-							</motion.div>
-						</motion.div>		
-						< hr/>			
-					</motion.div>
 
-					}
+
+						</div>
+					</div>
 
 					
 
-					<div class="grid md:grid-cols-1 xs:grid-cols-1 gap-4 mt-32">
+					<motion.div class="grid md:grid-cols-6  xs:grid-cols-1  flex justify-between mb-10 mt-10 ..."
+					style={{ "background": "azure", "padding": "10px", "border-radius": "10px" }}>
+						    <motion.div><TextField  size="small" id="standard-basic" label="患者コード" className="  " style={{ width: '100%' }} onChange={keyup} value={newval}   /></motion.div>
+							<motion.div className=" ml-10" ><TextField  size="small" type="number" inputProps={{ min: 0, max: 100 }} id="standard-basic" label="入院日数"style={{ width: '100%' }} onChange={keyupHospitalization} value={newvalHospi}  /></motion.div>
+							<motion.div className="ml-10" ><TextField  size="small" id="standard-basic" label="DPCパターン"style={{ width: '100%' }} onChange={keyuDpcattern} value={dpcPattern}  /></motion.div>
+							<motion.div  class="ml-64 col-span-3  flex justify-between" > 								
+							 
+									<Button size="small" variant="" style={{ 'border': '1px' }}
+									onClick={() => { download() }}
+									endIcon={<Close />}> 輸出 </Button>	 
+								 
+								<Paginate  total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent} />
+							</motion.div>
+					</motion.div>	
 
-
-
-						{dpc_data?.map(single => (
+					<table class="dpc dpc-table p-10 mt-2    transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300 ">
+						  <tr>
+						    <td class=" width_single text-center new_t_color_head" rowspan="2">SL</td>
+						    <td class="width_double new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">患者 コード </div>
+						      </span>
+						    </td>
+						    <td class="width_double new_t_color_head  text-left">
+						      <span class="dpc">
+						        <div class=" ">名前</div>
+						      </span>
+						    </td>
+						    <td class="width_single new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">病棟</div>
+						      </span>
+						    </td>
+						    <td class="width_double new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">入院日</div>
+						      </span>
+						    </td>
+						    <td class="width_double new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">退院 予定日</div>
+						      </span>
+						    </td>
+						    <td class="width_single new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">入院 日数</div>
+						      </span>
+						    </td>
+						    <td class="width_single new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">今期 患者数</div>
+						      </span>
+						    </td>
+						    <td class="width_single new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">過去 患者数</div>
+						      </span>
+						    </td>
+						    <td class="width_single new_t_color_head text-left">
+						      <span class="dpc">
+						        <div class=" ">入院 期間Ⅱ</div>
+						      </span>
+						    </td>
+						    <td class=" width_button text-center border-right-zero new_t_color_head" rowspan="2">
+							アクション
+						    </td>
+						  </tr>
+		 
+						</table>			 
+					
+					<div class="grid md:grid-cols-1 xs:grid-cols-1 gap-4">
+					{dpc_data?.map(single => (
 							<TablePatient className="mt-24 " patientDetails={patientDetails} sl={sl++} data={single} verify={verify} />
 						))}
 					</div>
+
+					{/*<div class="grid md:grid-cols-1 xs:grid-cols-1   gap-4">
+						<div class="flex justify-end ">
+							<motion.div><Paginate total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent} /></motion.div>
+						</div>
+					</div>*/}
  
 					{dpc_data.length == 0 && loading == false &&
  						<CenterItems text1={'何もデータが見つかりませんでした'} icon={1}/>

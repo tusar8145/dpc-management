@@ -12,15 +12,15 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import '../../../styles/table-html.css';
 import axios from 'axios';
 import apiConfig from '../../configs/apiConfig';
-import { lazy } from 'react';
+import { lazy,useEffect } from 'react';
 import Button from '@mui/material/Button';
 import CIcon from '@mui/icons-material/ChevronRight';
 import Edit from '@mui/icons-material/Edit';
-import Eye from '@mui/icons-material/RemoveRedEye';
+import Article from '@mui/icons-material/Article';
+import CorporateFare from '@mui/icons-material/CorporateFare';
 import Grid from '@mui/material/Grid';
 import {createdAt} from '../../helpers/timeHelpers';
-
-
+ 
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
 export default function TablePatient(props) {
@@ -40,6 +40,9 @@ export default function TablePatient(props) {
     const [edit, setEdit] = React.useState(0);
     const [judge, setJudge] = React.useState(0);
 
+    const [PatientDpcMeasureData, setPatientDpcMeasureData] = React.useState([]);
+
+    const [dpc_current, setdpc_current] = React.useState(null);
 
     async function verify(id,is_verified) {
       try {
@@ -55,10 +58,11 @@ export default function TablePatient(props) {
 
 
     let data=props.data
+
     function part3(a,b,c,d){
       return (
           <span style={{display: "flex"}} className='dpc'> 
-            <div>
+            {/*<div>
               
               {a && b && <p>{a}</p>} 
               {a && b && <p>{b}</p>} 
@@ -66,21 +70,23 @@ export default function TablePatient(props) {
               {a && b==null && <p className='pv10'>{a}</p>} 
             
               
-            </div>  
+           </div>  
 
-            <div className='fxl pv5'> / </div> 
-            {c==null?  <div  style={(c==null || c=='')? {color : 'red'}:{color : '未'}}  className='pv10'  >{'未'}</div> : <div style={(c==null || c=='未')? {color : 'red'}:{color : ''}}  className='pv10'>{c}</div>  }
+            <div className='fxl pv5'> / </div> */}
+            {c==null?  <div  style={(c==null || c=='')? {color : 'red'}:{color : '未'}}  className=' '  >{'未'}</div> : <div style={(c==null || c=='未')? {color : 'red'}:{color : ''}}  className=' '>{c}</div>  }
         
             {d &&
-              <div  className='fxl pv5' > / </div>
+              <div  className='fxl  ' > / </div>
             }
             {d &&
-              <div  style={d=='未'? {color : 'red'}:{color : ''}}   className='pv10'>{d}</div>  
+              <div  style={d=='未'? {color : 'red'}:{color : ''}}   className=' '>{d}</div>  
             }
 
           </span>
       )
     }
+
+
 
     async function change(a,b,c) {
       console.log(a,b,c)
@@ -99,84 +105,122 @@ export default function TablePatient(props) {
       }
     }
 
+
+    async function PatientDpcMeasure(data) {
+
+      let a_dpc_6=null
+      let a_and_1=null
+      let a_age_1=null
+      let a_sur_2=null
+      let a_tre1_1=null
+      let a_tre2_1=null
+      let a_sec_1=null
+      let a_sco_1=null
+
+
+      if(data.s_dpc_6){a_dpc_6=data.s_dpc_6}else{ a_dpc_6=data.dpc_6}
+      if(data.s_and_1){a_and_1=data.s_and_1}else{ a_and_1=data.and_1}
+      if(data.s_age_1){a_age_1=data.s_age_1}else{ a_age_1=data.age_1}
+      if(data.s_sur_2){a_sur_2=data.s_sur_2}else{ a_sur_2=data.sur_2}
+      if(data.s_tre1_1){a_tre1_1=data.s_tre1_1}else{ a_tre1_1=data.tre1_1}
+      if(data.s_tre2_1){a_tre2_1=data.s_tre2_1}else{ a_tre2_1=data.tre2_1}
+      if(data.s_sec_1){a_sec_1=data.s_sec_1}else{ a_sec_1=data.sec_1}
+      if(data.s_sco_1){a_sco_1=data.s_sco_1}else{ a_sco_1=data.sco_1}
+ 
+
+       const response = await axios.post(apiConfig.PatientDpcMeasure, {dpc_code:a_dpc_6+a_and_1+a_age_1+a_sur_2+a_tre1_1+a_tre2_1+a_sec_1+a_sco_1});
+      console.log(response.data.data,'jjjjjjjjjj')
+      let getd=response.data.data
+      let res=[]
+
+      if(getd.res1>0 && getd.error!=1){  res.res1=getd.res1   }else{res.res1='未'}
+      if(getd.res2>0 && getd.error!=1){  res.res2=getd.res2   }else{res.res2='未'}
+      if(getd.res3>0 && getd.error!=1){  res.res3=getd.res3   }else{res.res3=''}
+      res.error=getd.error
+
+    
+
+      setPatientDpcMeasureData(res)
+    }
+
+    useEffect(() => {
+      PatientDpcMeasure(data)
+    }, [data]);
      
     
     return ( 
-    <table  className={`dpc dpc-table p-10 mt-20 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
-     
-          <tr>
-            <td className="b0 width_single text-right border-right-zero" colSpan={12}>
+    <table  className={`dpc dpc-table p-10 mt-2    transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
+       
+ 
+        <tr>
+            <td className={"width_single text-center new_t_color_head "}rowSpan={2}> {props.sl} </td>
+            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('患者', 'コード', data.patient_code, null)}</td>
+            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('名前', null, data.doctor, null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('病棟', null, data.ward, null)}</td>
+            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院日', null, data.admission_date, null)}</td>
+            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('退院', '予定日', data.discharge_date, null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '日数', calculateHospitalizationDays(data.admission_date), null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('今期', '患者数', PatientDpcMeasureData?.res1, null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('過去', '患者数', PatientDpcMeasureData?.res2, null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '期間Ⅱ', PatientDpcMeasureData?.res3, null)}</td>
+            <td className={" width_button text-center border-right-zero "} style={{"border-bottom":"0px"}} rowSpan={2}>
+            <div class="flex justify-between ...">
 
+              {data.is_verified == 1 ?
+                <IconButton aria-label="fingerprint"
+                  onClick={() => {
+                    verify(data.id, 0)
+                  }}
+                  color="success"><Fingerprint /></IconButton> : <IconButton aria-label="PendingIcon"
+                    onClick={() => {
+                      verify(data.id, 1)
+                    }}
 
-{((data.s_dpc_6 != data.dpc_6 && data.s_dpc_6 != null) || (data.s_and_1  != data.and_1  && data.s_and_1 != null) || (data.s_age_1 != data.age_1 && data.s_age_1 != null) || (data.s_sur_2 != data.sur_2 && data.s_sur_2 != null) ||  (data.s_tre1_1 != data.tre1_1 && data.s_tre1_1 != null) ||   (data.s_tre2_1 != data.tre2_1 && data.s_tre2_1 != null)  ||  (data.s_sec_1 != data.sec_1 && data.s_sec_1 != null) || (data.s_sco_1 != data.sco_1 && data.s_sco_1 != null)) &&
-            <Button  className="mr-24" size="small" variant="contained" onClick={() => {
-                if(judge==1){
-                  setJudge(0)
-                }else{
-                  setJudge(1)
-                }
-            }}
-              endIcon={<Eye />}>
-             システムジャッジ
-            </Button>
-}
+                    color="error"><PendingIcon /></IconButton>
+              }  
 
-
-
-
-
-            <Button  className="mr-24" size="small" variant="contained" onClick={() => {
-                if(edit==1){
+              <IconButton color="secondary"  size="small"  aria-label="add an alarm"   onClick={() => {
+                if (edit == 1) {
                   setEdit(0)
-                }else{
+                } else {
                   setEdit(1)
                 }
-            }}
-              endIcon={<Edit />}>
-              編集
-            </Button>
+              }}>
+                <Edit />
+              </IconButton>
+ 
 
-          {props.basic !=1 &&   <Button  size="small" variant="contained" onClick={() => {
-             localStorage.setItem("ld",data.id)
-              props.patientDetails(data)
-            }}
-              endIcon={<CIcon />}>
-              詳細
-            </Button>  }
-
-            </td>
-          </tr>      
-
-    
-
-
-        <tr>
-            <td className="b0 width_single text-center" rowSpan={2}> {props.sl} </td>
-            <td className="width_double">{part3('患者', 'コード', data.patient_code, null)}</td>
-            <td className="width_double">{part3('名前', null, data.doctor, null)}</td>
-            <td className="width_single">{part3('病棟', null, data.ward, null)}</td>
-            <td className="width_double">{part3('入院日', null, data.admission_date, null)}</td>
-            <td className="width_double">{part3('退院', '予定日', data.discharge_date, null)}</td>
-            <td className="width_single">{part3('入院', '日数', calculateHospitalizationDays(data.admission_date), null)}</td>
-            <td className="width_single">{part3('今期', '患者数', '未', null)}</td>
-            <td className="width_single">{part3('過去', '患者数', '未', null)}</td>
-            <td className="width_single">{part3('入院', '期間Ⅱ', '16', null)}</td>
-            <td className="width_others">確定
-              {data.is_verified==1 ?
-              <IconButton aria-label="fingerprint"
-              onClick={() => {
-                verify(data.id,0)
-              }}
-              color="success"><Fingerprint/></IconButton> :  <IconButton aria-label="PendingIcon" 
-              onClick={() => {
-                verify(data.id,1)
-              }}
+              {props.basic != 1 && 
               
-              color="error"><PendingIcon/></IconButton> 
-              }  
-          
+              <IconButton color="secondary"  size="small"  aria-label="add an alarm"  onClick={() => {
+                localStorage.setItem("ld", data.id)
+                props.patientDetails(data)
+              }}>
+                <Article />
+              </IconButton>
+ 
+              }
+
+              
+
+              {((data.s_dpc_6 != data.dpc_6 && data.s_dpc_6 != null) || (data.s_and_1 != data.and_1 && data.s_and_1 != null) || (data.s_age_1 != data.age_1 && data.s_age_1 != null) || (data.s_sur_2 != data.sur_2 && data.s_sur_2 != null) || (data.s_tre1_1 != data.tre1_1 && data.s_tre1_1 != null) || (data.s_tre2_1 != data.tre2_1 && data.s_tre2_1 != null) || (data.s_sec_1 != data.sec_1 && data.s_sec_1 != null) || (data.s_sco_1 != data.sco_1 && data.s_sco_1 != null)) ?
+                <IconButton color="secondary" aria-label="add an alarm" size="small" onClick={() => {
+                  if (judge == 1) {
+                    setJudge(0)
+                  } else {
+                    setJudge(1)
+                  }
+                }}>
+                  <CorporateFare />
+                </IconButton>        
+                :
+                <IconButton color="secondary" disabled={true} aria-label="add an alarm" size="small" ><CorporateFare /> </IconButton>        
+              }
+
+
+
+            </div>
             </td>
-            <td className="b0 width_single text-center border-right-zero"></td>
         </tr>
 
 
@@ -186,52 +230,52 @@ export default function TablePatient(props) {
             <th colSpan={2} style={data.s_dpc_6 ? {color : 'red'}:{color : ''}} >{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
                   {edit==1 &&  <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['999999']}}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th colSpan={2} style={data.s_and_1 ? {color : 'red'}:{color : ''}} >
+            <th colSpan={1} style={data.s_and_1 ? {color : 'red'}:{color : ''}} >
               <div className=" ">
                 {data.s_and_1? data.s_and_1 : data.and_1 }
                 {edit==1 &&  data?.dpc_disease_classi?.and_1?.split(",").length>0 &&  data?.dpc_disease_classi?.and_1 !='x' && 
-                    <DPCEditModal data={{val:data.s_and_1? data.s_and_1 : data.and_1,id:data.id, key:'and_1', options:data?.dpc_disease_classi?.and_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>
+                    <DPCEditModal data={{val:data.s_and_1? data.s_and_1 : data.and_1,id:data.id, key:'and_1', options:data?.dpc_disease_classi?.and_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes }}  api={''}  complete={UpdateComplete}/>
                 }                
               </div>
             </th>
             <th style={data.s_age_1 ? {color : 'red'}:{color : ''}} >
                 {data.s_age_1? data.s_age_1 : data.age_1 }
                 {edit==1 &&   data?.dpc_disease_classi?.age_1?.split(",").length>0 &&  data?.dpc_disease_classi?.age_1 !='x' && 
-                 <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:data?.dpc_disease_classi?.age_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}           
+                 <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:data?.dpc_disease_classi?.age_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'age_1' }}  api={''}  complete={UpdateComplete}/>}           
            </th>
             <th style={data.s_sur_2 ? {color : 'red'}:{color : ''}} >{data.s_sur_2? data.s_sur_2 : data.sur_2 }
             {edit==1 &&   data?.dpc_disease_classi?.sur_2?.split(",").length>0 &&  data?.dpc_disease_classi?.sur_2 !='x' && 
-            <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:data?.dpc_disease_classi?.sur_2?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
+            <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:data?.dpc_disease_classi?.sur_2?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'sur_2' }}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th  style={data.s_tre1_1 ? {color : 'red'}:{color : ''}}  >{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
             {edit==1 &&   data?.dpc_disease_classi?.tre1_1?.split(",").length>0 &&  data?.dpc_disease_classi?.tre1_1 !='x' && 
-            <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:data?.dpc_disease_classi?.tre1_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
+            <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:data?.dpc_disease_classi?.tre1_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'tre1_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
             <th  style={data.s_tre2_1 ? {color : 'red'}:{color : ''}} >{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
             {edit==1 &&   data?.dpc_disease_classi?.tre2_1?.split(",").length>0 &&  data?.dpc_disease_classi?.tre2_1 !='x' && 
-            <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:data?.dpc_disease_classi?.tre2_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
+            <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:data?.dpc_disease_classi?.tre2_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'tre2_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
 
             <th style={data.s_sec_1 ? {color : 'red'}:{color : ''}} >{data.s_sec_1? data.s_sec_1 : data.sec_1 }
             {edit==1 &&   data?.dpc_disease_classi?.sec_1?.split(",").length>0 &&  data?.dpc_disease_classi?.sec_1 !='x' && 
-            <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:data?.dpc_disease_classi?.sec_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
+            <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:data?.dpc_disease_classi?.sec_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'sec_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
             
             <th  style={data.s_sco_1 ? {color : 'red'}:{color : ''}} >{data.s_sco_1? data.s_sco_1 : data.sco_1 }
             {edit==1 &&   data?.dpc_disease_classi?.sco_1?.split(",").length>0 &&  data?.dpc_disease_classi?.sco_1 !='x' && 
-            <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:data?.dpc_disease_classi?.sco_1?.split(",") || []}}  api={''}  complete={UpdateComplete}/>}
+            <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:data?.dpc_disease_classi?.sco_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'sco_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th className="b0 width_single text-center border-right-zero"></th>
+           
         </tr>
 
 {judge==1 &&
 
 <tr>
-<th style={{border:'0px'}}>システム
+<th className='new_t_color_head' style={{border:'0px'}}>システム
 </th>
 <th colSpan={2}>{data.dpc_6 }
 </th>
-<th colSpan={2}>
+<th colSpan={1}>
     {data.and_1 }
 </th>
 <th>
@@ -249,11 +293,12 @@ export default function TablePatient(props) {
 
 <th>{data.sco_1 }
 </th>
-<th className="b0 width_single text-center border-right-zero"></th>
+<th className="b0">
+</th>
 </tr>
 }
 
-        <tr> <td className="b0 width_single text-right border-right-zero border-right-zero" colSpan={12}></td> </tr>
+       
     </table>
    );
 }

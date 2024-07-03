@@ -9,22 +9,22 @@
     padding: 20px !important;
     /*background-color: white;*/
     border-radius:5px ;
-    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);
+    /*box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.19);*/
     background: white;
 }
 
 .dpc td {
     border: 1px solid lightgray;
-    padding: 8px;
+    padding: 3px;
 }
 .dpc th {
     border: 1px solid lightgray;
-    padding: 8px;
+    padding: 3px;
     text-align: center;
     font-size: medium;
 }
 .dpc td {
-    border-radius: 5px;
+    border-radius: 0px;
 }
 .dpc th {
     border-radius: 5px;
@@ -51,16 +51,18 @@
 }
 
 .width_double{
-    width:12%
+    width:13%
 }
 
 .width_single{
-    width:8%
+    width:6%
 }
 .width_others{
     width:8%
 }
-
+.width_button{
+    width:12%
+}
 
 
 .drawerTable table, th, td {
@@ -103,3 +105,36 @@
 .bgblanchedalmond {
     background: #91abda38;
 }
+
+
+@media (min-width: 600px) {
+    .muiltr-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar {
+        min-height: 2px;
+        padding-right: 2px;
+    }
+}
+
+
+.new_t_color_regular{
+    background: rgb(47 152 0 / 71%);
+    color: white;
+}
+
+.new_t_color_danger{
+background: rgb(152 0 0 / 60%);
+color: white;
+}
+.new_t_color_success{
+    background: rgb(152 0 0 / 60%);
+    color: white;
+    }
+    .new_t_color_incomplete{
+        background: rgb(34,193,195);
+        background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+        color: white;
+        }
+
+    .new_t_color_head{
+        background: #0000008c;
+        color: white;
+        }

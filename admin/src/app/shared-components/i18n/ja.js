@@ -214,7 +214,12 @@ const locale = {
 
 	'Invalid Data':'無効なデータ',
 	'Not Deleted. Only issue with pending status can be deleted':'削除されていません。保留中のステータスの問題のみ削除できます。',
-	
+	'Nothing Selected':'何も選択されていません',
+	'Access by':'アクセス方法',
+
+	'Hospitalization Period II':'入院期間 II',
+	'Setting days and score':'日数とスコアの設定',
+	'DPC code':'DPCコード',
 
 
 };

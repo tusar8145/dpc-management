@@ -831,7 +831,7 @@ console.log(get_data,'get_data')
 											setAccessUsers(ids + ',')
 										}}
 
-										id="tags-outlined" options={staff} getOptionLabel={(option) => option.title} filterSelectedOptions renderInput={(params) => (<TextField {...params} label={t("Author*")} placeholder="Access by" />)} />
+										id="tags-outlined" options={staff} getOptionLabel={(option) => option.title} filterSelectedOptions renderInput={(params) => (<TextField {...params} label={t("Author*")} placeholder={t("Access by")} />)} />
 								}
 
 

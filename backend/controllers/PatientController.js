@@ -42,7 +42,7 @@ export const dashboard_count = async (req, res, next) => {
   let d2=timeStable(created_at(3))
   let d3=timeStable(created_at(7))
 
- console.log(d2,'d2')
+// console.log(d2,'d2')
 
   try {
  
@@ -227,8 +227,9 @@ export const dpc_create = async (req, res, next) => {
             })
 
             if (find_.length > 0) {
+
               //found t2
-              //console.log(find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
+              console.log(find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
               temp_tre2_1 = find_[0].corres_code.toString()
               color_obj.push('Brown')
             } else {
@@ -288,6 +289,8 @@ export const dpc_create = async (req, res, next) => {
         "tre2_1": temp_tre2_1,
         "sec_1": temp_sec_1,
         "sco_1": "X",
+
+        "dpc_code":dpc_6+"X"+age_1+"99"+temp_tre1_1+temp_tre2_1+temp_sec_1+"X", //initial
 
         //staff
         "s_dpc_6": null,
@@ -547,7 +550,7 @@ export const dpc_update_code = async (req, res, next) => {
           }
         })
 
-        console.log(find_[0].patient_code)
+       // console.log(find_[0].patient_code)
 
         if(find_.length>0){
           let k_arr_doctor=JSON.parse(find_[0].arr_doctor)
@@ -577,7 +580,7 @@ export const dpc_update_code = async (req, res, next) => {
     
                 if ((this_.treatment_date == k_arr_date[index]) && (this_.arr_disease==k_arr_name[index])) {
                   //old data not carry
-                  console.log('existing removed')
+                //  console.log('existing removed')
     
                 }else{
                   new_arr_doctor.push(k_arr_doctor[index])
@@ -649,23 +652,122 @@ export const dpc_update_code = async (req, res, next) => {
 };
 
 
+
+export const dpc_migrate = async (req, res, next) => {
+  try {
+    //console.log(req.body['key'])
+
+    //migration
+    let mig = await prisma.dpc_generate.findMany({
+      select: { 
+        "id":true,
+        "dpc_6": true,
+        "and_1": true,
+        "age_1": true,
+        "sur_2": true,
+        "tre1_1": true,
+        "tre2_1": true,
+        "sec_1": true,
+        "sco_1": true,
+
+        "s_dpc_6": true,
+        "s_and_1": true,
+        "s_age_1": true,
+        "s_sur_2": true,
+        "s_tre1_1": true,
+        "s_tre2_1": true,
+        "s_sec_1": true,
+        "s_sco_1": true,
+      }
+    })
+
+    for(let i=0; i<mig.length;i++){
+      let th=mig[i]
+      let new_code=th.dpc_6+th.and_1+th.age_1+th.sur_2+th.tre1_1+th.tre2_1+th.sec_1+th.sco_1
+
+      const update = await prisma.dpc_generate.update({
+        where: { id:th.id },
+        data: {dpc_code:new_code},
+      });
+    }
+    response.update([], res)
+  } catch (error) {
+    response.error(error, res, next)
+  }
+};
+
+
 export const dpc_update = async (req, res, next) => {
   try {
     //console.log(req.body['key'])
 
+    //migration
+   /* let mig = await prisma.dpc_generate.findMany({
+      select: { 
+        "id":true,
+        "dpc_6": true,
+        "and_1": true,
+        "age_1": true,
+        "sur_2": true,
+        "tre1_1": true,
+        "tre2_1": true,
+        "sec_1": true,
+        "sco_1": true,
+
+        "s_dpc_6": true,
+        "s_and_1": true,
+        "s_age_1": true,
+        "s_sur_2": true,
+        "s_tre1_1": true,
+        "s_tre2_1": true,
+        "s_sec_1": true,
+        "s_sco_1": true,
+      }
+    })
+
+    for(let i=0; i<mig.length;i++){
+      let th=mig[i]
+      let new_code=th.dpc_6+th.and_1+th.age_1+th.sur_2+th.tre1_1+th.tre2_1+th.sec_1+th.sco_1
+
+      const update = await prisma.dpc_generate.update({
+        where: { id:th.id },
+        data: {dpc_code:new_code},
+      });
+    }*/
+
+
+    let temp1 = await prisma.dpc_generate.findMany({
+      where: { id: req.body.id },
+      select: { dpc_code:true}
+    })
+
+    let str=temp1[0].dpc_code
+    let x_dpc_6  =str.substring(0, 6);
+    let x_and_1  =str.substring(6, 7);
+    let x_age_1  =str.substring(7, 8);
+    let x_sur_2  =str.substring(8, 10);
+    let x_tre1_1 =str.substring(10, 11);
+    let x_tre2_1 =str.substring(11, 12);
+    let x_sec_1  =str.substring(12, 13);
+    let x_sco_1  =str.substring(13, 14);
+
+    
+
+
+
     let data = null
-    if (req.body['key'] == 'dpc_6') { data = { s_dpc_6: req.body.value } }
-    if (req.body['key'] == 'and_1') { data = { s_and_1: req.body.value } }
-    if (req.body['key'] == 'age_1') { data = { s_age_1: req.body.value } }
-    if (req.body['key'] == 'sur_2') { data = { s_sur_2: req.body.value } }
-    if (req.body['key'] == 'tre1_1') { data = { s_tre1_1: req.body.value } }
-    if (req.body['key'] == 'tre2_1') { data = { s_tre2_1: req.body.value } }
-    if (req.body['key'] == 'sec_1') { data = { s_sec_1: req.body.value } }
-    if (req.body['key'] == 'sco_1') { data = { s_sco_1: req.body.value } }
+    if (req.body['key'] == 'dpc_6') { data = { s_dpc_6: req.body.value }; x_dpc_6=req.body.value; }
+    if (req.body['key'] == 'and_1') { data = { s_and_1: req.body.value }; x_and_1=req.body.value; }
+    if (req.body['key'] == 'age_1') { data = { s_age_1: req.body.value }; x_age_1=req.body.value;  }
+    if (req.body['key'] == 'sur_2') { data = { s_sur_2: req.body.value }; x_sur_2=req.body.value;  }
+    if (req.body['key'] == 'tre1_1') { data = { s_tre1_1: req.body.value }; x_tre1_1=req.body.value;  }
+    if (req.body['key'] == 'tre2_1') { data = { s_tre2_1: req.body.value }; x_tre2_1=req.body.value;  }
+    if (req.body['key'] == 'sec_1') { data = { s_sec_1: req.body.value }; x_sec_1=req.body.value;  }
+    if (req.body['key'] == 'sco_1') { data = { s_sco_1: req.body.value }; x_sco_1=req.body.value;  }
 
     const update = await prisma.dpc_generate.update({
       where: { id: req.body.id },
-      data: data,
+      data: {...data,dpc_code:x_dpc_6+x_and_1+x_age_1+x_sur_2+x_tre1_1+x_tre2_1+x_sec_1+x_sco_1},
     });
 
     response.update([], res)
@@ -714,7 +816,7 @@ export const dpc_list = async (req, res, next) => {
     let d1=timeStable(created_at()) || null
     let d2=timeStable(created_at(hospitalization_days)) || null
      
-    console.log('x',d2)
+    //console.log('x',d2)
 
     let dpc_6 = null
     let and_1 = null
@@ -812,6 +914,8 @@ export const dpc_list = async (req, res, next) => {
         "s_sec_1": true,
         "s_sco_1": true,
 
+        "dpc_code":true,
+
 
         "hospitalization_days": true,
 
@@ -875,6 +979,7 @@ export const dpc_list = async (req, res, next) => {
       }
     })
 
+ 
  
     response.list({ list: result_, count: groupBy }, res)
   } catch (error) {
@@ -942,7 +1047,7 @@ export const manage_logo = async (req, res, next) => {
 
 
       } catch (error) {
-        console.log(error, 'error')
+       // console.log(error, 'error')
       }
 
 
@@ -1052,3 +1157,42 @@ export const manage_remove = async (req, res, next) => {
   }
 };
 
+
+
+export const dpc_measure = async (req, res, next) => {
+  try {
+
+    let dpc_code=req.body.dpc_code
+ 
+    let res1=0
+    let res2=0
+    let res3=0
+
+    res1 = await prisma.dpc_generate.aggregate({
+      where: {
+        dpc_code: dpc_code,
+      },
+      _count: {
+        id: true,
+      },
+    })
+
+    let error=0
+
+    res3 = await prisma.days_score.findMany({
+      where: {
+        receipt: dpc_code,
+      },
+    })
+
+    if(res3.length==0){error=1}
+
+    let result={res1:res1._count.id,res2:0,res3:res3[0]?.period_2 || '',error:error }
+
+    //console.log(dpc_code,'dpc_code',res3.length)
+
+    response.list(result, res)
+  } catch (error) {
+    response.error(error, res, next)
+  }
+};

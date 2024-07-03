@@ -4,7 +4,7 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import BallotIcon from '@mui/icons-material/Ballot';
 import PendingIcon from '@mui/icons-material/Pending';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import Fingerprint from '@mui/icons-material/Fingerprint';
 import { useTranslation } from 'react-i18next';
 
 export default function ButtonThree(props) {
@@ -20,7 +20,7 @@ export default function ButtonThree(props) {
 
         }}>
         <BottomNavigationAction label={`全て (${props.x_T_data})`} icon={<BallotIcon />}/>
-        <BottomNavigationAction label={`チェック済み (${props.x_y_verify})`}  icon={<DoneAllIcon />}/>
+        <BottomNavigationAction label={`チェック済み (${props.x_y_verify})`}  icon={<Fingerprint />}/>
         <BottomNavigationAction label={`未検査 (${props.x_n_verify})`} icon={<PendingIcon />}/>
       </BottomNavigation>
     </Box>);

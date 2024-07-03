@@ -60,6 +60,7 @@ const apiConfig = {
     PatientDpcUpdate:base_url+'patient/dpc-update',
     PatientDashboardCount:base_url+'patient/dashboard-count',
     PatientDpcUpdateCode:base_url+'patient/dpc-update-code',
+    PatientDpcMeasure:base_url+'patient/dpc_measure',
 
     IssuePostIssue:base_url+'issue/post_issue',
     IssuePostIssueReply:base_url+'issue/post_issue_reply',

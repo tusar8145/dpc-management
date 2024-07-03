@@ -272,6 +272,13 @@ export const manage_update = async (req, res, next) => {
 export const manage_remove = async (req, res, next) => {
   try {
     let admin_email=req.body.admin_email
+
+    /*let ddd = await prisma.dpc_generate.deleteMany({
+      where: {
+        hospital_id: req.body.id 
+      },
+    })*/
+
     //remove admin
     let delete_first = await prisma.hospitals.delete({
       where: {

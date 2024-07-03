@@ -89,6 +89,79 @@ export default function DPCEditModal(props) {
     async function update_step() {
         update(props.data.id,'dpc_6',newval) 
     }
+
+    function make_disabled(single,props,codes=null,depend_code,name){
+      let result=false
+       let have_atleast1=true
+
+      if(single.toUpperCase()==props){
+        have_atleast1=true
+      }else{
+
+          const array = codes.split(',');
+         
+
+          for(let i=0; i<array.length; i++){
+            let t_code=array[i]
+            let point=null
+
+            let x_dpc_6  =t_code.substring(0, 6);
+            let x_and_1  =t_code.substring(6, 7);
+            let x_age_1  =t_code.substring(7, 8);
+            let x_sur_2  =t_code.substring(8, 10);
+            let x_tre1_1 =t_code.substring(10, 11);
+            let x_tre2_1 =t_code.substring(11, 12);
+            let x_sec_1  =t_code.substring(12, 13);
+            let x_sco_1  =t_code.substring(13, 14);
+
+
+
+            if(name=='tre1_1'){  
+            
+              if(depend_code==x_sur_2) {
+                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
+                if(single.toUpperCase()==x_tre1_1.toUpperCase()){
+                  have_atleast1=false
+                }
+              }
+            }
+            else if(name=='tre2_1'){  
+            
+              if(depend_code==x_sur_2) {
+                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
+                if(single.toUpperCase()==x_tre2_1.toUpperCase()){
+                  have_atleast1=false
+                }
+              }
+            }
+            else if(name=='x_sec_1'){  
+            
+              if(depend_code==x_sur_2) {
+                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
+                if(single.toUpperCase()==x_sec_1.toUpperCase()){
+                  have_atleast1=false
+                }
+              }
+            }else if(name=='x_sco_1'){  
+            
+              if(depend_code==x_sur_2) {
+                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
+                if(single.toUpperCase()==x_sco_1.toUpperCase()){
+                  have_atleast1=false
+                }
+              }
+            } 
+            else{
+              have_atleast1=false
+            }
+          }
+      }
+
+    
+      //result=true
+      return have_atleast1
+    }
+
     return (<div>
  
        <IconButton aria-label="PendingIcon"  onClick={handleOpen} color="error"><ArrowDropDownIcon/></IconButton>
@@ -125,7 +198,7 @@ export default function DPCEditModal(props) {
 
               {props.data.options?.map(single => (
 
-                <Button variant="contained" disabled={single.toUpperCase()==props.data.val} className='m-4' onClick={() => {
+                <Button variant="contained" disabled={make_disabled(single,props.data.val,props.data.codes,props.data.depend_code,props.data.name)} className='m-4' onClick={() => {
                   update(props.data.id,props.data.key,single.toUpperCase()) 
                 }} color="success">
                   {single.toUpperCase()}

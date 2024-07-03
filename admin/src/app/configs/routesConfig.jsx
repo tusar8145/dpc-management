@@ -29,8 +29,9 @@ import PageConfig from '../main/page/PageConfig';
 import IssueConfig from '../main/issue/IssueConfig';
 import ProfileConfig from '../main/profile/ProfileConfig';
 import DPCDiseaseConfig from '../main/admin/dpc-disease-classi/DPCDiseaseConfig';
+import DaysScoreConfig from '../main/admin/days-score/DaysScoreConfig';
 
-const routeConfigs = [DashboardConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig, HospitalConfig, StaffConfig, CCPMConfig, DataUploadConfig, DPCAnalysisConfig, SearchConfig, PageConfig , IssueConfig, ProfileConfig, DPCDiseaseConfig];
+const routeConfigs = [DashboardConfig, InjuryIllnessConfig,MedicalPracticeConfig, MedicineConfig, MedicinalEfficacyConfig, SignOutConfig, SignInConfig, SignUpConfig, ICDtoDPCConfig, AgeBirthWeightConfig, SurgeryConfig, Treatment1Config, Treatment2Config,SecondaryInjuryConfig, HospitalConfig, StaffConfig, CCPMConfig, DataUploadConfig, DPCAnalysisConfig, SearchConfig, PageConfig , IssueConfig, ProfileConfig, DPCDiseaseConfig, DaysScoreConfig];
 /**
  * The routes of the application.
  */
