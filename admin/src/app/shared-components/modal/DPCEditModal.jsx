@@ -200,7 +200,7 @@ export default function DPCEditModal(props) {
           </div>
           :
           <Typography className="text-2xl font-semibold tracking-tight leading-6 text-center mt-24">
-{props.data.depend_code}
+
               {props.data.options?.map(single => (
 
                 <Button variant="contained" disabled={make_disabled(single,props.data.val,props.data.codes,props.data.depend_code,props.data.name)} className='m-4' onClick={() => {
