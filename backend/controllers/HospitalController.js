@@ -273,11 +273,14 @@ export const manage_remove = async (req, res, next) => {
   try {
     let admin_email=req.body.admin_email
 
-    /*let ddd = await prisma.dpc_generate.deleteMany({
+    let ddd = await prisma.dpc_generate.deleteMany({
       where: {
         hospital_id: req.body.id 
       },
-    })*/
+    })
+
+     
+
 
     //remove admin
     let delete_first = await prisma.hospitals.delete({
@@ -286,6 +289,7 @@ export const manage_remove = async (req, res, next) => {
       },
     })
     
+     
 
     //if success remove hospital
     let  delete_ =null
@@ -296,20 +300,22 @@ export const manage_remove = async (req, res, next) => {
           },
         })
 
+        
 
-        if(delete_){}else{
+        if(delete_){response.remove(delete_,res)}else{
             //create again
             const newCreate = await prisma.user.create({
               data: {
               ...delete_first
               },
             });
+            response.remove([],res)
         }
     }else{
 
 
     } 
-      response.remove(delete_,res)
+      
   } catch (error) {
       response.error(error,res,next)    
   }
