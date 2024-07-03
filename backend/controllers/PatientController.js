@@ -220,16 +220,30 @@ export const dpc_create = async (req, res, next) => {
 
             color_obj.push('Blue')
           } else {
-            let find_ =  await prisma.treatment_2.findMany({
+           /* let find_ =  await prisma.treatment_2.findMany({
               where: {
                 recept_main:  fruit ,
               },
-            })
+            })*/
 
-            if (find_.length > 0) {
+            let itmx=items_obj[m]
+
+             
+
+            let find_ =  null
+            
+           if(itmx){
+            find_ = await prisma.treatment_2.findMany({
+              where: {
+                name: { equals: itmx },
+              },
+            })
+           } 
+
+            if (find_?.length > 0) {
 
               //found t2
-              console.log(find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
+              console.log(uid_,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
               temp_tre2_1 = find_[0].corres_code.toString()
               color_obj.push('Brown')
             } else {

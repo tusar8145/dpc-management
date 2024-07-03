@@ -115,26 +115,28 @@
 }
 
 
-.new_t_color_regular{
+.new_t_color_regular {
     background: rgb(47 152 0 / 71%);
     color: white;
 }
 
-.new_t_color_danger{
-background: rgb(152 0 0 / 60%);
-color: white;
-}
-.new_t_color_success{
+.new_t_color_danger {
     background: rgb(152 0 0 / 60%);
     color: white;
-    }
-    .new_t_color_incomplete{
-        background: rgb(34,193,195);
-        background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
-        color: white;
-        }
+}
 
-    .new_t_color_head{
-        background: #0000008c;
-        color: white;
-        }
+.new_t_color_success {
+    background: rgb(152 0 0 / 60%);
+    color: white;
+}
+
+.new_t_color_incomplete {
+    background: rgb(34, 193, 195);
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+    color: white;
+}
+
+.new_t_color_head {
+    background: #0000008c;
+    color: white;
+}

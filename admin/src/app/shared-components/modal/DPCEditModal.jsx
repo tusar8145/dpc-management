@@ -90,11 +90,13 @@ export default function DPCEditModal(props) {
         update(props.data.id,'dpc_6',newval) 
     }
 
-    function make_disabled(single,props,codes=null,depend_code,name){
-      let result=false
-       let have_atleast1=true
+    function make_disabled(req_option,selected_value,codes=null,current_sur,name_colm){
 
-      if(single.toUpperCase()==props){
+
+      let result=false
+      let have_atleast1=true
+
+      if(req_option.toUpperCase()==selected_value){
         have_atleast1=true
       }else{
 
@@ -116,37 +118,40 @@ export default function DPCEditModal(props) {
 
 
 
-            if(name=='tre1_1'){  
+            if(name_colm=='tre1_1'){  
             
-              if(depend_code==x_sur_2) {
+              if(current_sur==x_sur_2) {
                   //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(single.toUpperCase()==x_tre1_1.toUpperCase()){
+                if(req_option.toUpperCase()==x_tre1_1.toUpperCase()){
                   have_atleast1=false
                 }
               }
             }
-            else if(name=='tre2_1'){  
+            else if(name_colm=='tre2_1'){  
             
-              if(depend_code==x_sur_2) {
+              if(current_sur==x_sur_2) {
                   //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(single.toUpperCase()==x_tre2_1.toUpperCase()){
+                if(req_option.toUpperCase()==x_tre2_1.toUpperCase()){
                   have_atleast1=false
                 }
               }
             }
-            else if(name=='x_sec_1'){  
+            else if(name_colm=='sec_1'){  
+
+              console.log(req_option,selected_value,codes,current_sur,name_colm,'wwwww')
+
             
-              if(depend_code==x_sur_2) {
+              if(current_sur==x_sur_2) {
                   //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(single.toUpperCase()==x_sec_1.toUpperCase()){
+                if(req_option.toUpperCase()==x_sec_1.toUpperCase()){
                   have_atleast1=false
                 }
               }
-            }else if(name=='x_sco_1'){  
+            }else if(name_colm=='sco_1'){  
             
-              if(depend_code==x_sur_2) {
+              if(current_sur==x_sur_2) {
                   //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(single.toUpperCase()==x_sco_1.toUpperCase()){
+                if(req_option.toUpperCase()==x_sco_1.toUpperCase()){
                   have_atleast1=false
                 }
               }
@@ -195,7 +200,7 @@ export default function DPCEditModal(props) {
           </div>
           :
           <Typography className="text-2xl font-semibold tracking-tight leading-6 text-center mt-24">
-
+{props.data.depend_code}
               {props.data.options?.map(single => (
 
                 <Button variant="contained" disabled={make_disabled(single,props.data.val,props.data.codes,props.data.depend_code,props.data.name)} className='m-4' onClick={() => {
