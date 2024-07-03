@@ -130,8 +130,9 @@ export default function DPCEditModal(props) {
             else if(name_colm=='tre2_1'){  
             
               if(current_sur==x_sur_2) {
-                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
+                 
                 if(req_option.toUpperCase()==x_tre2_1.toUpperCase()){
+                   console.log(req_option,selected_value,codes,current_sur,name_colm, x_tre2_1)
                   have_atleast1=false
                 }
               }
