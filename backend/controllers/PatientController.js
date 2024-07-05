@@ -204,8 +204,9 @@ export const dpc_create = async (req, res, next) => {
       ////////////////////////////////////////////////////////////////////////////////////////////////
       for (let m = 0; m < receipt_obj.length; m++) {
         let fruit = receipt_obj[m]
+        let clr='black'
 
-        color_obj.push('black')
+      
 
         if (fruit) {
           let find_ = await prisma.treatment_1.findMany({
@@ -219,6 +220,7 @@ export const dpc_create = async (req, res, next) => {
             temp_tre1_1 = find_[0].corres_code.toString()
 
             color_obj.push('Blue')
+              clr='Blue'
           } else {
            /* let find_ =  await prisma.treatment_2.findMany({
               where: {
@@ -232,20 +234,29 @@ export const dpc_create = async (req, res, next) => {
 
             let find_ =  null
             
-           if(itmx){
-            find_ = await prisma.treatment_2.findMany({
-              where: {
-                name: { equals: itmx },
-              },
-            })
-           } 
+            if (itmx) {
+              find_ = await prisma.treatment_2.findMany({
+                where: {
+                  AND: [
+                    { name: { equals: itmx }, },
+                    {recept_main:receipt_obj[m]},
+                    {dpc_6digit:dpc_6}
+                  ]
+
+                },
+              })
+            } 
 
             if (find_?.length > 0) {
 
               //found t2
-              console.log(uid_,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
+              
               temp_tre2_1 = find_[0].corres_code.toString()
-              color_obj.push('Brown')
+              //if(temp_tre2_1=='5'){
+                console.log(receipt_obj[m],itmx,dpc_6,find_.length)
+                //console.log(find_.length,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
+             // }
+              clr='Brown'
             } else {
               
               let itm=items_obj[m]
@@ -257,7 +268,7 @@ export const dpc_create = async (req, res, next) => {
                   })
                   if (find_.length > 0) {
                     //found t3
-                    color_obj.push('Green')
+                    clr='Green'
                     temp_sec_1 = '1'
                   } else {
 
@@ -266,6 +277,10 @@ export const dpc_create = async (req, res, next) => {
             }
           }
         }
+
+        color_obj.push(clr)
+
+
       }
       //////////////////////////////////////////////////////////////////////////////
 
