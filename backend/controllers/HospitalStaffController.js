@@ -33,7 +33,107 @@ const upload = multer({ storage: storage });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
   
+
+
+export const manage_list_assis = async (req, res, next) => {
+  try {
+    const result=[]
+    const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+
+
+    let f_columnFilters = req.body?.filter?.f_columnFilters
+    let globalFilter = req.body?.filter?.globalFilter
+    let f_globalFilters = req.body?.filter?.f_globalFilters
+    let others =req.body?.filter?.others
+
+      let result_=await prisma.admins.findMany({
+          ...response.list_paginate(req),
+          where: {
+            ...others?{...others}:{}
+          },
+          include: {
+            staff_hospital: true,
+            creator:{select:{
+              name:true
+            }},
+          },
+        })
+
+        let result2_=null
+        
+        if(result_.length>0){
+            result2_=await prisma.admins.findMany({
+              ...response.list_paginate(req),
+              where: {
+                id:result_[0]?.staff_hospital.admin_id
+              },
+              include: {
+                creator:{select:{
+                  name:true
+                }},
+              },
+            })   
+            
+            let kkkk=result2_[0]
+            let logox = kkkk.photo || 'defaultUser.png'
+            result.push({
+              "id": kkkk.id,
+              "photo": url.origin+'/api/hospital-manage/image/'+logox,
+              "name": kkkk.name,
+              "email": kkkk.email,
+              "address": kkkk.address,
+              "created_by": kkkk.created_by,
+              "created_at": kkkk.created_at,
+              "updated_at": kkkk.updated_at,
+              "hospital_id": kkkk.hospital_id,
+              "password":null,
+              "phone": kkkk.phone,
+              "role": kkkk.role,
+              "creator":kkkk?.creator?.name,
+            })
+            
+        }
  
+ 
+       
+      
+        for (let h = 0; h < result_.length; h++) {
+            let this_=result_[h]
+
+            let logo = this_.photo || 'defaultUser.png'
+
+            
+
+            result.push({
+              "id": this_.id,
+              "photo": url.origin+'/api/hospital-manage/image/'+logo,
+              "name": this_.name,
+              "email": this_.email,
+              "address": this_.address,
+              "created_by": this_.created_by,
+              "created_at": this_.created_at,
+              "updated_at": this_.updated_at,
+              "hospital_id": this_.hospital_id,
+              "password":null,
+              "phone": this_.phone,
+              "role": this_.role,
+              "creator":this_?.creator?.name,
+            })
+        }
+
+
+
+        
+
+
+   
+      response.list(result,res)
+  } catch (error) {
+      response.error(error,res,next)    
+  }
+};
+
+
 
 export const manage_list = async (req, res, next) => {
   try {

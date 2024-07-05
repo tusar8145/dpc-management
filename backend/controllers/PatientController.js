@@ -218,8 +218,6 @@ export const dpc_create = async (req, res, next) => {
           if (find_.length > 0) {
             //found t1
             temp_tre1_1 = find_[0].corres_code.toString()
-
-            color_obj.push('Blue')
               clr='Blue'
           } else {
            /* let find_ =  await prisma.treatment_2.findMany({

@@ -48,6 +48,8 @@ const apiConfig = {
     hospitalManageUpdate:base_url+'hospital-manage/update',
     hospitalManageLogo:base_url+'hospital-manage/logo',
 
+    hospitalStaffManageListAssis:base_url+'hospital-staff-assistant-manage/list',
+
     hospitalStaffManageList:base_url+'hospital-staff-manage/list',
     hospitalStaffManageCreate:base_url+'hospital-staff-manage/create',
     hospitalStaffManageRemove:base_url+'hospital-staff-manage/remove',

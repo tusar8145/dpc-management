@@ -80,20 +80,24 @@ function Issue() {
 	
 	async function getstaff(){
 		let filter = {
-			others: {role:'staff',hospital_id:hospital.id},
+			others: {hospital_id:hospital.id},
 		  }
 
-		const response = await axios.post(apiConfig.hospitalStaffManageList, { filter });
+		const response = await axios.post(apiConfig.hospitalStaffManageListAssis, { filter });
         let new_data = []
         let get_data = response.data.data
-console.log(get_data,'get_data')
+		console.log(get_data,'get_datasxxx')
 		for(let k=0; k<get_data.length; k++){
 			let this_=get_data[k]
-			new_data.push({
-				title: this_.name,
-				id:this_.id
 
-			})
+			if(user.uid != this_.id){
+					new_data.push({
+						title: this_.name +' ('+ t(this_.role)+')',
+						id:this_.id
+
+					})				
+			}
+
 		}
 
 		setStaff(new_data)

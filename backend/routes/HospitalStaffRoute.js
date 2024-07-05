@@ -3,6 +3,7 @@ import { auth } from "../middleware/Auth.js";
 import * as HospitalStaffController from "../controllers/HospitalStaffController.js";  //*1
 const router = express.Router();
  
+router.post("/hospital-staff-assistant-manage/list", auth,     HospitalStaffController.manage_list_assis);
 router.post("/hospital-staff-manage/list", auth,     HospitalStaffController.manage_list);
 router.post("/hospital-staff-manage/create", auth,   HospitalStaffController.manage_create);
 router.post("/hospital-staff-manage/remove", auth,   HospitalStaffController.manage_remove);
