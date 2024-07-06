@@ -128,8 +128,8 @@ export default function DPCEditModal(props) {
               }
             }
             else if(name_colm=='tre2_1'){  
-            
-              if(current_sur==x_sur_2) {
+            console.log('pppp',current_sur,x_sur_2)
+              if(current_sur==x_sur_2.toUpperCase()) {
                  
                 if(req_option.toUpperCase()==x_tre2_1.toUpperCase()){
                    console.log(req_option,selected_value,codes,current_sur,name_colm, x_tre2_1)

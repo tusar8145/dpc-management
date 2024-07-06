@@ -1198,6 +1198,7 @@ export const dpc_measure = async (req, res, next) => {
     res1 = await prisma.dpc_generate.aggregate({
       where: {
         dpc_code: dpc_code,
+        hospital_id:req.body.hospital_id
       },
       _count: {
         id: true,
@@ -1211,6 +1212,7 @@ export const dpc_measure = async (req, res, next) => {
         receipt: dpc_code,
       },
     })
+ 
 
     if(res3.length==0){error=1}
 

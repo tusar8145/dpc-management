@@ -20,11 +20,13 @@ import Article from '@mui/icons-material/Article';
 import CorporateFare from '@mui/icons-material/CorporateFare';
 import Grid from '@mui/material/Grid';
 import {createdAt} from '../../helpers/timeHelpers';
- 
+import { useTheme } from '../../context/ThemeContext';
+
+
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
 export default function TablePatient(props) {
-
+	const { hospital, toggleHospital } = useTheme();
   function calculateHospitalizationDays(admissionDate) {
     let clock=createdAt()
     const admission = new Date(admissionDate);
@@ -106,7 +108,7 @@ export default function TablePatient(props) {
     }
 
 
-    async function PatientDpcMeasure(data) {
+    async function PatientDpcMeasure(data,hospital_id) {
 
       let a_dpc_6=null
       let a_and_1=null
@@ -128,7 +130,7 @@ export default function TablePatient(props) {
       if(data.s_sco_1){a_sco_1=data.s_sco_1}else{ a_sco_1=data.sco_1}
  
 
-       const response = await axios.post(apiConfig.PatientDpcMeasure, {dpc_code:a_dpc_6+a_and_1+a_age_1+a_sur_2+a_tre1_1+a_tre2_1+a_sec_1+a_sco_1});
+       const response = await axios.post(apiConfig.PatientDpcMeasure, {dpc_code:a_dpc_6+a_and_1+a_age_1+a_sur_2+a_tre1_1+a_tre2_1+a_sec_1+a_sco_1,hospital_id:hospital_id});
       console.log(response.data.data,'jjjjjjjjjj')
       let getd=response.data.data
       let res=[]
@@ -144,14 +146,14 @@ export default function TablePatient(props) {
     }
 
     useEffect(() => {
-      PatientDpcMeasure(data)
-    }, [data]);
+      PatientDpcMeasure(data,hospital.id)
+    }, [data,hospital]);
      
     
     return ( 
     <table  className={`dpc dpc-table p-10 mt-2    transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
        
- 
+
         <tr>
             <td className={"width_single text-center new_t_color_head "}rowSpan={2}> {props.sl} </td>
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('患者', 'コード', data.patient_code, null)}</td>

@@ -122,6 +122,43 @@ export default function TemporaryDrawer(props) {
 
   }, [props.single_patient]);
 
+function  excelSerialNumberToJSDate  (serial)  {
+
+  if(serial){
+
+     const utcDays = Math.floor(serial - 25569);
+    const utcValue = utcDays * 86400;
+    const dateInfo = new Date(utcValue * 1000);
+  
+    const fractionalDay = serial - Math.floor(serial) + 0.0000001;
+  
+    let totalSeconds = Math.floor(86400 * fractionalDay);
+  
+    let seconds = totalSeconds % 60;
+  
+    totalSeconds -= seconds;
+  
+    let hours = Math.floor(totalSeconds / (60 * 60));
+    let minutes = Math.floor(totalSeconds / 60) % 60;   
+
+    var year    = dateInfo.getFullYear()  
+    var month   = dateInfo.getMonth()+1
+    var day     = dateInfo.getDate()
+
+    if(month.toString().length == 1) {
+        month = '0'+month;
+   }
+   if(day.toString().length == 1) {
+        day = '0'+day;
+   }   
+
+    return  year+'/'+month+'/'+day;
+
+  }else{
+    return  null;
+  }
+  };
+
 
   function verify() {
     props.verify()
@@ -210,7 +247,7 @@ export default function TemporaryDrawer(props) {
                     <td className=' border t-left'>{_item.name}</td>
                     <td className=' border t-right'>{_item.amount}</td>
                     <td className=' border t-left'>{single_patient_rec.ward}</td>
-                    <td className=' border t-center'>{_item.date}</td>
+                    <td className=' border t-center'>{excelSerialNumberToJSDate(_item.date)}</td>
                   </tr>
                 ))}
 
