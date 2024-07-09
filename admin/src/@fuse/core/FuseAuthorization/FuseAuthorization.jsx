@@ -86,7 +86,7 @@ class FuseAuthorization extends Component {
 		const { userRole, loginRedirectUrl = '/' } = this.props;
 		const redirectUrl = getSessionRedirectUrl() || loginRedirectUrl;
 
-		console.log('ppppppp',redirectUrl)
+		console.log('ppppppp',redirectUrl,this.props.userRole)
 		/*
         User is guest
         Redirect to Login Page
@@ -100,8 +100,35 @@ class FuseAuthorization extends Component {
           Redirect to dashboard or loginRedirectUrl
             */
 		   //setTimeout(() => history.push(redirectUrl), 0); redirect-issue
-			setTimeout(() => history.push(redirectUrl), 0);
-			resetSessionRedirectUrl();
+
+			if ((redirectUrl == '/hospital/dpc-analysis' ||
+				redirectUrl == '/hospital/data-upload' ||
+				redirectUrl == '/contact-form' ||
+				redirectUrl == '/staff-management') && this.props.userRole == 'hospitalAssistant') {
+					setTimeout(() => history.push(redirectUrl), 0);
+					resetSessionRedirectUrl();
+			} else {
+				if (!redirectUrl || redirectUrl == '/') {
+					setTimeout(() => history.push('/dashboard'), 0);
+					resetSessionRedirectUrl();
+				} else if(redirectUrl == '/hospital-management' && this.props.userRole == 'admin'){
+					    setTimeout(() => history.push(redirectUrl), 0);
+						resetSessionRedirectUrl();
+					}  else {
+						setTimeout(() => history.push('/dashboard'), 0);
+						resetSessionRedirectUrl();
+					}
+
+
+				}
+		 
+
+
+
+
+
+			
+			
 		}
 	}
 
