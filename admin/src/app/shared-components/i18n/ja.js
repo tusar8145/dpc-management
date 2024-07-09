@@ -220,6 +220,8 @@ const locale = {
 	'Hospitalization Period II':'入院期間 II',
 	'Setting days and score':'日数とスコアの設定',
 	'DPC code':'DPCコード',
+	'Start Date':'開始日',
+	'End Date':'終了日',
 
 
 };

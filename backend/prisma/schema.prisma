@@ -322,7 +322,7 @@ date_of_birth 	String?
 
 
 
-dpc_6  String?
+dpc_6  String
 and_1  String?
 age_1  String?
 sur_2  String?

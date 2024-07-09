@@ -170,6 +170,7 @@ const [ signal, setSignal]  =useState('45');
 	const handleDateChange = (value) => {   
     
 		if(value!=null){ 
+			console.log(value,'xxx22')
  		  setrange_start(format(value[0].$d,'yyyy/MM/dd')); setrange_end(format(value[1].$d,'yyyy/MM/dd'));    
 		  setthis_date(format(value[0].$d,'yyyy/MM/dd')+","+format(value[1].$d,'yyyy/MM/dd'))
 		 } 
@@ -179,6 +180,30 @@ const [ signal, setSignal]  =useState('45');
 			 setrange_end(null); 
 		}
 	  };
+
+	  const handleSingleDateStart = (value) => {   
+		if(value!=null){ 
+ 		   setrange_start(format(value.$d,'yyyy/MM/dd'));    
+		  //setthis_date(format(value[0].$d,'yyyy/MM/dd')+","+format(value[1].$d,'yyyy/MM/dd'))
+		 } 
+		else{
+			  setrange_start(null);
+			 //setrange_end(null); 
+		}
+	  };
+
+	  const handleSingleDateEnd = (value) => {   
+		if(value!=null){ 
+ 		   //setrange_start(format(value.$d,'yyyy/MM/dd'));    
+		   setrange_end(format(value.$d,'yyyy/MM/dd'));  
+		 } 
+		else{
+			 //setrange_start(null);
+			 setrange_end(null); 
+		}
+	  };
+
+
 	  const handleRadioChange = (event) => {   
 		setDateType(event.target.value)
 		//console.log(event.target.value)
@@ -196,7 +221,7 @@ const [ signal, setSignal]  =useState('45');
 	   
 	  
  const { RangePicker } = DatePicker;
-
+ 
 
 	/*-----------start common function shareable------------*/
 	async function server(hospital) {
@@ -538,14 +563,17 @@ const [ signal, setSignal]  =useState('45');
 						<div class="col-span-2 ...">	 
 							<ButtonThree setVerified={setVerified} x_n_verify={c_n_verified} x_y_verify={c_verified} x_T_data={total_data} c_n_verified={c_n_verified} c_verified={c_verified} />	 
 						</div>
-						<div class="col-span-2 ... items-center">
- 
+						<div class=" col-span-1 ..."> </div>	
+						<div class=" col-span-1 ..."> 
+							<DatePicker style={{ width: "90%","margin-left":"4%" }} placeholder={t("Start Date")} onChange={handleSingleDateStart} format={dateFormat} />
+							<DatePicker style={{ width: "90%","margin-left":"4%" }} placeholder={t("End Date")} onChange={handleSingleDateEnd} format={dateFormat} />
 						</div>	
 						<div class=" col-span-2 ..."> 
 						
 
 
 								<RangePicker style={{ width: "100%" }} onChange={handleDateChange} format={dateFormat} />
+
 								<RadioGroup onChange={handleRadioChange} value={date_type} row aria-labelledby="demo-row-radio-buttons-group-label" name="row-radio-buttons-group">
 									<FormControlLabel value="admission_date" control={<Radio />} label="入院日" />
 									<FormControlLabel value="discharge_date" control={<Radio />} label="退院日" />

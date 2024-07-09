@@ -874,7 +874,7 @@ export const dpc_list = async (req, res, next) => {
     let result_ = await prisma.dpc_generate.findMany({
       ...response.list_paginate(req),
       where: {
-
+        //patient_code:300366,
         ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
         ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
         ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},

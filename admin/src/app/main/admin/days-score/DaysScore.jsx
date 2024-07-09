@@ -75,112 +75,315 @@ function InjuryIllness() {
 
 	/*-----------start common function shareable------------*/
 	async function server(type) {
-											
 
 		try {
-				const illnessClear = await axios.post(apiConfig.tableClear + tableName+'/remove-all', {});
-			
-				let clock=createdAt()
-				let fail_count=0
-				let fail_data=[]
-				let obj = []
-				let obj_col=[]
-				var counts = 0
-				var done = 0
-				let len = data.length
- 				let auto=1
-				for (var i = 0; i < len; i++) {
-					let this_ = data[i]
-					
 
-					let array={}
-					let empty=0
+			function removeDuplicates(arr) {
+				return arr.filter((item,
+					index) => arr.indexOf(item) === index);
+			}
 
 
-					for(let h=0; h<keyConfig.length; h++){
-						let keycon=keyConfig[h]
+			const illnessClear = await axios.post(apiConfig.tableClear + tableName + '/remove-all', {});
+
+			let clock = createdAt()
+			let fail_count = 0
+			let fail_data = []
+			let obj = []
+			let obj_col = []
+			var counts = 0
+			var done = 0
+			let len = data.length
+			let auto = 1
+			for (var i = 0; i < len; i++) {
+				let this_ = data[i]
 
 
-						const keyconSplit = keycon.xlsx.split("<+>");
-						
-						let result=''
-						for(let x=0; x<keyconSplit.length; x++){
-							if(keyconSplit[x]=='<auto>' || this_[keyconSplit[x]]){
-								if(keyconSplit[x] != '<auto>'){
-									if(keycon.type=='String'){
-										result=result+this_[keyconSplit[x]].toString().toUpperCase()
-									}else{
-										result=parseInt(this_[keyconSplit[x]])
-									}
-								}else if(keyconSplit[x] == '<auto>'){
-									result=auto
-									if(empty==0){
-										auto++
-									}
-									
-								}							
-							}else{
-								console.log(this_,'fail')
-								if(i>1){
-									
-								}	
+				let array = {}
+				let empty = 0
+
+
+				for (let h = 0; h < keyConfig.length; h++) {
+					let keycon = keyConfig[h]
+
+
+					const keyconSplit = keycon.xlsx.split("<+>");
+
+					let result = ''
+					for (let x = 0; x < keyconSplit.length; x++) {
+						if (keyconSplit[x] == '<auto>' || this_[keyconSplit[x]]) {
+							if (keyconSplit[x] != '<auto>') {
+								if (keycon.type == 'String') {
+									result = result + this_[keyconSplit[x]].toString().toUpperCase()
+								} else {
+									result = parseInt(this_[keyconSplit[x]])
+								}
+							} else if (keyconSplit[x] == '<auto>') {
+								result = auto
+								if (empty == 0) {
+									auto++
+								}
+
 							}
-							
-						}
-						if(!result){
-							if(keycon.validate.required==1){
-								empty++
+						} else {
+							console.log(this_, 'fail')
+							if (i > 1) {
+
 							}
 						}
- 
-						array[keycon.name] = result;
-						result=''
 
 					}
-					 
-
-					
-					if(empty==0){
-						obj.push({
-							...array,
-							"created_at":clock,
-							"updated_at":clock,
-							"created_by": 1
-						})	
-						
-						empty=0
-					}else{
-						if(i!=0){
-							fail_data.push(this_)
-							fail_count++
+					if (!result) {
+						if (keycon.validate.required == 1) {
+							empty++
 						}
 					}
 
-						 			
+					array[keycon.name] = result;
+					result = ''
 
-					done++
-
-					if ((counts == 1000) || (i == parseInt(len) - 1)) {
-						var cal_per = parseInt((done / len) * 100)
-						setProgress(cal_per)
-
-						obj_col[done]=obj
-
-						const response = await axios.post(apiConfig.tableCreate + tableName+'/create', obj);
-						obj = []
-						counts = 0
-					}
-					counts++
 				}
 
-				setFail_count_list(fail_data)
 
-				if(fail_count==0){setSuccessAlert("Data uploaded successfully")}else{setFailAlert(fail_count+ " Data upload failed")}
-				
-				setShowUpload(0)
-				setProgress(0)			
+
+				if (empty == 0) {
+					 if(array.receipt != "診断群分類番号"){
+							obj.push({
+								...array,
+								"created_at": clock,
+								"updated_at": clock,
+								"created_by": 1
+							})		
+						empty = 0					
+					 }
+
+					
+				} else {
+					if (i != 0) {
+						fail_data.push(this_)
+						fail_count++
+					}
+				}
+
+
+
+				done++
+
+				if ((counts == 1000) || (i == parseInt(len) - 1)) {
+					var cal_per = parseInt((done / len) * 100)
+					setProgress(cal_per)
+
+					obj_col[done] = obj
+
+					const response = await axios.post(apiConfig.tableCreate + tableName + '/create', obj);
+					console.log(obj,'pppppppppp')
+					obj = []
+					counts = 0
+				}
+				counts++
+			}
+			fail_count=fail_count-1
+			setFail_count_list(fail_data)
+
+			if (fail_count == 0) { setSuccessAlert("Data uploaded successfully") } else { setFailAlert(fail_count + " Data upload failed") }
+
+			setShowUpload(0)
+			setProgress(0)
+
+
+
+
+
+
+
+			///////////////////////////////////////////////////////////
+			tableName = 'dpc_disease_classi'
+			const illnessClear1 = await axios.post(apiConfig.tableClear + tableName + '/remove-all', {});
+			// 診断群分類番号
+
+			clock = createdAt()
+			fail_count = 0
+			fail_data = []
+			obj = []
+			obj_col = []
+			counts = 0
+			done = 0
+			len = data.length
+			auto = 1
+
+
+
+			let dpc_6 = ''
+			let and_1 = ''
+			let age_1 = ''
+			let sur_2 = ''
+			let tre1_1 = ''
+			let tre2_1 = ''
+			let sec_1 = ''
+			let sco_1 = ''
+
+			let codes = ''
+
+			let result = ''
+
+			let key_code = ''
+			let key_result = []
+
+			let allow_up = 0
+
+			//console.log(data.length,'key_result',data)
+
+			for (var i = 0; i < len; i++) {
+				let this_ = data[i]
+
+				if (this_['__EMPTY_2'] != '診断群分類番号') {
+
+					try {
+						let array = {}
+						let empty = 0
+
+
+						let x_dpc_6 = this_['__EMPTY_2'].substring(0, 6);
+						let x_and_1 = this_['__EMPTY_2'].substring(6, 7);
+						let x_age_1 = this_['__EMPTY_2'].substring(7, 8);
+						let x_sur_2 = this_['__EMPTY_2'].substring(8, 10);
+						let x_tre1_1 = this_['__EMPTY_2'].substring(10, 11);
+						let x_tre2_1 = this_['__EMPTY_2'].substring(11, 12);
+						let x_sec_1 = this_['__EMPTY_2'].substring(12, 13);
+						let x_sco_1 = this_['__EMPTY_2'].substring(13, 14);
+						let x_codes = this_['__EMPTY_2']
+
+
+						if (key_code == '') {   //only run first time
+
+							key_code = x_dpc_6
+
+							dpc_6 = x_dpc_6
+							and_1 = x_and_1
+							age_1 = x_age_1
+							sur_2 = x_sur_2
+							tre1_1 = x_tre1_1
+							tre2_1 = x_tre2_1
+							sec_1 = x_sec_1
+							sco_1 = x_sco_1
+
+							codes = x_codes
+
+						}
+
+						else if (x_dpc_6 == key_code) { //continue merge
+
+
+							dpc_6 = x_dpc_6
+							and_1 = and_1 + ',' + x_and_1
+							age_1 = age_1 + ',' + x_age_1
+							sur_2 = sur_2 + ',' + x_sur_2
+							tre1_1 = tre1_1 + ',' + x_tre1_1
+							tre2_1 = tre2_1 + ',' + x_tre2_1
+							sec_1 = sec_1 + ',' + x_sec_1
+							sco_1 = sco_1 + ',' + x_sco_1
+
+							codes = codes + ',' + x_codes
+
+						} else {
+							//new assign
+
+
+							//binding
+
+							key_result.push({
+								receipt: auto,
+								dpc_6: removeDuplicates(dpc_6.split(",")).join(','),
+								and_1: removeDuplicates(and_1.split(",")).join(','),
+								age_1: removeDuplicates(age_1.split(",")).join(','),
+								sur_2: removeDuplicates(sur_2.split(",")).join(','),
+								tre1_1: removeDuplicates(tre1_1.split(",")).join(','),
+								tre2_1: removeDuplicates(tre2_1.split(",")).join(','),
+								sec_1: removeDuplicates(sec_1.split(",")).join(','),
+								sco_1: removeDuplicates(sco_1.split(",")).join(','),
+								codes: removeDuplicates(codes.split(",")).join(','),
+
+
+								"created_at": clock,
+								"updated_at": clock,
+								"created_by": 1
+							})
+							auto++
+
+
+							//now
+							dpc_6 = x_dpc_6
+							and_1 = x_and_1
+							age_1 = x_age_1
+							sur_2 = x_sur_2
+							tre1_1 = x_tre1_1
+							tre2_1 = x_tre2_1
+							sec_1 = x_sec_1
+							sco_1 = x_sco_1
+
+							key_code = dpc_6
+
+							codes = x_codes
+
+						}
+
+
+						//last row?
+						if (i == len - 1) {
+							key_result.push({
+								receipt: auto,
+								dpc_6: removeDuplicates(dpc_6.split(",")).join(','),
+								and_1: removeDuplicates(and_1.split(",")).join(','),
+								age_1: removeDuplicates(age_1.split(",")).join(','),
+								sur_2: removeDuplicates(sur_2.split(",")).join(','),
+								tre1_1: removeDuplicates(tre1_1.split(",")).join(','),
+								tre2_1: removeDuplicates(tre2_1.split(",")).join(','),
+								sec_1: removeDuplicates(sec_1.split(",")).join(','),
+								sco_1: removeDuplicates(sco_1.split(",")).join(','),
+
+								codes: removeDuplicates(codes.split(",")).join(','),
+
+								"created_at": clock,
+								"updated_at": clock,
+								"created_by": 1
+							})
+							auto++
+						}
+
+					} catch (error) {
+					}
+
+				}
+			}
+
+			const response1 = await axios.post(apiConfig.tableCreate + tableName + '/create', key_result);
+
+			setFail_count_list(fail_data)
+
+			if (fail_count == 0) { setSuccessAlert("Data uploaded successfully") } else { setFailAlert(fail_count + " Data upload failed") }
+
+			setShowUpload(0)
+			setProgress(0)
+			///////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		} catch (error) {
-			setProgress(0)	
+			console.log(error)
+			setProgress(0)
 			setFailAlert("Invalid File")
 		}
 	}

@@ -17,6 +17,7 @@ import Button from '@mui/material/Button';
 import CIcon from '@mui/icons-material/ChevronRight';
 import Edit from '@mui/icons-material/Edit';
 import Article from '@mui/icons-material/Article';
+import OpenInNew from '@mui/icons-material/OpenInNew';
 import CorporateFare from '@mui/icons-material/CorporateFare';
 import Grid from '@mui/material/Grid';
 import {createdAt} from '../../helpers/timeHelpers';
@@ -64,17 +65,6 @@ export default function TablePatient(props) {
     function part3(a,b,c,d){
       return (
           <span style={{display: "flex"}} className='dpc'> 
-            {/*<div>
-              
-              {a && b && <p>{a}</p>} 
-              {a && b && <p>{b}</p>} 
-
-              {a && b==null && <p className='pv10'>{a}</p>} 
-            
-              
-           </div>  
-
-            <div className='fxl pv5'> / </div> */}
             {c==null?  <div  style={(c==null || c=='')? {color : 'red'}:{color : '未'}}  className=' '  >{'未'}</div> : <div style={(c==null || c=='未')? {color : 'red'}:{color : ''}}  className=' '>{c}</div>  }
         
             {d &&
@@ -83,29 +73,28 @@ export default function TablePatient(props) {
             {d &&
               <div  style={d=='未'? {color : 'red'}:{color : ''}}   className=' '>{d}</div>  
             }
-
           </span>
       )
     }
 
-
-
-    async function change(a,b,c) {
-      console.log(a,b,c)
-    }
+ 
 
     function UpdateComplete(para) {
       props.verify()
      // setIsRefetching(true)
     }
 
-    function changeEdit() {
+    /*function changeEdit() {
       if(edit==1){
         setEdit(0)
       }else{
         setEdit(1)
       }
-    }
+    }*/
+
+
+
+
 
 
     async function PatientDpcMeasure(data,hospital_id) {
@@ -144,6 +133,135 @@ export default function TablePatient(props) {
 
       setPatientDpcMeasureData(res)
     }
+
+
+
+    function validSurgery (current_sur,codes) {
+     
+   try {
+       const array = codes.split(',');
+      let have_atleast1=false
+
+      let t1=0
+      for(let i=0; i<array.length; i++){
+        let t_code=array[i]
+        let x_sur_2  =t_code.substring(8, 10).toUpperCase();
+
+        if(current_sur==x_sur_2){
+            t1=1
+        }else{
+          
+        }
+      }
+      if(t1==0){
+        return false;
+      } else{
+        return true;
+      }   
+   } catch (error) {
+    
+   }
+
+    }
+
+
+    function yesCanbe(current_sur,codes,name_colm,req_option) {
+
+     try {
+      req_option=req_option.toUpperCase()
+
+      const array = codes.split(',');
+      let have_atleast1=false
+
+      let t1=0
+      for(let i=0; i<array.length; i++){
+        let t_code=array[i]
+        let x_sur_2  =t_code.substring(8, 10).toUpperCase();
+
+        if(current_sur==x_sur_2){
+            t1=1
+        }else{
+          
+        }
+      }
+      if(t1==0){
+        return true;
+      }
+
+      for(let i=0; i<array.length; i++){
+        let t_code=array[i]
+
+        let x_dpc_6  =t_code.substring(0, 6);
+        let x_and_1  =t_code.substring(6, 7).toUpperCase();
+        let x_age_1  =t_code.substring(7, 8).toUpperCase();
+        let x_sur_2  =t_code.substring(8, 10).toUpperCase();
+        let x_tre1_1 =t_code.substring(10, 11).toUpperCase();
+        let x_tre2_1 =t_code.substring(11, 12).toUpperCase();
+        let x_sec_1  =t_code.substring(12, 13).toUpperCase();
+        let x_sco_1  =t_code.substring(13, 14).toUpperCase();
+
+        
+
+        if(name_colm=='and_1'){  
+          if(current_sur==x_sur_2) { 
+             if(req_option==x_and_1){console.log('pppppp2',current_sur,x_sur_2,req_option,x_and_1)
+              return true;
+              have_atleast1=true
+            }
+          }
+        }if(name_colm=='age_1'){  
+          if(current_sur==x_sur_2) { 
+             if(req_option==x_age_1){
+              return true;
+              have_atleast1=true
+            }
+          }
+        }if(name_colm=='tre1_1'){  
+          if(current_sur==x_sur_2) {
+             if(req_option==x_tre1_1){
+              return true;
+              have_atleast1=true
+            }
+          }
+        }
+        else if(name_colm=='tre2_1'){  
+          if(current_sur==x_sur_2) {
+             
+            if(req_option==x_tre2_1){
+               return true;
+               have_atleast1=true
+            }
+          }
+        }
+        else if(name_colm=='sec_1'){  
+          if(current_sur==x_sur_2) {
+             if(req_option==x_sec_1){
+              return true;
+              have_atleast1=true
+            }
+          }
+        }else if(name_colm=='sco_1'){  
+          if(current_sur==x_sur_2) {
+             if(req_option==x_sco_1){
+              return true;
+              have_atleast1=true
+            }
+          }
+        } 
+        else{
+          have_atleast1=false
+        }
+      }
+
+
+      return have_atleast1;
+     } catch (error) {
+      
+     }
+
+    
+    }
+
 
     useEffect(() => {
       PatientDpcMeasure(data,hospital.id)
@@ -192,18 +310,25 @@ export default function TablePatient(props) {
               </IconButton>
  
 
-              {props.basic != 1 && 
-              
+              {props.basic != 1 &&    
               <IconButton color="secondary"  size="small"  aria-label="add an alarm"  onClick={() => {
                 localStorage.setItem("ld", data.id)
                 props.patientDetails(data)
               }}>
                 <Article />
               </IconButton>
- 
               }
 
-              
+              {props.basic != 1 &&    
+              <IconButton color="secondary"  size="small"  aria-label="add an alarm"  onClick={() => {
+                localStorage.setItem("ld", data.id)
+                  
+                window.open(window.location.href,'_blank');
+               // props.patientDetails(data)
+              }}>
+                <OpenInNew />
+              </IconButton>
+              }     
 
               {((data.s_dpc_6 != data.dpc_6 && data.s_dpc_6 != null) || (data.s_and_1 != data.and_1 && data.s_and_1 != null) || (data.s_age_1 != data.age_1 && data.s_age_1 != null) || (data.s_sur_2 != data.sur_2 && data.s_sur_2 != null) || (data.s_tre1_1 != data.tre1_1 && data.s_tre1_1 != null) || (data.s_tre2_1 != data.tre2_1 && data.s_tre2_1 != null) || (data.s_sec_1 != data.sec_1 && data.s_sec_1 != null) || (data.s_sco_1 != data.sco_1 && data.s_sco_1 != null)) ?
                 <IconButton color="secondary" aria-label="add an alarm" size="small" onClick={() => {
@@ -229,10 +354,10 @@ export default function TablePatient(props) {
 
 
         <tr>
-            <th colSpan={2} style={data.s_dpc_6 ? {color : 'red'}:{color : ''}} >{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
+            <th colSpan={2} style={data.s_dpc_6 ? {color : 'red'}:{color : ''}}>{data.s_dpc_6? data.s_dpc_6 : data.dpc_6 }
                   {edit==1 &&  <DPCEditModal data={{val:data.s_dpc_6? data.s_dpc_6 : data.dpc_6,id:data.id, options:['999999']}}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th colSpan={1} style={data.s_and_1 ? {color : 'red'}:{color : ''}} >
+            <th colSpan={1} style={data.s_and_1 ? {color : 'red'}:{color : ''}}    className={`  ${yesCanbe(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes,'and_1',data.s_and_1? data.s_and_1 : data.and_1) ==false ? 'red-border' : ''}`} >
               <div className=" ">
                 {data.s_and_1? data.s_and_1 : data.and_1 }
                 {edit==1 &&  data?.dpc_disease_classi?.and_1?.split(",").length>0 &&  data?.dpc_disease_classi?.and_1 !='x' && 
@@ -240,30 +365,30 @@ export default function TablePatient(props) {
                 }                
               </div>
             </th>
-            <th style={data.s_age_1 ? {color : 'red'}:{color : ''}} >
+            <th style={data.s_age_1 ? {color : 'red'}:{color : ''}}     className={`  ${yesCanbe(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes,'age_1',data.s_age_1? data.s_age_1 : data.age_1) ==false ? 'red-border' : ''}`}  >
                 {data.s_age_1? data.s_age_1 : data.age_1 }
                 {edit==1 &&   data?.dpc_disease_classi?.age_1?.split(",").length>0 &&  data?.dpc_disease_classi?.age_1 !='x' && 
                  <DPCEditModal data={{val:data.s_age_1? data.s_age_1 : data.age_1,id:data.id, key:'age_1', options:data?.dpc_disease_classi?.age_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'age_1' }}  api={''}  complete={UpdateComplete}/>}           
            </th>
-            <th style={data.s_sur_2 ? {color : 'red'}:{color : ''}} >{data.s_sur_2? data.s_sur_2 : data.sur_2 }
+            <th style={data.s_sur_2 ? {color : 'red'}:{color : ''}}     className={`  ${validSurgery(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes) ==false ? 'red-border' : ''}`}  >{data.s_sur_2? data.s_sur_2 : data.sur_2 }
             {edit==1 &&   data?.dpc_disease_classi?.sur_2?.split(",").length>0 &&  data?.dpc_disease_classi?.sur_2 !='x' && 
             <DPCEditModal data={{val:data.s_sur_2? data.s_sur_2 : data.sur_2,id:data.id, key:'sur_2', options:data?.dpc_disease_classi?.sur_2?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'sur_2' }}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th  style={data.s_tre1_1 ? {color : 'red'}:{color : ''}}  >{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
+            <th  style={data.s_tre1_1 ? {color : 'red'}:{color : ''}}    className={`  ${yesCanbe(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes,'tre1_1',data.s_tre1_1? data.s_tre1_1 : data.tre1_1) ==false ? 'red-border' : ''}`} >{data.s_tre1_1? data.s_tre1_1 : data.tre1_1 }
             {edit==1 &&   data?.dpc_disease_classi?.tre1_1?.split(",").length>0 &&  data?.dpc_disease_classi?.tre1_1 !='x' && 
             <DPCEditModal data={{val:data.s_tre1_1? data.s_tre1_1 : data.tre1_1,id:data.id, key:'tre1_1', options:data?.dpc_disease_classi?.tre1_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'tre1_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
-            <th  style={data.s_tre2_1 ? {color : 'red'}:{color : ''}} >{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
+            <th  style={data.s_tre2_1 ? {color : 'red'}:{color : ''}}   className={`  ${yesCanbe(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes,'tre2_1',data.s_tre2_1? data.s_tre2_1 : data.tre2_1) ==false ? 'red-border' : ''}`}  >{data.s_tre2_1? data.s_tre2_1 : data.tre2_1 }            
             {edit==1 &&   data?.dpc_disease_classi?.tre2_1?.split(",").length>0 &&  data?.dpc_disease_classi?.tre2_1 !='x' && 
             <DPCEditModal data={{val:data.s_tre2_1? data.s_tre2_1 : data.tre2_1,id:data.id, key:'tre2_1', options:data?.dpc_disease_classi?.tre2_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'tre2_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
 
-            <th style={data.s_sec_1 ? {color : 'red'}:{color : ''}} >{data.s_sec_1? data.s_sec_1 : data.sec_1 }
+            <th style={data.s_sec_1 ? {color : 'red'}:{color : ''}}   className={`  ${yesCanbe(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes,'sec_1',data.s_sec_1? data.s_sec_1 : data.sec_1) ==false ? 'red-border' : ''}`} >{data.s_sec_1? data.s_sec_1 : data.sec_1 }
             {edit==1 &&   data?.dpc_disease_classi?.sec_1?.split(",").length>0 &&  data?.dpc_disease_classi?.sec_1 !='x' && 
             <DPCEditModal data={{val:data.s_sec_1? data.s_sec_1 : data.sec_1,id:data.id, key:'sec_1', options:data?.dpc_disease_classi?.sec_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'sec_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>
             
-            <th  style={data.s_sco_1 ? {color : 'red'}:{color : ''}} >{data.s_sco_1? data.s_sco_1 : data.sco_1 }
+            <th  style={data.s_sco_1 ? {color : 'red'}:{color : ''}}   className={`  ${yesCanbe(data.s_sur_2? data.s_sur_2 : data.sur_2, data?.dpc_disease_classi?.codes,'sco_1',data.s_sco_1? data.s_sco_1 : data.sco_1) ==false ? 'red-border' : ''}`} >{data.s_sco_1? data.s_sco_1 : data.sco_1 }
             {edit==1 &&   data?.dpc_disease_classi?.sco_1?.split(",").length>0 &&  data?.dpc_disease_classi?.sco_1 !='x' && 
             <DPCEditModal data={{val:data.s_sco_1? data.s_sco_1 : data.sco_1,id:data.id, key:'sco_1', options:data?.dpc_disease_classi?.sco_1?.split(",") || [], codes:data?.dpc_disease_classi?.codes, depend_code:data.s_sur_2? data.s_sur_2 : data.sur_2, name:'sco_1' }}  api={''}  complete={UpdateComplete}/>}
             </th>

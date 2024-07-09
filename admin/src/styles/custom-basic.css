@@ -110,6 +110,9 @@ background-color: unset !important;
         width: 105px;
     }
 
+    .red-border{
+        border: 4px dashed #ff000094 !important
+    }
 
 
     @media screen and (max-width: 600px) {
@@ -147,3 +150,17 @@ background-color: unset !important;
         padding: 10px;
         
       }
+
+
+
+
+
+
+      .MuiBox-root .MuiGrid2-direction-xs-row {
+      /*background-color: #f2fdf400 !important;*/  
+    }
+
+    .MuiBox-root .MuiGrid2-root{
+     /*  background: white; */
+    }
+    

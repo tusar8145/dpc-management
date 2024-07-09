@@ -158,7 +158,7 @@ const navigationConfig = [
 				url: 'dpc-management/days-score',
 				end: true
 			},
-			{
+			/*{
 				id: 'e-commerce-orders1991',
 				title: 'Disease Classification',
 				translate: 'DiseaseClassification',
@@ -166,31 +166,15 @@ const navigationConfig = [
 				icon: 'material-outline:event',
 				url: 'dpc-management/dieases-classification',
 				end: true
-			},
+			},*/
 		]
 	},
 
 
 
 
-	{
-		id: '18',
-		title: 'CCPM',
-		translate: 'CCPM',
-		type: 'item',
-		icon: 'material-outline:assignment_turned_in',
-		auth: authRoles.admin,
-		url: 'ccpm'
-	},
-	{
-		id: '3',
-		title: 'Hospital management',
-		translate: 'HospitalManagement',
-		type: 'item',
-		icon: 'heroicons-solid:key',
-		auth: authRoles.admin,
-		url: 'hospital-management'
-	},
+
+
 	{
 		id: '4',
 		title: 'DPC analysis',
@@ -226,15 +210,6 @@ const navigationConfig = [
 		icon: 'heroicons-solid:chat-alt-2',
 		auth: authRoles.hospitalAssistant_staff,
 		url: 'contact-form'
-	},
-	{
-		id: '8',
-		title: 'Staff management',
-		translate: 'StaffManagement',
-		type: 'item',
-		icon: 'heroicons-solid:user-add',
-		auth: authRoles.hospitalAssistant,
-		url: 'staff-management'
 	},
 
 	
@@ -385,7 +360,7 @@ const navigationConfig = [
 					url: 'dpc-management/days-score',
 					end: true
 				},
-				{
+				/*{
 					id: 'e-commerce-orders19912',
 					title: 'Disease Classification',
 					translate: 'DiseaseClassification',
@@ -393,15 +368,48 @@ const navigationConfig = [
 					icon: 'material-outline:event',
 					url: 'dpc-management/dieases-classification',
 					end: true
-				},
+				},*/
 			]
 		},	
+		{
+			id: '181',
+			title: 'CCPM',
+			translate: 'CCPM',
+			type: 'item',
+			icon: 'material-outline:assignment_turned_in',
+			url: 'ccpm'
+		},
 
 	
 	]
 },
-
-
+{
+	id: '18',
+	title: 'CCPM',
+	translate: 'CCPM',
+	type: 'item',
+	icon: 'material-outline:assignment_turned_in',
+	auth: authRoles.admin,
+	url: 'ccpm'
+},
+{
+	id: '3',
+	title: 'Hospital management',
+	translate: 'HospitalManagement',
+	type: 'item',
+	icon: 'heroicons-solid:key',
+	auth: authRoles.admin,
+	url: 'hospital-management'
+},
+{
+	id: '8',
+	title: 'Staff management',
+	translate: 'StaffManagement',
+	type: 'item',
+	icon: 'heroicons-solid:user-add',
+	auth: authRoles.hospitalAssistant,
+	url: 'staff-management'
+},
 
 
 ];

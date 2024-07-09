@@ -91,14 +91,17 @@ export default function DPCEditModal(props) {
     }
 
     function make_disabled(req_option,selected_value,codes=null,current_sur,name_colm){
-
+      req_option=req_option.toUpperCase()
+     
 
       let result=false
       let have_atleast1=true
 
-      if(req_option.toUpperCase()==selected_value){
+      if(req_option==selected_value){
         have_atleast1=true
       }else{
+
+          //console.log(req_option,selected_value,'[',codes,']',current_sur,name_colm)
 
           const array = codes.split(',');
          
@@ -110,49 +113,41 @@ export default function DPCEditModal(props) {
             let x_dpc_6  =t_code.substring(0, 6);
             let x_and_1  =t_code.substring(6, 7);
             let x_age_1  =t_code.substring(7, 8);
-            let x_sur_2  =t_code.substring(8, 10);
-            let x_tre1_1 =t_code.substring(10, 11);
-            let x_tre2_1 =t_code.substring(11, 12);
-            let x_sec_1  =t_code.substring(12, 13);
-            let x_sco_1  =t_code.substring(13, 14);
+            let x_sur_2  =t_code.substring(8, 10).toUpperCase();
+            let x_tre1_1 =t_code.substring(10, 11).toUpperCase();
+            let x_tre2_1 =t_code.substring(11, 12).toUpperCase();
+            let x_sec_1  =t_code.substring(12, 13).toUpperCase();
+            let x_sco_1  =t_code.substring(13, 14).toUpperCase();
 
 
 
             if(name_colm=='tre1_1'){  
             
               if(current_sur==x_sur_2) {
-                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(req_option.toUpperCase()==x_tre1_1.toUpperCase()){
+                 if(req_option==x_tre1_1){
                   have_atleast1=false
                 }
               }
             }
             else if(name_colm=='tre2_1'){  
-            console.log('pppp',current_sur,x_sur_2)
-              if(current_sur==x_sur_2.toUpperCase()) {
+              if(current_sur==x_sur_2) {
                  
-                if(req_option.toUpperCase()==x_tre2_1.toUpperCase()){
-                   console.log(req_option,selected_value,codes,current_sur,name_colm, x_tre2_1)
-                  have_atleast1=false
+                if(req_option==x_tre2_1){
+                   have_atleast1=false
                 }
               }
             }
             else if(name_colm=='sec_1'){  
-
-              console.log(req_option,selected_value,codes,current_sur,name_colm,'wwwww')
-
-            
+ 
               if(current_sur==x_sur_2) {
-                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(req_option.toUpperCase()==x_sec_1.toUpperCase()){
+                 if(req_option==x_sec_1){
                   have_atleast1=false
                 }
               }
             }else if(name_colm=='sco_1'){  
             
               if(current_sur==x_sur_2) {
-                  //console.log(single,' depend_code= ',depend_code,' x_sur_2= ',x_sur_2, 'props=',props,'x_tre1_1=',x_tre1_1)
-                if(req_option.toUpperCase()==x_sco_1.toUpperCase()){
+                 if(req_option==x_sco_1){
                   have_atleast1=false
                 }
               }
