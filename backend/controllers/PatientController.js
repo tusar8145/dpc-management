@@ -181,6 +181,25 @@ export const dpc_create = async (req, res, next) => {
       }
 
 
+      //check have 99 surgery for that dpc
+      
+      let dpc_disease_classi = await prisma.dpc_disease_classi.findMany({
+        where: {
+          dpc_6: dpc_6,
+        },
+        select:{
+          sur_2:true
+        }
+      })
+
+      if(dpc_disease_classi?.length>0){
+        if(dpc_disease_classi[0].sur_2.split(",").includes("99")==true){
+          console.log('true')
+        }else{
+          //sur_2="XX"
+        } 
+      }
+
 
 
       //Query + hospitalization_days
@@ -311,13 +330,13 @@ export const dpc_create = async (req, res, next) => {
         "dpc_6": dpc_6,
         "and_1": "X",
         "age_1": age_1,
-        "sur_2": "99",
+        "sur_2": sur_2,
         "tre1_1": temp_tre1_1,
         "tre2_1": temp_tre2_1,
         "sec_1": temp_sec_1,
         "sco_1": "X",
 
-        "dpc_code":dpc_6+"X"+age_1+"99"+temp_tre1_1+temp_tre2_1+temp_sec_1+"X", //initial
+        "dpc_code":dpc_6+"X"+age_1+sur_2+temp_tre1_1+temp_tre2_1+temp_sec_1+"X", //initial
 
         //staff
         "s_dpc_6": null,
@@ -684,8 +703,60 @@ export const dpc_migrate = async (req, res, next) => {
   try {
     //console.log(req.body['key'])
 
-    //migration
+    String.prototype.replaceAt = function(index, replacement) {
+      return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+  }
+  
+
+
     let mig = await prisma.dpc_generate.findMany({
+      select: { 
+        "id":true,
+        "dpc_6": true,
+        "sur_2": true,
+        dpc_code: true,
+      }
+    })
+
+    for(let i=0; i<mig.length;i++){
+      let th=mig[i]
+      
+      let dpc_disease_classi = await prisma.dpc_disease_classi.findMany({
+        where: {
+          dpc_6: th.dpc_6,
+        },
+        select:{
+          sur_2:true
+        }
+      })
+
+      if(dpc_disease_classi?.length>0){
+        if(dpc_disease_classi[0].sur_2.split(",").includes("99")==true){
+          console.log('true')
+        }else{
+           
+
+          var hello =th.dpc_code;
+          let kk=hello.replaceAt(8, "X");
+          kk=kk.replaceAt(9, "X");
+
+          console.log({sur_2:"XX",dpc_code:kk})
+
+            const update = await prisma.dpc_generate.update({
+              where: { id:th.id },
+              data: {sur_2:"XX",dpc_code:kk},
+            });
+        }
+      }
+    }
+
+
+
+
+
+
+    //migration
+    /*let mig = await prisma.dpc_generate.findMany({
       select: { 
         "id":true,
         "dpc_6": true,
@@ -716,7 +787,7 @@ export const dpc_migrate = async (req, res, next) => {
         where: { id:th.id },
         data: {dpc_code:new_code},
       });
-    }
+    }*/
     response.update([], res)
   } catch (error) {
     response.error(error, res, next)
