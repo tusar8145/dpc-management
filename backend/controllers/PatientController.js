@@ -196,7 +196,7 @@ export const dpc_create = async (req, res, next) => {
         if(dpc_disease_classi[0].sur_2.split(",").includes("99")==true){
           console.log('true')
         }else{
-          //sur_2="XX"
+          sur_2="XX"
         } 
       }
 
