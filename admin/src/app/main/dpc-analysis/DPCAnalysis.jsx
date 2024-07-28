@@ -403,7 +403,8 @@ async function deleteAll(hospital_id) {
 
 			//alert(hospital_id)
 			const illnessClear = await axios.post(apiConfig.tableClear + 'dpc_generate'+'/remove-all', {hospital_id:hospital_id});
-			server(hospital_id) 
+			let hospital={id:hospital_id}
+			server(hospital) 
 		} catch (error) {
 				console.log(error,'dddddddddddd')
 		}
