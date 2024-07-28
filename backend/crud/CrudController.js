@@ -302,10 +302,15 @@ export const remove =  async (req, res, next) => {
     }
 }; 
 
+ 
+
 export const remove_all =  async (req, res, next) => {
     try {   
         let table_name=req.params.table
-        const delete_ = await prisma[`${table_name}`].deleteMany({})
+        let hospital_id=req.body.hospital_id || null
+        const delete_ = await prisma[`${table_name}`].deleteMany({
+           ...hospital_id>0?{where: { hospital_id: hospital_id}}:{} 
+        })
         
         response.remove(delete_,res)
 

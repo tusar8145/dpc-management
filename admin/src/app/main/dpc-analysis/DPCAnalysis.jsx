@@ -21,6 +21,8 @@ import TextField from '@mui/material/TextField';
 import * as FileSaver from 'file-saver';
 import IconButton from '@mui/material/IconButton';
 import Close from '@mui/icons-material/Download';
+import DeleteForever from '@mui/icons-material/DeleteForever';
+
 import Filter from '@mui/icons-material/FilterAlt';
 import { motion } from 'framer-motion';
 import Typography from '@mui/material/Typography';
@@ -395,6 +397,18 @@ const [ signal, setSignal]  =useState('45');
 	}
 
 
+async function deleteAll(hospital_id) {
+		
+		try {
+
+			//alert(hospital_id)
+			const illnessClear = await axios.post(apiConfig.tableClear + 'dpc_generate'+'/remove-all', {hospital_id:hospital_id});
+			server(hospital_id) 
+		} catch (error) {
+				console.log(error,'dddddddddddd')
+		}
+}
+
 	/*---------end common function shareable---------*/
 
 	function handleDataFromChild(data) {
@@ -597,6 +611,23 @@ const [ signal, setSignal]  =useState('45');
 									<Button size="small" variant="" style={{ 'border': '1px' }}
 									onClick={() => { download() }}
 									endIcon={<Close />}> 輸出 </Button>	 
+
+									<Button size="small" variant="" style={{ 'border': '1px' }}
+
+onClick={() => {
+	if (window.confirm(t('Are you sure to continue?'))) {
+		deleteAll(hospital.id)
+		window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+		
+	}
+}}
+
+
+
+
+									 
+									endIcon={<DeleteForever />}> すべて削除 </Button>	
+
 								 
 								<Paginate  total_data={total_data} setRowParent={setRowParent} setPageParent={setPageParent} />
 							</motion.div>

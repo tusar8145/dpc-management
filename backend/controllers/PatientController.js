@@ -103,16 +103,37 @@ export const dpc_create = async (req, res, next) => {
   try {
 
     function calculateAge(birthdate) {
-      const birthDate = new Date(birthdate);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDifference = today.getMonth() - birthDate.getMonth();
-      const dayDifference = today.getDate() - birthDate.getDate();
-      if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-        age--;
+      if (!birthdate) {
+          throw new Error('Birthdate is required');
       }
-      return age;
-    }
+  
+      const birthDateObj = new Date(birthdate);
+      const today = new Date();
+      
+      // Validate the birthdate
+      if (isNaN(birthDateObj.getTime())) {
+          throw new Error('Invalid birthdate format');
+      }
+      
+      const yearDifference = today.getFullYear() - birthDateObj.getFullYear();
+      const monthDifference = today.getMonth() - birthDateObj.getMonth();
+      const dayDifference = today.getDate() - birthDateObj.getDate();
+  
+      // Calculate age in full years and fractional part
+      let age = yearDifference;
+      if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+          age--;
+      }
+  
+      // Calculate fractional part
+      const totalDaysInYear = 365.25; // Average year length accounting for leap years
+      const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+      const daysPastLastBirthday = (today.getMonth() - birthDateObj.getMonth()) * daysInMonth + dayDifference;
+  
+      const fractionOfYear = daysPastLastBirthday / totalDaysInYear;
+  
+      return age + fractionOfYear;
+  }
 
 
     function calculateHospitalizationDays(admissionDate, dischargeDate) {
@@ -123,13 +144,30 @@ export const dpc_create = async (req, res, next) => {
       return differenceInDays;
     }
 
+    function code_filter(code_arr,first_items,index_start,index_end){   
+      let col_sur_1=[]
+      
+      for (let i=0; i<code_arr.length; i++){
+          let item=code_arr[i]
+          let item_10=item.substring(index_start, index_end)
 
+          //console.log('item_10=',item_10, ' first_items=',first_items)
+          
+          if(item_10.toUpperCase()==first_items.toUpperCase()){
+              let sur_1=item.substring(index_end, index_end+1)
+              col_sur_1.push(sur_1)
+          }
+      }
+      return col_sur_1
+    }
 
     let req_data_all = req.body
-    let collection = []
-
+ 
 
     for (let x = 0; x < req_data_all.length; x++) {
+
+      let color_obj=[]
+      let hospitalization_days = null
 
       //incomming
       let first_loop_collect = req_data_all[x].first_loop_collect
@@ -146,7 +184,7 @@ export const dpc_create = async (req, res, next) => {
       let dept_obj = req_data_all[x].dept_obj
       let disease_obj = req_data_all[x].disease_obj
 
-      let color_obj=[]
+      
 
       let icd = first_loop_collect.icd_code
 
@@ -155,17 +193,25 @@ export const dpc_create = async (req, res, next) => {
 
       //declar
       let dpc_6 = ""
-      let and_1 = ""
-      let age_1 = ""
+      let and_1 = "X"
+      let age_1 = "X"
       let sur_2 = "99"  
       let tre1_1 = ""
       let tre2_1 = ""
       let sec_1 = ""
       let sco_1 = ""
 
-      let hospitalization_days = null
 
-      //Query 1
+
+      //Query + hospitalization_days
+      if (admissionDate && dischargeDate) {
+        hospitalization_days = calculateHospitalizationDays(admissionDate, dischargeDate).toString()
+      } else if (admissionDate && treatmentDate) {
+        hospitalization_days = calculateHospitalizationDays(admissionDate, treatmentDate).toString()
+      }
+
+
+      //Query 1 icd -> dpc
       let search = icd
       for (let j = 0; j < icd.length - 1; j++) {
         search = search.slice(0, -1);
@@ -181,56 +227,38 @@ export const dpc_create = async (req, res, next) => {
       }
 
 
-      //check have 99 surgery for that dpc
+
+
+
+      //available codes
       
-      let dpc_disease_classi = await prisma.dpc_disease_classi.findMany({
-        where: {
-          dpc_6: dpc_6,
-        },
-        select:{
-          sur_2:true
-        }
-      })
-
-      if(dpc_disease_classi?.length>0){
-        if(dpc_disease_classi[0].sur_2.split(",").includes("99")==true){
-          console.log('true')
-        }else{
-          sur_2="XX"
-        } 
-      }
 
 
-
-      //Query + hospitalization_days
-      if (admissionDate && dischargeDate) {
-        hospitalization_days = calculateHospitalizationDays(admissionDate, dischargeDate).toString()
-      } else if (admissionDate && treatmentDate) {
-        hospitalization_days = calculateHospitalizationDays(admissionDate, treatmentDate).toString()
-      }
-
-      //Query + age calculate
+      //Query + age calculate-----------------------------------------------(L.2)
      // const age = calculateAge(first_loop_collect?.date_of_birth);
      // if (age < 10) { age_1 = "0" } else { age_1 = "1" }
       age_1 = "X" 
+
+
 
       //Query Layer 3
       let temp_tre1_1 = 'X'
       let temp_tre2_1 = 'X'
       let temp_sec_1 = 'X'
-
+      let temp_sco_1 = 'X'
+      
       
       ////////////////////////////////////////////////////////////////////////////////////////////////
       for (let m = 0; m < receipt_obj.length; m++) {
-        let fruit = receipt_obj[m]
+        let item_receipt_obj = receipt_obj[m]
         let clr='black'
 
       
 
-        if (fruit) {
+        if (item_receipt_obj) {
           let find_ = await prisma.treatment_1.findMany({
             where: {
-              recept_main:  fruit ,
+              recept_main:  item_receipt_obj ,
             },
           })
 
@@ -241,7 +269,7 @@ export const dpc_create = async (req, res, next) => {
           } else {
            /* let find_ =  await prisma.treatment_2.findMany({
               where: {
-                recept_main:  fruit ,
+                recept_main:  item_receipt_obj ,
               },
             })*/
 
@@ -296,12 +324,163 @@ export const dpc_create = async (req, res, next) => {
         }
 
         color_obj.push(clr)
-
-
       }
       //////////////////////////////////////////////////////////////////////////////
 
       //if (temp_tre1_1 == null) {  temp_tre1_1 = 'X'  } if (temp_tre2_1 == null) {  temp_tre2_1 = 'X'  } if (temp_sec_1 == null) {  temp_sec_1 = 'X' }
+      //--------------------------------------------------- L.4/5/6
+
+
+
+
+      //check have 99 surgery for that dpc      
+      let dpc_disease_classi = await prisma.dpc_disease_classi.findMany({
+        where: {
+          dpc_6: dpc_6,
+        },
+        select:{
+          and_1:true,
+          age_1:true,
+          sur_2:true,
+          tre1_1:true,
+          tre2_1:true,
+          sec_1:true,
+          sco_1:true,
+          codes:true
+         }
+      })
+
+
+      if(dpc_disease_classi?.length>0){
+        let dpc_disease_classi_first=dpc_disease_classi[0]
+        if(dpc_disease_classi_first.sur_2.split(",").includes("99")==true){  }else{   sur_2="XX"  } //
+        
+        //age hisab
+
+        const age = calculateAge(first_loop_collect?.date_of_birth);
+
+   
+
+        let Arr_and_1 = dpc_disease_classi_first.and_1.split(",")
+        let Arr_age_1 = dpc_disease_classi_first.age_1.split(",")
+
+        if(Arr_and_1?.length==1){ //always x
+          //default value X
+        }else if(Arr_and_1?.length>1){   
+           for(let c=0; c<Arr_and_1.length;c++){
+             let temp1=Arr_and_1[c]
+             if(temp1=='0'){
+                //dependency
+             }else if(temp1=='1'){
+               if (age < 15 ) { and_1 = "1" }
+             }else if(temp1=='2'){
+               if (age >= 15 && age < 165 ) { and_1 = "2" }
+             }
+           }
+        } 
+
+        console.log(Arr_age_1?.length,)
+
+        if(Arr_age_1?.length==1){//always x
+         //default value X
+        }else if(Arr_age_1?.length>1){  
+          
+          
+          for(let c=0; c<Arr_age_1.length;c++){
+              let temp1=Arr_age_1[c]
+
+              if(dpc_6=='010020' || dpc_6=='010040'){
+                age_1 = "0"
+              }else if(dpc_6=='060160'){
+
+                if(temp1=='1'){  if (age < 15) { age_1 = "1" }    }else if(temp1=='0'){   if (age > 15) { age_1 = "0" }   }
+                
+              }else if(dpc_6=='180010' || dpc_6=='14031x'){
+
+                if(temp1=='1'){  if (age < 1) { age_1 = "1" }    }else if(temp1=='0'){   if (age > 1) { age_1 = "0" }   }
+                
+              }else if(dpc_6=='130110'){
+              
+                if(temp1=='1'){  if (age < 1) { age_1 = "1" }    }else if(temp1=='0'){   if (age > 1) { age_1 = "0" }   }
+
+              }else if(dpc_6=='150070'){
+                if(temp1=='1'){  if (age < 2) { age_1 = "1" }    }else if(temp1=='0'){   if (age > 2) { age_1 = "0" }   }
+              } else if(dpc_6=='040080'){
+ 
+                if(temp1=='0'){
+                    if (age < 1) { age_1 = "0" } 
+                }else if(temp1=='1'){
+                  if (age >= 1 && age < 15 ) { age_1 = "1" }
+                }else if(temp1=='2'){
+                  if (age >= 15 && age < 65 ) { age_1 = "2" }
+                }else if(temp1=='3'){
+                  if (age >= 65 && age < 75 ) { age_1 = "3" }
+                }else if(temp1=='4'){
+                  if (age >= 75 && age < 150 ) { age_1 = "4" }
+                }
+              }
+          }
+
+
+        } 
+
+        // temp_tre1_1 = 'X'
+        // 
+        // temp_tre2_1 = 'X'
+        // temp_sec_1 = 'X'
+
+        let code_arr=dpc_disease_classi_first.codes.split(",")
+ 
+        //////////////////////////////////////////////////////////// 
+        let col_sur_1 = code_filter(code_arr,dpc_6+''+and_1+''+age_1+''+sur_2,0,10)
+        //console.log(dpc_6+'/'+and_1+'/'+age_1+'/'+sur_2)
+  
+        if(temp_tre1_1=='X'){ //no surgery 1 value
+            if(col_sur_1.includes('0')){
+              temp_tre1_1='0'
+            }else if(col_sur_1.includes('x')){
+              temp_tre1_1='X'
+            }
+        }
+
+        /////////////////////////////////////////////////////////////
+        let col_sur_2 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1,0,11)
+         
+        if(temp_tre2_1=='X'){ //no surgery 1 value
+            if(col_sur_2.includes('0')){
+              temp_tre2_1='0'
+            }else if(col_sur_2.includes('x')){
+              temp_tre2_1='X'
+            }
+        }
+
+ 
+          let col_temp_sec_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1+temp_tre2_1,0,12)
+          
+          if(temp_sec_1=='X'){ //no    1 value
+            if(col_temp_sec_1.includes('0')){
+              temp_sec_1='0'
+            }else if(col_temp_sec_1.includes('x')){
+              temp_sec_1='X'
+            }
+          }
+    
+          let col_temp_sco_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1+temp_tre2_1+temp_sco_1,0,13)
+          
+          if(temp_sco_1=='X'){ //no    1 value
+            if(col_temp_sco_1.includes('0')){
+              temp_sco_1='0'
+            }else if(col_temp_sco_1.includes('x')){
+              temp_sco_1='X'
+            }
+          }
+ 
+      }
+
+
+
+
+
 
 
       let data = {
@@ -328,15 +507,15 @@ export const dpc_create = async (req, res, next) => {
 
         //system
         "dpc_6": dpc_6,
-        "and_1": "X",
+        "and_1": and_1,
         "age_1": age_1,
         "sur_2": sur_2,
         "tre1_1": temp_tre1_1,
         "tre2_1": temp_tre2_1,
         "sec_1": temp_sec_1,
-        "sco_1": "X",
+        "sco_1": temp_sco_1,
 
-        "dpc_code":dpc_6+"X"+age_1+sur_2+temp_tre1_1+temp_tre2_1+temp_sec_1+"X", //initial
+        "dpc_code":dpc_6+and_1+age_1+sur_2+temp_tre1_1+temp_tre2_1+temp_sec_1+temp_sco_1, //initial
 
         //staff
         "s_dpc_6": null,
