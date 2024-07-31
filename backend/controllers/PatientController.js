@@ -226,21 +226,7 @@ export const dpc_create = async (req, res, next) => {
         }
       }
 
-
-
-
-
-      //available codes
-      
-
-
-      //Query + age calculate-----------------------------------------------(L.2)
-     // const age = calculateAge(first_loop_collect?.date_of_birth);
-     // if (age < 10) { age_1 = "0" } else { age_1 = "1" }
-      age_1 = "X" 
-
-
-
+ 
       //Query Layer 3
       let temp_tre1_1 = 'X'
       let temp_tre2_1 = 'X'
@@ -251,73 +237,75 @@ export const dpc_create = async (req, res, next) => {
       ////////////////////////////////////////////////////////////////////////////////////////////////
       for (let m = 0; m < receipt_obj.length; m++) {
         let item_receipt_obj = receipt_obj[m]
-        let clr='black'
-
-      
+        let clr = 'black'
 
         if (item_receipt_obj) {
           let find_ = await prisma.treatment_1.findMany({
             where: {
-              recept_main:  item_receipt_obj ,
+              recept_main: item_receipt_obj,
             },
           })
 
           if (find_.length > 0) {
             //found t1
             temp_tre1_1 = find_[0].corres_code.toString()
-              clr='Blue'
+            clr = 'Blue'
+
+            //need validate
+
+
           } else {
-           /* let find_ =  await prisma.treatment_2.findMany({
-              where: {
-                recept_main:  item_receipt_obj ,
-              },
-            })*/
+            /* let find_ =  await prisma.treatment_2.findMany({
+               where: {
+                 recept_main:  item_receipt_obj ,
+               },
+             })*/
 
-            let itmx=items_obj[m]
+            let itmx = items_obj[m]
 
-             
 
-            let find_ =  null
-            
+
+            let find_ = null
+
             if (itmx) {
               find_ = await prisma.treatment_2.findMany({
                 where: {
                   AND: [
                     { name: { equals: itmx }, },
-                    {recept_main:receipt_obj[m]},
-                    {dpc_6digit:dpc_6}
+                    { recept_main: receipt_obj[m] },
+                    { dpc_6digit: dpc_6 }
                   ]
 
                 },
               })
-            } 
+            }
 
             if (find_?.length > 0) {
 
               //found t2
-              
+
               temp_tre2_1 = find_[0].corres_code.toString()
               //if(temp_tre2_1=='5'){
-                console.log(receipt_obj[m],itmx,dpc_6,find_.length)
-                //console.log(find_.length,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
-             // }
-              clr='Brown'
+              //console.log(receipt_obj[m],itmx,dpc_6,find_.length)
+              //console.log(find_.length,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
+              // }
+              clr = 'Brown'
             } else {
-              
-              let itm=items_obj[m]
-              if(itm){
-                  let find_ = await prisma.secondary_injury.findMany({
+
+              let itm = items_obj[m]
+              if (itm) {
+                let find_ = await prisma.secondary_injury.findMany({
                   where: {
                     drug_name: { equals: itm },
                   },
-                  })
-                  if (find_.length > 0) {
-                    //found t3
-                    clr='Green'
-                    temp_sec_1 = '1'
-                  } else {
+                })
+                if (find_.length > 0) {
+                  //found t3
+                  clr = 'Green'
+                  temp_sec_1 = '1'
+                } else {
 
-                  }
+                }
               }
             }
           }
@@ -379,8 +367,7 @@ export const dpc_create = async (req, res, next) => {
            }
         } 
 
-        console.log(Arr_age_1?.length,)
-
+ 
         if(Arr_age_1?.length==1){//always x
          //default value X
         }else if(Arr_age_1?.length>1){  
@@ -441,6 +428,17 @@ export const dpc_create = async (req, res, next) => {
             }else if(col_sur_1.includes('x')){
               temp_tre1_1='X'
             }
+        }else{
+          //validate
+            if(col_sur_1.includes(temp_tre1_1)){
+              
+            }else{
+              if(col_sur_1.includes('0')){
+                temp_tre1_1='0'
+              }else if(col_sur_1.includes('x')){
+                temp_tre1_1='X'
+              }
+            }
         }
 
         /////////////////////////////////////////////////////////////
@@ -452,6 +450,17 @@ export const dpc_create = async (req, res, next) => {
             }else if(col_sur_2.includes('x')){
               temp_tre2_1='X'
             }
+        }else{
+          //validate
+          if(col_sur_2.includes(temp_tre2_1)){
+              
+          }else{
+            if(col_sur_2.includes('0')){
+              temp_tre2_1='0'
+            }else if(col_sur_2.includes('x')){
+              temp_tre2_1='X'
+            }
+          }
         }
 
  
@@ -463,9 +472,11 @@ export const dpc_create = async (req, res, next) => {
             }else if(col_temp_sec_1.includes('x')){
               temp_sec_1='X'
             }
+          }else{
+            temp_sec_1=col_temp_sec_1[0] || '0'
           }
     
-          let col_temp_sco_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1+temp_tre2_1+temp_sco_1,0,13)
+          let col_temp_sco_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1+temp_tre2_1+temp_sec_1,0,13)
           
           if(temp_sco_1=='X'){ //no    1 value
             if(col_temp_sco_1.includes('0')){
@@ -473,6 +484,14 @@ export const dpc_create = async (req, res, next) => {
             }else if(col_temp_sco_1.includes('x')){
               temp_sco_1='X'
             }
+          }else{
+           
+              temp_sco_1=col_temp_sco_1[0] || '0'
+        
+            //validate
+  
+            
+  
           }
  
       }
@@ -724,6 +743,42 @@ export const dpc_create = async (req, res, next) => {
 
 export const dpc_update_code = async (req, res, next) => {
   try {
+
+
+    function code_filter(code_arr,first_items,index_start,index_end){   
+      let col_sur_1=[]
+      
+      for (let i=0; i<code_arr.length; i++){
+          let item=code_arr[i]
+          let item_10=item.substring(index_start, index_end)
+
+          //console.log('item_10=',item_10, ' first_items=',first_items)
+          
+          if(item_10.toUpperCase()==first_items.toUpperCase()){
+              let sur_1=item.substring(index_end, index_end+1)
+              col_sur_1.push(sur_1)
+          }
+      }
+      return col_sur_1
+    }
+
+    function code_filter_sur(code_arr,first_items,index_start,index_end){   
+      let col_sur_1=[]
+      
+      for (let i=0; i<code_arr.length; i++){
+          let item=code_arr[i]
+          let item_10=item.substring(index_start, index_end)
+
+          //console.log('item_10=',item_10, ' first_items=',first_items)
+          
+          if(item_10.toUpperCase()==first_items.toUpperCase()){
+              let sur_1=item.substring(index_end, index_end+2)
+              col_sur_1.push(sur_1)
+          }
+      }
+      return col_sur_1
+    }
+
     let up = 0
     //console.log(req.body)
 
@@ -740,6 +795,8 @@ export const dpc_update_code = async (req, res, next) => {
 
 
     let surgery = req.body.data
+    let hospital_id=req.body.hospital_id
+
     for (let x = 0; x < surgery.length; x++) {
       let this_ = surgery[x]
 
@@ -758,11 +815,24 @@ export const dpc_update_code = async (req, res, next) => {
         const find_ = await prisma.dpc_generate.findMany({
           where: {
             patient_code: parseInt(this_.patient_code),
-            admission_date:this_.admission_date
+            admission_date:this_.admission_date,
+            hospital_id:hospital_id,
           },
           select: {
             id: true,
             patient_code:true,
+
+            dpc_6:true,
+            and_1:true,
+            age_1:true,
+            sur_2:true,
+            tre1_1:true,
+            tre2_1:true,
+            sec_1:true,
+            sco_1:true,
+
+            dpc_code:true,
+
 
             arr_doctor: true,
             arr_receipt: true,
@@ -774,6 +844,8 @@ export const dpc_update_code = async (req, res, next) => {
             arr_color:true,
           }
         })
+
+ 
 
        // console.log(find_[0].patient_code)
 
@@ -849,21 +921,145 @@ export const dpc_update_code = async (req, res, next) => {
               })            
           }
 
+          let old_sur= find_[0].sur_2
 
+          let dpc_6=find_[0].dpc_6
+          let and_1 =find_[0].and_1
+          let age_1 = find_[0].age_1
+          let sur_2 = temp1[0].code
+          let tre1_1 = find_[0].tre1_1
+          let tre2_1 =find_[0].tre2_1
+          let sec_1 = find_[0].sec_1
+          let sco_1 = find_[0].sco_1
+
+          let dpc_disease_classi = await prisma.dpc_disease_classi.findMany({
+            where: {
+              dpc_6: dpc_6,
+            },
+            select:{
+              and_1:true,
+              age_1:true,
+              sur_2:true,
+              tre1_1:true,
+              tre2_1:true,
+              sec_1:true,
+              sco_1:true,
+              codes:true
+             }
+          })
+
+          //validate
+          if(dpc_disease_classi?.length>0){
+            let dpc_disease_classi_first=dpc_disease_classi[0]
+            let code_arr=dpc_disease_classi_first.codes.split(",")
+
+             let for_sur = code_filter_sur(code_arr,dpc_6+''+and_1+''+age_1,0,8)
+              if(for_sur.includes(sur_2)){
+                 
+              }else {
+                console.log('not included',for_sur,sur_2,old_sur)
+                sur_2=old_sur
+              }
+
+            
+            let col_sur_1 = code_filter(code_arr,dpc_6+''+and_1+''+age_1+''+sur_2,0,10)
+
+                if(tre1_1=='X'){ //no surgery 1 value
+                  if(col_sur_1.includes('0')){
+                    tre1_1='0'
+                  }else if(col_sur_1.includes('x')){
+                    tre1_1='X'
+                  }
+                }else{
+                  //validate
+                    if(col_sur_1.includes(tre1_1)){
+                      
+                    }else{
+                      if(col_sur_1.includes('0')){
+                        tre1_1='0'
+                      }else if(col_sur_1.includes('x')){
+                        tre1_1='X'
+                      }
+                    }
+                }
+
+
+
+                let col_sur_2 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+tre1_1,0,11)
+         
+                if(tre2_1=='X'){ //no surgery 1 value
+                    if(col_sur_2.includes('0')){
+                      tre2_1='0'
+                    }else if(col_sur_2.includes('x')){
+                      tre2_1='X'
+                    }
+                }else{
+                  //validate
+                  if(col_sur_2.includes(tre2_1)){
+                      
+                  }else{
+                    if(col_sur_2.includes('0')){
+                      tre2_1='0'
+                    }else if(col_sur_2.includes('x')){
+                      tre2_1='X'
+                    }
+                  }
+                }
+        
+         
+                  let col_sec_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+tre1_1+tre2_1,0,12)
+                  
+                  if(sec_1=='X'){ //no    1 value
+                    if(col_sec_1.includes('0')){
+                      sec_1='0'
+                    }else if(col_sec_1.includes('x')){
+                      sec_1='X'
+                    }
+                  }else{
+                    sec_1=col_sec_1[0] || '0'
+                  }
+            
+                  let col_sco_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+tre1_1+tre2_1+sec_1,0,13)
+                  
+                  if(sco_1=='X'){ //no    1 value
+                    if(col_sco_1.includes('0')){
+                      sco_1='0'
+                    }else if(col_sco_1.includes('x')){
+                      sco_1='X'
+                    }
+                  }else{                  
+                      sco_1=col_sco_1[0] || '0'
+                    //validate
+                  }
+          }
+
+
+              let new_dpc_code =find_[0].dpc_code.substring(0,8)+sur_2+tre1_1+tre2_1+sec_1+sco_1
+
+              console.log(find_[0].dpc_code)
+              console.log(new_dpc_code)
+              console.log('----------------')
+
+                up++
+                let temp2 = await prisma.dpc_generate.updateMany({
+                  where: {
+                    patient_code: this_.patient_code,
+                    admission_date:this_.admission_date,
+                    hospital_id:hospital_id,
+                  },
+                  data: {
+                    sur_2: sur_2,
+                    tre1_1:tre1_1,
+                    tre2_1:tre2_1,
+                    sec_1:sec_1,
+                    sco_1:sco_1,
+                  },
+                })
 
         }
  
 
 
-        up++
-        let temp2 = await prisma.dpc_generate.updateMany({
-          where: {
-            patient_code: this_.patient_code
-          },
-          data: {
-            sur_2: temp1[0].code
-          },
-        })
 
         //console.log(temp2,'temp2',this_.patient_code)
       }

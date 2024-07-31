@@ -611,7 +611,7 @@ async function deleteAll(hospital_id) {
 							 
 									<Button size="small" variant="" style={{ 'border': '1px' }}
 									onClick={() => { download() }}
-									endIcon={<Close />}> 輸出 </Button>	 
+									endIcon={<Close />}> ダウンロード </Button>	 
 
 									<Button size="small" variant="" style={{ 'border': '1px' }}
 
@@ -644,7 +644,7 @@ onClick={() => {
 						    </td>
 						    <td class="width_double new_t_color_head  text-left">
 						      <span class="dpc">
-						        <div class=" ">名前</div>
+						        <div class=" ">ドクター名</div>
 						      </span>
 						    </td>
 						    <td class="width_single new_t_color_head text-left">

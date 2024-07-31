@@ -20,8 +20,8 @@ export default function ButtonThree(props) {
 
         }}>
         <BottomNavigationAction label={`全て (${props.x_T_data})`} icon={<BallotIcon />}/>
-        <BottomNavigationAction label={`チェック済み (${props.x_y_verify})`}  icon={<Fingerprint />}/>
-        <BottomNavigationAction label={`未検査 (${props.x_n_verify})`} icon={<PendingIcon />}/>
+        <BottomNavigationAction label={`確定 (${props.x_y_verify})`}  icon={<Fingerprint />}/>
+        <BottomNavigationAction label={`未確定 (${props.x_n_verify})`} icon={<PendingIcon />}/>
       </BottomNavigation>
     </Box>);
 }
