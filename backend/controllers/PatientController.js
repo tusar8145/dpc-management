@@ -251,7 +251,7 @@ export const dpc_create = async (req, res, next) => {
           if (find_.length > 0) {
             //found t1
             temp_tre1_1 = find_[0].corres_code.toString()
-            clr = 'Blue'
+            clr = 'Blue? '+find_[0].dpc_6digit
 
             //need validate
 
@@ -291,7 +291,7 @@ export const dpc_create = async (req, res, next) => {
               //console.log(receipt_obj[m],itmx,dpc_6,find_.length)
               //console.log(find_.length,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
               // }
-              clr = 'Brown'
+              clr = 'Brown? '+find_[0].code
             } else {
 
               let itm = items_obj[m]
@@ -303,7 +303,7 @@ export const dpc_create = async (req, res, next) => {
                 })
                 if (find_.length > 0) {
                   //found t3
-                  clr = 'Green'
+                  clr = 'Green? '+find_[0].disease_name
                   temp_sec_1 = '1'
                 } else {
 
@@ -626,6 +626,10 @@ export const dpc_create = async (req, res, next) => {
         let j_arr_disease=null
         let j_arr_color=null
 
+        //new
+        let j_arr_treno=null
+        let j_arr_icd=null
+
         try {
           let k_arr_doctor=JSON.parse(find_.arr_doctor)
           let k_arr_receipt=JSON.parse(find_.arr_receipt)
@@ -635,6 +639,11 @@ export const dpc_create = async (req, res, next) => {
           let k_arr_dept=JSON.parse(find_.arr_dept)
           let k_arr_disease=JSON.parse(find_.arr_disease)
           let k_arr_color=JSON.parse(find_.arr_color)
+
+          //new
+          let k_arr_treno=JSON.parse(find_.arr_treno)
+          let k_arr_icd=JSON.parse(find_.arr_icd)
+
   
           let new_arr_doctor=[]
           let new_arr_receipt=[]
@@ -644,6 +653,9 @@ export const dpc_create = async (req, res, next) => {
           let new_arr_dept=[]
           let new_arr_disease=[]
           let new_arr_color=[]
+          //new
+          let new_arr_treno=[]
+          let new_arr_icd=[]
   
   
           {
@@ -661,6 +673,9 @@ export const dpc_create = async (req, res, next) => {
                 new_arr_dept.push(k_arr_dept[index])
                 new_arr_disease.push(k_arr_disease[index])
                 new_arr_color.push(k_arr_color[index])
+                //new
+                new_arr_treno.push(k_arr_treno[index])
+                new_arr_icd.push(k_arr_icd[index])
               }
   
             }
@@ -683,6 +698,10 @@ export const dpc_create = async (req, res, next) => {
             j_arr_dept=JSON.stringify(new_arr_dept).slice(0, -1)+','+JSON.stringify(dept_obj).slice(1);
             j_arr_disease=JSON.stringify(new_arr_disease).slice(0, -1)+','+JSON.stringify(disease_obj).slice(1);
             j_arr_color=JSON.stringify(new_arr_color).slice(0, -1)+','+JSON.stringify(color_obj).slice(1);
+            //new
+            j_arr_treno=JSON.stringify(new_arr_treno).slice(0, -1)+','+JSON.stringify(treno_obj).slice(1);
+            j_arr_icd=JSON.stringify(new_arr_icd).slice(0, -1)+','+JSON.stringify(icd_obj).slice(1);
+
           }else{
             j_arr_doctor=JSON.stringify(doctor_obj);
             j_arr_receipt=JSON.stringify(receipt_obj);
@@ -692,6 +711,9 @@ export const dpc_create = async (req, res, next) => {
             j_arr_dept=JSON.stringify(dept_obj);
             j_arr_disease=JSON.stringify(disease_obj);
             j_arr_color=JSON.stringify(color_obj);
+            //new
+            j_arr_treno=JSON.stringify(treno_obj);
+            j_arr_icd=JSON.stringify(icd_obj);
           }
   
         } catch (error) {
@@ -714,6 +736,9 @@ export const dpc_create = async (req, res, next) => {
           arr_dept: j_arr_dept,
           arr_disease: j_arr_disease,
           arr_color: j_arr_color,
+          //new
+          arr_treno: j_arr_treno,
+          arr_icd: j_arr_icd,
 
           ...first_loop_collect.discharge_date ? { "discharge_date": first_loop_collect?.discharge_date?.toString(), } : {},
           ...hospitalization_days ? { "hospitalization_days": hospitalization_days, } : {},
@@ -927,7 +952,7 @@ export const dpc_update_code = async (req, res, next) => {
             new_arr_amount.push(this_.points)
             new_arr_dept.push(" ")
             new_arr_disease.push(" ")
-            new_arr_color.push("Purple")       
+            new_arr_color.push("Purple? "+temp1[0]?.k_code)       
               
             //new
             new_arr_treno.push(" ")

@@ -41,7 +41,7 @@ function InjuryIllness() {
 	let keyConfig=[		
 		{name:'receipt', type:'String', header:'DPC code',edit:1, validate:{required:1},	 		 xlsx:'__EMPTY_2'},
 
-		{name:'hos_days_1', type:'Integer', header:'Days I',edit:1, validate:{required:0}, xlsx:'__EMPTY_9'},
+		{name:'hos_days_1', type:'String', header:'Days I',edit:1, validate:{required:0}, xlsx:'__EMPTY_9'},
 		{name:'hos_days_2', type:'Integer', header:'Days II',edit:1, validate:{required:0}, xlsx:'__EMPTY_10'},
 		{name:'hos_days_3', type:'Integer', header:'Days III',edit:1, validate:{required:0}, xlsx:'__EMPTY_11'},
 		{name:'hos_score_1', type:'Integer', header:'Period I',edit:1, validate:{required:0}, xlsx:'__EMPTY_12'},
@@ -118,7 +118,8 @@ function InjuryIllness() {
 						if (keyconSplit[x] == '<auto>' || this_[keyconSplit[x]]) {
 							if (keyconSplit[x] != '<auto>') {
 								if (keycon.type == 'String') {
-									result = result + this_[keyconSplit[x]].toString().toUpperCase()
+ 									result = result + this_[keyconSplit[x]].toString().toUpperCase() || '出来高算定'
+
 								} else {
 									result = parseInt(this_[keyconSplit[x]])  
 								}
@@ -130,6 +131,9 @@ function InjuryIllness() {
 
 							}
 						} else {
+							if(keycon.name=='hos_days_1'){
+ 								result = '出来高算定'
+							}
 							console.log(this_, 'fail')
 							if (i > 1) {
 

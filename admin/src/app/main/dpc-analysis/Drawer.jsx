@@ -238,7 +238,7 @@ function  excelSerialNumberToJSDate  (serial)  {
                   <th className=' border width_double'>実施日</th>
                 </tr>
                 {single_patient_rec?.all?.map((_item) => (
-                  <tr style={{color:_item.color}}>
+                  <tr style={{color:_item.color.split("?")[0]}} title={_item.color.split("?")[1]}>
                     <td className=' border t-left'>{_item.treno}</td>
                     <td className=' border t-left'>{_item.disease}</td>
                     <td className=' border t-center'>{_item.receipt}</td>

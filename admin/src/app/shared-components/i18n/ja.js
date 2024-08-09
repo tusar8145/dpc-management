@@ -230,6 +230,7 @@ const locale = {
 	'Period II' : '期間 II',
 	'Period III' : '期間 III',
 	'Sender':'送信者',
+	'Code':'ｺｰﾄﾞ',
 };
 export default locale;
 

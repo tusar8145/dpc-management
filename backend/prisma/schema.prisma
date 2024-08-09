@@ -236,7 +236,7 @@ model treatment_2 {
   name                         String
   recept_main                  Int?  
   receipt                      Int       
-
+code  String?
 
   hospital_id                  Int?
   parent_id                    Int?
@@ -277,7 +277,7 @@ model days_score {
   hospital_id                  Int?
   parent_id                    Int?
 
-  hos_days_1  Int?
+  hos_days_1  String?
   hos_days_2  Int?
   hos_days_3  Int?
 
@@ -440,7 +440,7 @@ model services_clients_issues {
   created                      String? @db.VarChar(40)
   replied                      String? @db.VarChar(40)
   status_date  String? @db.VarChar(40)
-  
+
 
   issues_reply services_clients_issues_reply[] @relation("issues_reply")
 }
