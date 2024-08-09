@@ -33,10 +33,6 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 
 
 
-
-
-
-
  
 function InjuryIllness() {
 
@@ -44,7 +40,15 @@ function InjuryIllness() {
 	let headingTitle='Setting days and score'
 	let keyConfig=[		
 		{name:'receipt', type:'String', header:'DPC code',edit:1, validate:{required:1},	 		 xlsx:'__EMPTY_2'},
-		{name:'period_2', type:'String', header:'Hospitalization Period II',edit:1, validate:{required:0}, xlsx:'__EMPTY_10'},
+
+		{name:'hos_days_1', type:'Integer', header:'Days I',edit:1, validate:{required:0}, xlsx:'__EMPTY_9'},
+		{name:'hos_days_2', type:'Integer', header:'Days II',edit:1, validate:{required:0}, xlsx:'__EMPTY_10'},
+		{name:'hos_days_3', type:'Integer', header:'Days III',edit:1, validate:{required:0}, xlsx:'__EMPTY_11'},
+		{name:'hos_score_1', type:'Integer', header:'Period I',edit:1, validate:{required:0}, xlsx:'__EMPTY_12'},
+		{name:'hos_score_2', type:'Integer', header:'Period II',edit:1, validate:{required:0}, xlsx:'__EMPTY_13'},
+		{name:'hos_score_3', type:'Integer', header:'Period III',edit:1, validate:{required:0}, xlsx:'__EMPTY_14'},
+
+
 	]
 
 
@@ -116,7 +120,7 @@ function InjuryIllness() {
 								if (keycon.type == 'String') {
 									result = result + this_[keyconSplit[x]].toString().toUpperCase()
 								} else {
-									result = parseInt(this_[keyconSplit[x]])
+									result = parseInt(this_[keyconSplit[x]])  
 								}
 							} else if (keyconSplit[x] == '<auto>') {
 								result = auto
@@ -139,7 +143,7 @@ function InjuryIllness() {
 						}
 					}
 
-					array[keycon.name] = result;
+					array[keycon.name] = result || null;
 					result = ''
 
 				}

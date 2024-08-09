@@ -223,7 +223,13 @@ const locale = {
 	'Start Date':'開始日',
 	'End Date':'終了日',
 
-
+	'Days I' : '日数 I',
+	'Days II' : '日数 II',
+	'Days III' : '日数 III',
+	'Period I' : '期間 I',
+	'Period II' : '期間 II',
+	'Period III' : '期間 III',
+	'Sender':'送信者',
 };
 export default locale;
 

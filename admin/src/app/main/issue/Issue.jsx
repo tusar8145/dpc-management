@@ -177,7 +177,9 @@ function Issue() {
 		const res = axios.post(base_url + "post_issue_reply", master_submit).then(async (response) => {
 		  //alert('Request Submitted')
 		  setpostreply('')
+		  get_issue();
 
+		  console.log('xxxxxxxxx')
 
    
 		  var firsr_page_jsonreply = {
@@ -207,6 +209,9 @@ function Issue() {
 		});  
   
 	  } 
+
+
+	  
 	  
 	 };
 	 
@@ -269,6 +274,8 @@ function Issue() {
   
    
 	  const   get_issue = async (event) => {
+
+		console.log('xxxx','ca,,,,,')
   var iid
 	  //let id = e.target.getAttribute("data-id")
   
@@ -334,6 +341,10 @@ function Issue() {
 						creator_: get_[i].creator_?.name,
 						...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
 						created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+						created_time:timeBeauty(get_[i].created),
+						
+						reply_time:timeBeauty(get_[i].status_date),
+						reply_by: get_[i]?.reply_by_?.name, 
 						status_date: timeBeauty(get_[i].replied), 
 						reply_count: get_[i]?._count?.issues_reply || 0
 				  }
@@ -400,6 +411,9 @@ function Issue() {
 								creator_: get_[i].creator_?.name,
 								...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
 								created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+								created_time:timeBeauty(get_[i].created),  
+								reply_time:timeBeauty(get_[i].status_date),
+								reply_by: get_[i]?.reply_by_?.name, 
 								status_date: timeBeauty(get_[i].replied), 
 								reply_count: get_[i]?._count?.issues_reply || 0
 						}
@@ -474,7 +488,10 @@ function Issue() {
 							is_solved: get_[i].is_solved,
 							creator_: get_[i].creator_?.name,
 							...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-							created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+							created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name,
+							created_time:timeBeauty(get_[i].created),  
+							reply_time:timeBeauty(get_[i].status_date),
+							reply_by: get_[i]?.reply_by_?.name, 
 							status_date: timeBeauty(get_[i].replied), 
 							reply_count: get_[i]?._count?.issues_reply || 0
 
@@ -554,6 +571,9 @@ function Issue() {
 									creator_: get_[i].creator_?.name,
 									...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
 									created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+									created_time:timeBeauty(get_[i].created),  
+									reply_time:timeBeauty(get_[i].status_date),
+									reply_by: get_[i]?.reply_by_?.name, 
 									status_date: timeBeauty(get_[i].replied), 
 									reply_count: get_[i]?._count?.issues_reply || 0
 								}

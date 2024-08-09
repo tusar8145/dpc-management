@@ -108,6 +108,10 @@ function DataUpload() {
 				let dept_obj=[]
 				let disease_obj=[]
 
+				//new
+				let treno_obj=[]
+				let icd_obj=[]
+
 				let final_data=[]
 
 
@@ -121,6 +125,9 @@ function DataUpload() {
 					 date_obj=[]
 					 dept_obj=[]
 					 disease_obj=[]
+					 //new
+					 treno_obj=[]
+					 icd_obj=[]
 				}
 
 				function assign_data(this_,hospital){
@@ -153,6 +160,9 @@ function DataUpload() {
 						date_obj.push(this_['会計日'])
 						dept_obj.push(this_['診療科(DPC入院情報)'])
 						disease_obj.push(this_['申込病名'])
+						//new
+						treno_obj.push(this_['診療NO名称'])
+						icd_obj.push(this_['医療資源を最も投入した傷病のＩＣＤコード'])
 				}
 
 				 let operation_count=0
@@ -183,6 +193,7 @@ function DataUpload() {
 						})
 
 					}
+					console.log(surgery,'surgeryccc')
 					const responsec = await axios.post(apiConfig.PatientDpcUpdateCode, {data:surgery, hospital_id:hospital.id});
 					console.log(responsec,'surgery')
 					
@@ -213,6 +224,9 @@ function DataUpload() {
 									date_obj:date_obj,
 									dept_obj:dept_obj,
 									disease_obj:disease_obj,
+									//new
+									treno_obj:treno_obj,
+									icd_obj:icd_obj,
 								})
 
 
@@ -236,6 +250,9 @@ function DataUpload() {
 									date_obj:date_obj,
 									dept_obj:dept_obj,
 									disease_obj:disease_obj,
+									//new
+									treno_obj:treno_obj,
+									icd_obj:icd_obj,
 								})
 							}
 

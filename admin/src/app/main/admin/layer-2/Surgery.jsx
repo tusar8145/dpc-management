@@ -42,7 +42,8 @@ let headingTitle='Surgery'
 let keyConfig=[
   {name:'dpc', type:'String', header:'DPC First 6 Digits', edit:1, validate:{required:1}, xlsx:'MDCｺｰﾄﾞ<+>分類ｺｰﾄﾞ' },
   {name:'code', type:'String', header:'Compatible code', edit:1, validate:{required:1},   xlsx:'対応ｺｰﾄﾞ' },
-  {name:'k_code', type:'String', header:'K Code', edit:1, validate:{required:1},          xlsx:'__EMPTY_1' },
+  {name:'k_code', type:'String', header:'K Code', edit:1, validate:{required:1},          xlsx:'__EMPTY' },
+  {name:'recept_main', type:'Integer', header:'Receipt', edit:1, validate:{required:1},          xlsx:'__EMPTY_1' },
   {name:'name', type:'String', header:'Name', edit:1, validate:{required:1},	          xlsx:'手術１'},
   {name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},             xlsx:'<auto>' }
 ]

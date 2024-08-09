@@ -60,17 +60,27 @@ import { useTranslation } from 'react-i18next';
                                 {/*<Button onClick={() => { props.idSend(row.original.id) }} variant="contained" size="small"> {t('View')} </Button>*/}
                             </Badge></div>
 
-     {row.original.have_new == " New ✉ found" &&
+                            {row.original.have_new == " New ✉ found" &&
                                 <div className="flex-item">
                                     <Badge   color="secondary" badgeContent={'new'}>
                                        
                                     </Badge>
                                 </div>
                             }
-                        </div>
 
-     
-             
+                           
+
+                        </div> 
+
+     <p style={{
+    "font-size": "smaller"
+}}>{row.original.reply_time}</p> 
+
+
+{row.original.reply_time &&
+    <p style={{"font-size": "smaller"}}>{row.original.reply_by}</p>    
+}
+               
                         
     
                   </>
@@ -84,7 +94,7 @@ import { useTranslation } from 'react-i18next';
  
           {
             accessorKey: 'created', //normal accessorKey
-            header: t('Last Reply'),
+            header: t('Sender'),
             size: 200,
           },
  

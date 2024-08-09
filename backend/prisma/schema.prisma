@@ -193,6 +193,8 @@ model surgery {
   hospital_id                  Int?
   parent_id                    Int?
   name                         String
+    recept_main                 Int?
+
 
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
@@ -274,6 +276,15 @@ model days_score {
 
   hospital_id                  Int?
   parent_id                    Int?
+
+  hos_days_1  Int?
+  hos_days_2  Int?
+  hos_days_3  Int?
+
+  hos_score_1  Int?
+  hos_score_2  Int?
+  hos_score_3  Int?
+
 
   created_by                   Int            
   created_at                   DateTime? @default(now()) 
@@ -361,7 +372,9 @@ arr_dept String? @db.Text
 arr_disease String? @db.Text
 arr_color String? @db.Text
 
-
+arr_treno String? @db.Text
+arr_icd String? @db.Text
+arr_temp String? @db.Text
 
   created_at                   DateTime? @default(now()) 
   created_by                   Int            
@@ -422,8 +435,12 @@ model services_clients_issues {
   reply_by                      Int?
   reply_by_   admins?  @relation ("issue_reply_by_", fields:[reply_by], references:[id]) 
 
+
+
   created                      String? @db.VarChar(40)
   replied                      String? @db.VarChar(40)
+  status_date  String? @db.VarChar(40)
+  
 
   issues_reply services_clients_issues_reply[] @relation("issues_reply")
 }

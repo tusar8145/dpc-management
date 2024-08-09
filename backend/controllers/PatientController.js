@@ -183,7 +183,9 @@ export const dpc_create = async (req, res, next) => {
       let date_obj = req_data_all[x].date_obj
       let dept_obj = req_data_all[x].dept_obj
       let disease_obj = req_data_all[x].disease_obj
-
+      //new
+      let treno_obj = req_data_all[x].treno_obj
+      let icd_obj = req_data_all[x].icd_obj
       
 
       let icd = first_loop_collect.icd_code
@@ -522,6 +524,9 @@ export const dpc_create = async (req, res, next) => {
         arr_dept: JSON.stringify(dept_obj),
         arr_disease: JSON.stringify(disease_obj),
         arr_color: JSON.stringify(color_obj),
+        //new
+        arr_treno: JSON.stringify(treno_obj),
+        arr_icd: JSON.stringify(icd_obj),
 
 
         //system
@@ -593,11 +598,14 @@ export const dpc_create = async (req, res, next) => {
           arr_dept: true,
           arr_disease: true,
           arr_color:true,
+          //new
+          arr_treno:true,
+          arr_icd:true,
+
         }
       })
 
 
-      
 
       //update please
       if (find_) {
@@ -797,6 +805,7 @@ export const dpc_update_code = async (req, res, next) => {
     let surgery = req.body.data
     let hospital_id=req.body.hospital_id
 
+
     for (let x = 0; x < surgery.length; x++) {
       let this_ = surgery[x]
 
@@ -808,6 +817,7 @@ export const dpc_update_code = async (req, res, next) => {
         },
       })
 
+      console.log(this_.k_code,'update_req_data')
 
       if (temp1.length > 0) {
 
@@ -842,10 +852,14 @@ export const dpc_update_code = async (req, res, next) => {
             arr_dept: true,
             arr_disease: true,
             arr_color:true,
+            //new
+            arr_treno: true,
+            arr_icd:true,
+
           }
         })
 
- 
+       
 
        // console.log(find_[0].patient_code)
 
@@ -858,6 +872,9 @@ export const dpc_update_code = async (req, res, next) => {
           let k_arr_dept=JSON.parse(find_[0].arr_dept)
           let k_arr_disease=JSON.parse(find_[0].arr_disease)
           let k_arr_color=JSON.parse(find_[0].arr_color)
+          //new
+          let k_arr_treno=JSON.parse(find_[0].arr_treno)
+          let k_arr_icd=JSON.parse(find_[0].arr_icd)
 
           let new_arr_doctor=[]
           let new_arr_receipt=[]
@@ -867,6 +884,10 @@ export const dpc_update_code = async (req, res, next) => {
           let new_arr_dept=[]
           let new_arr_disease=[]
           let new_arr_color=[]
+
+          //new
+          let new_arr_treno=[]
+          let new_arr_icd=[]
 
          // console.log(k_arr_doctor)
 
@@ -888,10 +909,16 @@ export const dpc_update_code = async (req, res, next) => {
                   new_arr_dept.push(k_arr_dept[index])
                   new_arr_disease.push(k_arr_disease[index])
                   new_arr_color.push(k_arr_color[index])
+
+                  //new
+                  new_arr_treno.push(k_arr_treno[index])
+                  new_arr_icd.push(k_arr_icd[index])
                 }
     
               })
             }
+
+
 
             new_arr_doctor.push("   ")
             new_arr_receipt.push("   ")
@@ -902,6 +929,10 @@ export const dpc_update_code = async (req, res, next) => {
             new_arr_disease.push(" ")
             new_arr_color.push("Purple")       
               
+            //new
+            new_arr_treno.push(" ")
+            new_arr_icd.push(" ")
+
               let update_req_data = {  
                   arr_doctor: JSON.stringify(new_arr_doctor),
                   arr_receipt: JSON.stringify(new_arr_receipt),
@@ -910,8 +941,15 @@ export const dpc_update_code = async (req, res, next) => {
                   arr_amount: JSON.stringify(new_arr_amount),
                   arr_dept: JSON.stringify(new_arr_dept),
                   arr_disease: JSON.stringify(new_arr_disease),
-                  arr_color: JSON.stringify(new_arr_color),  
+                  arr_color: JSON.stringify(new_arr_color), 
+                  //new
+                  arr_treno: JSON.stringify(new_arr_treno),
+                  arr_icd: JSON.stringify(new_arr_icd), 
+
+
               }
+
+              
               
               const updateUser = await prisma.dpc_generate.update({
                 where: {
@@ -1405,6 +1443,10 @@ export const dpc_list = async (req, res, next) => {
         arr_dept: true,
         arr_disease: true,
         arr_color: true,
+
+        //new
+        arr_treno: true,
+        arr_icd: true,
 
         dpc_disease_classi:true,
         dpc_disease_classi2:true,

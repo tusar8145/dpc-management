@@ -82,7 +82,8 @@ export const post_issue_reply = async (req, res, next) => {
             },
             data: {
                 reply: who,
-                created:hh
+                status_date:hh,
+                reply_by:req.body?.user_id
             },
         })
 

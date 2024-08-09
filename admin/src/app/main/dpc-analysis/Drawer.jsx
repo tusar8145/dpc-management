@@ -124,7 +124,7 @@ export default function TemporaryDrawer(props) {
 
 function  excelSerialNumberToJSDate  (serial)  {
 
-  if(serial){
+  if(serial>0){
 
      const utcDays = Math.floor(serial - 25569);
     const utcValue = utcDays * 86400;
@@ -155,7 +155,7 @@ function  excelSerialNumberToJSDate  (serial)  {
     return  year+'/'+month+'/'+day;
 
   }else{
-    return  null;
+    return  serial;
   }
   };
 
@@ -239,10 +239,10 @@ function  excelSerialNumberToJSDate  (serial)  {
                 </tr>
                 {single_patient_rec?.all?.map((_item) => (
                   <tr style={{color:_item.color}}>
-                    <td className=' border t-left'></td>
+                    <td className=' border t-left'>{_item.treno}</td>
                     <td className=' border t-left'>{_item.disease}</td>
                     <td className=' border t-center'>{_item.receipt}</td>
-                    <td className=' border t-left'></td>                   
+                    <td className=' border t-left'>{_item.icd}</td>                   
   
                     <td className=' border t-left'>{_item.name}</td>
                     <td className=' border t-right'>{_item.amount}</td>
