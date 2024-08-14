@@ -40,6 +40,7 @@ import CardContent from '@mui/material/CardContent';
  import Chip from '@mui/material/Chip';
  import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 
+ import Editor from 'react-simple-wysiwyg';
 
  const Table = lazy(() => import('../../shared-components/table/IssueTable'));
 
@@ -60,6 +61,11 @@ import CardContent from '@mui/material/CardContent';
 
  
 function Issue() {
+
+	const [html, setHtml] = useState('my <b>HTML</b>');
+	
+
+	
 
 	const [staff, setStaff] = useState([]);
 	const [access_users, setAccessUsers] = useState([]);
@@ -340,7 +346,7 @@ function Issue() {
 						is_solved: get_[i].is_solved,
 						creator_: get_[i].creator_?.name,
 						...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-						created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+						created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name, 
 						created_time:timeBeauty(get_[i].created),
 						
 						reply_time:timeBeauty(get_[i].status_date),
@@ -410,7 +416,7 @@ function Issue() {
 								is_solved: get_[i].is_solved,
 								creator_: get_[i].creator_?.name,
 								...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-								created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+								created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name, 
 								created_time:timeBeauty(get_[i].created),  
 								reply_time:timeBeauty(get_[i].status_date),
 								reply_by: get_[i]?.reply_by_?.name, 
@@ -488,7 +494,7 @@ function Issue() {
 							is_solved: get_[i].is_solved,
 							creator_: get_[i].creator_?.name,
 							...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-							created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name,
+							created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name,
 							created_time:timeBeauty(get_[i].created),  
 							reply_time:timeBeauty(get_[i].status_date),
 							reply_by: get_[i]?.reply_by_?.name, 
@@ -570,7 +576,7 @@ function Issue() {
 									is_solved: get_[i].is_solved,
 									creator_: get_[i].creator_?.name,
 									...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-									created: timeBeauty(get_[i].created)+' by '+ get_[i].creator_?.name, 
+									created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name, 
 									created_time:timeBeauty(get_[i].created),  
 									reply_time:timeBeauty(get_[i].status_date),
 									reply_by: get_[i]?.reply_by_?.name, 
@@ -820,6 +826,14 @@ function Issue() {
 		console.log(data[key],key)
 	}
   }
+
+
+  function onChange(e) {
+	//setHtml(e.target.value);
+	setissue(e.target.value);
+  }
+
+
 	return (
 		<Root
 			header={
@@ -860,17 +874,23 @@ function Issue() {
 
 
 								<TextField fullWidth className="mt-20" type="text" name="subject" id="standard-basic" value={subject} onChange={handleSubject} label={t("Write Subject*")} />
-								{subject == '' && error == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>"Write  Subject" field is required *</p>}
+								{subject == '' && error == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>{t('This field is required *')}</p>}
+
+								<br></br>
+
+								<p className='mt-32 mb-12'>{t("Write Question*")}</p>
+								<Editor value={issue} onChange={onChange} />
+								{issue == '' && error == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>{t('This field is required *')}</p>}
 
 
-								<TextField type="text"
+
+								{/*<TextField type="text"
 									multiline
 									fullWidth
 									className='mt-20'
 									rows={5}
 									maxRows={8}
-									name="issue" id="standard-basic" value={issue} onChange={handleIssue} label={t("Write Issue*")} />
-								{issue == '' && error == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>"Write Issue" field is required *</p>}
+									name="issue" id="standard-basic" value={issue} onChange={handleIssue} label={t("Write Question*")} />*/}
 
 
 								<div className=" " style={{ "margin-bottom": "20px", "margin-top": "20px", "padding": "15px", "border": "1px dashed gray" }}>
@@ -944,17 +964,21 @@ function Issue() {
 																	<p  ><span> 🕐 {timeBeauty(item.created)}</span> </p>
 																</Typography>
 
-																<Typography variant="body2">
-																	{item.reply.toString()}
+																<Typography variant="body2" className='mt-10'>
+																<div dangerouslySetInnerHTML={{__html: item.reply.toString()}}></div>
 																</Typography>
 
 
 																{item.link ?
 															 
 <div class="flex justify-between mt-10 ...">
+
+{(item.link?.split(".").slice(-1)!='png' &&item.link?.split(".").slice(-1)!='PNG'  && item.link?.split(".").slice(-1)!='jpg'  && item.link?.split(".").slice(-1)!='jpeg') &&
 <Link to={apiConfig.base_url + 'issue/image/' + item.link} target="_blank" > Attachment File {item.link?.split(".").slice(-1)} </Link>
+}
+
 <>{(item.link?.split(".").slice(-1)=='png' ||item.link?.split(".").slice(-1)=='PNG'  || item.link?.split(".").slice(-1)=='jpg'  || item.link?.split(".").slice(-1)=='jpeg') &&
-																		<img
+																		<Link to={apiConfig.base_url + 'issue/image/' + item.link} target="_blank" ><img
 																			src={apiConfig.base_url + 'issue/image/' + item.link}
 																			alt="beach"
 																			style={{
@@ -963,8 +987,10 @@ function Issue() {
 
 																			}}
 																			className="rounded-6"
-																		/>
+																		/></Link>
 }</>
+
+
 </div>
 
 
@@ -996,17 +1022,24 @@ function Issue() {
 
 
 									{issolved != 1 && issue_id > 0 &&
-										<TextField type="text"
+
+<>
+										<p className='mt-10 mb-12'>{t("Write Reply*")}</p>
+										<Editor value={postreply} onChange={handleIssueReply} />
+
+
+
+										{/*<TextField type="text"
 										fullWidth
 											multiline
 											rows={4}
 											maxRows={8}
-											name="issue" id="standard-basic2" value={postreply} onChange={handleIssueReply} label={t("Write Issue Reply*")} />
+											name="issue" id="standard-basic2" value={postreply} onChange={handleIssueReply} label={t("Write Reply*")} />*/}</>
 									}
 
 {issolved != 1 && issue_id > 0 &&
 
-<>{postreply == '' && error2 == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>"Write Issue" field is required *</p>}</>
+<>{postreply == '' && error2 == 1 && <p style={{ color: "red", marginTop: "1%", marginBottom: "4%" }}>{t('This field is required *')}</p>}</>
 }
 									{issolved != 1 && issue_id > 0 &&
 									<div className=" "style={{"margin-bottom": "20px", "margin-top": "20px", "padding": "15px", "border": "1px dashed gray" }}>

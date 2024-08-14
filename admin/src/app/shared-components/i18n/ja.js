@@ -159,9 +159,9 @@ const locale = {
 
 	'Author*':'著者*',
 	'Write Subject*':'件名を記入*',
-	'Write Issue*':'問題を書く*',
+	'Write Question*':'問題を書く*',
 	'Submit New Issue':'新しい問題を提出する',
-	'Write Issue Reply*':'問題への返信を書く*',
+	'Write Reply*':'問題への返信を書く*',
 	'Submit Reply':'返信を送信',
 
 	'View All':'すべて表示',
@@ -229,8 +229,11 @@ const locale = {
 	'Period I' : '期間 I',
 	'Period II' : '期間 II',
 	'Period III' : '期間 III',
-	'Sender':'送信者',
+	'Creator':'作成者',
 	'Code':'ｺｰﾄﾞ',
+
+	'This field is required *':'この項目は必須です *',
+ 
 };
 export default locale;
 

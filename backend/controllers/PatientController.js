@@ -204,6 +204,8 @@ export const dpc_create = async (req, res, next) => {
       let sco_1 = ""
 
 
+      //surgery special
+ 
 
       //Query + hospitalization_days
       if (admissionDate && dischargeDate) {
@@ -241,76 +243,107 @@ export const dpc_create = async (req, res, next) => {
         let item_receipt_obj = receipt_obj[m]
         let clr = 'black'
 
+
+
+
+
+
+
+
         if (item_receipt_obj) {
-          let find_ = await prisma.treatment_1.findMany({
-            where: {
-              recept_main: item_receipt_obj,
-            },
-          })
-
-          if (find_.length > 0) {
-            //found t1
-            temp_tre1_1 = find_[0].corres_code.toString()
-            clr = 'Blue? '+find_[0].dpc_6digit
-
-            //need validate
-
-
-          } else {
-            /* let find_ =  await prisma.treatment_2.findMany({
-               where: {
-                 recept_main:  item_receipt_obj ,
-               },
-             })*/
-
-            let itmx = items_obj[m]
 
 
 
-            let find_ = null
-
-            if (itmx) {
-              find_ = await prisma.treatment_2.findMany({
+///////////////////////////////////////// new surgery
+              let find_ = await prisma.surgery.findMany({
                 where: {
-                  AND: [
-                    { name: { equals: itmx }, },
-                    { recept_main: receipt_obj[m] },
-                    { dpc_6digit: dpc_6 }
-                  ]
-
+                  recept_main: item_receipt_obj,
                 },
               })
-            }
 
-            if (find_?.length > 0) {
-
-              //found t2
-
-              temp_tre2_1 = find_[0].corres_code.toString()
-              //if(temp_tre2_1=='5'){
-              //console.log(receipt_obj[m],itmx,dpc_6,find_.length)
-              //console.log(find_.length,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
-              // }
-              clr = 'Brown? '+find_[0].code
-            } else {
-
-              let itm = items_obj[m]
-              if (itm) {
-                let find_ = await prisma.secondary_injury.findMany({
-                  where: {
-                    drug_name: { equals: itm },
-                  },
-                })
-                if (find_.length > 0) {
-                  //found t3
-                  clr = 'Green? '+find_[0].disease_name
-                  temp_sec_1 = '1'
-                } else {
-
-                }
+              if (find_.length > 0) {
+                    //found t1
+                    sur_2 = find_[0].code.toString()
+                    clr = 'Purple? '+find_[0].k_code
+                    //need validate
               }
-            }
-          }
+////////////////////////////////////////
+              else{
+                      find_ = await prisma.treatment_1.findMany({
+                      where: {
+                        recept_main: item_receipt_obj,
+                      },
+                    })
+
+                    if (find_.length > 0) {
+                      //found t1
+                      temp_tre1_1 = find_[0].corres_code.toString()
+                      clr = 'Blue? '+find_[0].dpc_6digit
+
+                      //need validate
+
+
+                    } else {
+                      /* let find_ =  await prisma.treatment_2.findMany({
+                        where: {
+                          recept_main:  item_receipt_obj ,
+                        },
+                      })*/
+
+                      let itmx = items_obj[m]
+
+
+
+                      let find_ = null
+
+                      if (itmx) {
+                        find_ = await prisma.treatment_2.findMany({
+                          where: {
+                            AND: [
+                            // { name: { equals: itmx }, },
+                              { recept_main: receipt_obj[m] },
+                              { dpc_6digit: dpc_6 }
+                            ]
+
+                          },
+                        })
+                      }
+
+                      if (find_?.length > 0) {
+
+                        //found t2
+
+                        temp_tre2_1 = find_[0].corres_code.toString()
+                        //if(temp_tre2_1=='5'){
+                        //console.log(receipt_obj[m],itmx,dpc_6,find_.length)
+                        //console.log(find_.length,find_[0].recept_main,'=',receipt_obj[m],'/',find_[0].name,'=',items_obj[m])
+                        // }
+                        clr = 'Brown? '+find_[0].code
+                      } else {
+
+                        let itm = items_obj[m]
+                        if (itm) {
+                          let find_ = await prisma.secondary_injury.findMany({
+                            where: {
+                              drug_name: { equals: itm },
+                            },
+                          })
+                          if (find_.length > 0) {
+                            //found t3
+                            clr = 'Green? '+find_[0].disease_name
+                            temp_sec_1 = '1'
+                          } else {
+
+                          }
+                        }
+                      }
+                    }                
+              }
+
+
+
+
+
         }
 
         color_obj.push(clr)
@@ -343,8 +376,16 @@ export const dpc_create = async (req, res, next) => {
 
       if(dpc_disease_classi?.length>0){
         let dpc_disease_classi_first=dpc_disease_classi[0]
-        if(dpc_disease_classi_first.sur_2.split(",").includes("99")==true){  }else{   sur_2="XX"  } //
-        
+        if(dpc_disease_classi_first.sur_2.split(",").includes(sur_2)==true){  }else{   sur_2="XX" 
+         // console.log(dpc_disease_classi_first.sur_2)
+                  if(dpc_disease_classi_first.sur_2.split(",").includes("xx")==true){
+                      //console.log('x1=',dpc_disease_classi_first.sur_2)
+                    }else{ 
+                      //console.log('x2=',dpc_disease_classi_first.sur_2)
+                         sur_2="99" 
+                    }  
+ 
+         } //
         //age hisab
 
         const age = calculateAge(first_loop_collect?.date_of_birth);

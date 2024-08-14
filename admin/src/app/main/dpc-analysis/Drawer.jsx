@@ -228,21 +228,25 @@ function  excelSerialNumberToJSDate  (serial)  {
                   </th>
                 </tr>
                 <tr>
-                  <th className=' border width_single'>薬効 区分</th>
-                  <th className=' border width_double'>薬効名</th>
+                  <th className=' border width_single'>ICD</th>
+                  <th className=' border width_double'>申込病名</th>
                   <th className=' border width_double'>レセ電</th>
-                  <th className=' border width_single'>付加情報</th>
+                  <th className=' border width_single'>診療 NO 名称</th>
                   <th className=' border .t-left width_big'>レセ電名称</th>
                   <th className=' border width_single'>単価</th>
                   <th className=' border width_single'>診区</th>
                   <th className=' border width_double'>実施日</th>
                 </tr>
                 {single_patient_rec?.all?.map((_item) => (
-                  <tr style={{color:_item.color.split("?")[0]}} title={_item.color.split("?")[1]}>
-                    <td className=' border t-left'>{_item.treno}</td>
+                  <tr style={{ color:_item.color.split("?")[0], 
+                    ..._item.color.split("?")[0] != 'black'? { border: '2px solid '+_item.color.split("?")[0],} :{}
+                 
+                  
+                  }} title={_item.color.split("?")[1]}>
+                    <td className=' border t-left'>{_item.icd}</td>
                     <td className=' border t-left'>{_item.disease}</td>
                     <td className=' border t-center'>{_item.receipt}</td>
-                    <td className=' border t-left'>{_item.icd}</td>                   
+                    <td className=' border t-left'>{_item.treno}</td>                   
   
                     <td className=' border t-left'>{_item.name}</td>
                     <td className=' border t-right'>{_item.amount}</td>
