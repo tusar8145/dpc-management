@@ -79,6 +79,13 @@ export default function TablePatient(props) {
 
  
 
+
+
+
+
+
+
+
     function UpdateComplete(para) {
       props.verify()
      // setIsRefetching(true)
@@ -124,10 +131,10 @@ export default function TablePatient(props) {
       let getd=response.data.data
       let res=[]
 
-      if(getd.res1>0 && getd.error!=1){  res.res1=getd.res1   }else{res.res1='未'}
-      if(getd.res2>0 && getd.error!=1){  res.res2=getd.res2   }else{res.res2='未'}
-      if(getd.res3>0 && getd.error!=1){  res.res3=getd.res3   }else{res.res3=''}
-      res.error=getd.error
+      if(getd?.res1>0 && getd.error!=1){  res.res1=getd.res1   }else{res.res1='未'}
+      if(getd?.res2>0 && getd.error!=1){  res.res2=getd.res2   }else{res.res2='未'}
+      if(getd?.res3>0 && getd.error!=1){  res.res3=getd.res3   }else{res.res3=''}
+      res.error=getd?.error
 
     
 
@@ -313,6 +320,8 @@ export default function TablePatient(props) {
               {props.basic != 1 &&    
               <IconButton color="secondary"  size="small"  aria-label="add an alarm"  onClick={() => {
                 localStorage.setItem("ld", data.id)
+                console.log(window.location.href,'vvvvvv',data.id);
+                window.history.pushState('hospital', 'hospital', '/hospital/dpc-analysis'+'?query='+data.id);
                 props.patientDetails(data)
               }}>
                 <Article />

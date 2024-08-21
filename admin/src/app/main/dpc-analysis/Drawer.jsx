@@ -42,7 +42,11 @@ export default function TemporaryDrawer(props) {
     right: false,
   });
   const toggleDrawer = (anchor, open) => (event) => {
+    
+
     if(open==false){
+      
+      props.closePa()
       localStorage.removeItem("ld");
     }
  
@@ -53,6 +57,9 @@ export default function TemporaryDrawer(props) {
     }
     setState({ ...state, [anchor]: open });
   };
+
+
+
   const list = (anchor) => (<Box sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }} role="presentation" onClick={toggleDrawer(anchor, false)} onKeyDown={toggleDrawer(anchor, false)}>
     <List>
       {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (<ListItem key={text} disablePadding>
@@ -169,42 +176,34 @@ function  excelSerialNumberToJSDate  (serial)  {
     localStorage.removeItem("ld");
   }
 
-  return (<div>
-    <React.Fragment key={'top'}>
+  return (<div class=" ">
+ 
 
 
-      <IconButton aria-label="fingerprint" ref={buttonRef}
+      <IconButton style={{"display":"none"}} aria-label="fingerprint" ref={buttonRef}
         onClick={toggleDrawer('top', true)}
         color="success"><FilterList /></IconButton>
 
 
-      <Drawer anchor={'top'} open={state['top']} onClose={toggleDrawer('top', false)}>
+ 
 
 
-        <Box sx={{
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          pt: 2,
-          '&& pre': { margin: 0 },
-        }}>
-          <Grid container justifyContent="center" spacing={spacing} className=" mt-48">
-
-
-
-            <Grid key={2} className="drawerTable drawer-table">
+ 
+ 
 
    
-            <table>
+            <table style={{width:"100%"}}>
                 <tr style={{"border":"0px"}}>
                 <th className='width_single text-center bg-[#6d8fccf0] text-white mb-10' colSpan={8} style={{"border":"0px"}}>
                 DPCコード
                 </th>
                 <th className='width_single text-right mb-10 bg-[#91abda]' colSpan={1} style={{"border":"0px"}}>
                     <Button  size="small" variant="contained"  
-                   
-                     onClick={toggleDrawer('top', false)}
+                  
+                     onClick={()=>{
+                      props.closePa()
+                      localStorage.removeItem("ld");
+                     }   }
 
                       endIcon={<Close />}>
                       近い
@@ -218,7 +217,11 @@ function  excelSerialNumberToJSDate  (serial)  {
         
 
             <br/>
-              <table>
+
+            <div class="gridx">
+            <div class="grid-containerx">
+
+              <table className='scrollable'>
                 <tr style={{"border":"0px"}}>
                 <th className='width_single text-center bg-[#6d8fccf0] text-white mb-10' colSpan={5} style={{"border":"0px"}}>
                 患者データ
@@ -256,7 +259,11 @@ function  excelSerialNumberToJSDate  (serial)  {
                 ))}
 
               </table>
-            </Grid>
+</div>
+</div>
+
+
+     
 
             {/*<Grid key={1}>
               <IconButton aria-label="fingerprint"
@@ -265,17 +272,9 @@ function  excelSerialNumberToJSDate  (serial)  {
             </Grid>*/}
 
 
-
-          </Grid>
-          <Paper sx={{ p: 2 }}>
-            <FormControl component="fieldset">
-              
-
-            </FormControl>
-          </Paper>
-
-        </Box>
-
+ 
+ 
+ 
 
         {/* <div className="flex flex-col items-center container">
  
@@ -296,7 +295,7 @@ function  excelSerialNumberToJSDate  (serial)  {
 
 
     </div>*/}
-      </Drawer>
-    </React.Fragment>
+ 
+ 
   </div>);
 }

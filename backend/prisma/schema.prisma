@@ -234,7 +234,7 @@ model treatment_2 {
   corres_code                  String
   dpc_6digit                   String
   name                         String
-  recept_main                  Int?  
+  recept_main                  String?
   receipt                      Int       
 code  String?
 

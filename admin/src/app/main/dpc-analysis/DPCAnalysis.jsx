@@ -146,6 +146,10 @@ function DPCAnalysis() {
 
 	const [loading_, setLoading_] = useState(false);
 
+	const [data_id, setdata_id] = useState(null);
+
+	const [test, settest] = useState(true);
+
 //////////////////Filter//////////////////
 const [range_start, setrange_start] = useState('');
 const [range_end, setrange_end] = useState('');
@@ -221,6 +225,25 @@ const [ signal, setSignal]  =useState('45');
 	  };
 
 	   
+
+
+
+	  useEffect(() => {
+		let gets=window.location.search
+		 let getsarr=gets.split('=')
+		 if(getsarr?.length>1){
+		   console.log('cccccc', getsarr[1])
+		  // setdata_id(getsarr[1])
+		 }
+	   }, []);
+
+
+
+
+
+
+
+
 	  
  const { RangePicker } = DatePicker;
  
@@ -230,7 +253,15 @@ const [ signal, setSignal]  =useState('45');
  
 		try {
 
+			let id=null
 
+			let gets=window.location.search
+			let getsarr=gets.split('=')
+			if(getsarr?.length>1){
+				id=parseInt(getsarr[1])
+			  console.log('cccccc', getsarr[1])
+			 // setdata_id(getsarr[1])
+			}
 
 				console.log(typeDisPatient,'typeDisPatient')
  
@@ -244,7 +275,8 @@ const [ signal, setSignal]  =useState('45');
 					...patient_code?{patient_code:parseInt(patient_code)}:{},
 					...hospitalized_days?{hospitalized_days:parseInt(hospitalized_days)}:{},
 					...dpcPattern?{dpcPattern:dpcPattern}:{},
-					...typeDisPatient?{typeDisPatient:typeDisPatient}:{}
+					...typeDisPatient?{typeDisPatient:typeDisPatient}:{},
+					...id?{id:id}:{}
 				}
 				 
 
@@ -481,6 +513,8 @@ async function deleteAll(hospital_id) {
 	}
 
 	function patientDetails(val) {
+		settest(false)
+
 		let arr_amount=JSON.parse(val.arr_amount)
 		let arr_date=JSON.parse(val.arr_date)
 		let arr_dept=JSON.parse(val.arr_dept)
@@ -553,6 +587,23 @@ async function deleteAll(hospital_id) {
 	   }, [single_patient]);
 
 
+		
+	function closePa(){
+		console.log('9999999999', pageP)
+		window.history.pushState('hospital', 'hospital', '/hospital/dpc-analysis');
+		settest(true)
+ 	//	setsingle_patient([])	
+		//let hospital={id:hospital_id}
+		server(hospital) 
+	}
+
+
+
+
+
+
+
+
 	
 
 	return (
@@ -574,9 +625,18 @@ async function deleteAll(hospital_id) {
 					{failAlert != null && <ReportModal data={fail_count_list} />}
 
 					<p style={{display:" none"}} >
-							 <Drawer single_patient={single_patient} keyup={keyup} signal={signal}  className="hidden"verify={verify}/> 
+						
 
 					</p>					
+
+ 
+ {/*pageP*/} 
+						{test==false ?
+
+						<Drawer single_patient={single_patient} keyup={keyup} signal={signal} closePa={closePa} className="hidden"verify={verify}/> 
+
+:
+<>
 
 					<div class="grid md:grid-cols-6 xs:grid-cols-2 gap-4 mb-5" >
 						<div class="col-span-2 ...">	 
@@ -708,6 +768,19 @@ onClick={() => {
 					{dpc_data.length == 0 && loading == false &&
  						<CenterItems text1={'何もデータが見つかりませんでした'} icon={1}/>
 					}
+
+</>
+
+
+
+						}
+
+					
+
+
+
+
+
  
 				</div>
 			}

@@ -174,4 +174,28 @@ background-color: unset !important;
 
 
 
- 
+    .muiltr-104wp1u-MuiPaper-root-MuiDrawer-paper {
+       /* background: none;*/
+    }
+    
+    .MuiGrid2-root.MuiGrid2-direction-xs-row.drawerTable.drawer-table {
+       /* background: white;*/
+    }
+    
+    .muiltr-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+      /*  background: none;*/
+    }
+
+
+
+
+    .gridx {
+        position: relative;
+        border: 1px solid #00000022;
+        padding-top: 7px;
+        width:100%;
+        }
+        .grid-containerx {
+        overflow-y: auto;
+        height: 600px;
+        }
