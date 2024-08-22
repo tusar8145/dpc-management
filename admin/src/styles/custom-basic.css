@@ -197,5 +197,5 @@ background-color: unset !important;
         }
         .grid-containerx {
         overflow-y: auto;
-        height: 600px;
+       /*height: 600px;*/ 
         }

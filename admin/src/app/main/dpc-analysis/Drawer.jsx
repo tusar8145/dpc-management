@@ -202,6 +202,8 @@ function  excelSerialNumberToJSDate  (serial)  {
                   
                      onClick={()=>{
                       props.closePa()
+
+                      
                       localStorage.removeItem("ld");
                      }   }
 

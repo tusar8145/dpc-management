@@ -320,8 +320,19 @@ export default function TablePatient(props) {
               {props.basic != 1 &&    
               <IconButton color="secondary"  size="small"  aria-label="add an alarm"  onClick={() => {
                 localStorage.setItem("ld", data.id)
-                console.log(window.location.href,'vvvvvv',data.id);
-                window.history.pushState('hospital', 'hospital', '/hospital/dpc-analysis'+'?query='+data.id);
+                let queryParameters = new URLSearchParams(window.location.search)
+                let page=queryParameters.get('page') || 0;
+
+                let hospitalization=queryParameters.get('hospitalization-days')
+                let urls='?page='+page+'&query='+data.id
+                
+                if(hospitalization){
+                  urls=urls+'&hospitalization-days='+hospitalization
+                }
+
+                //queryParameters.set('page',2);
+                //console.log(gg,'gggggg')
+                window.history.pushState('hospital', 'hospital', '/hospital/dpc-analysis'+urls);
                 props.patientDetails(data)
               }}>
                 <Article />

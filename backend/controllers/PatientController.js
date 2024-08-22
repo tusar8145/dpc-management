@@ -316,17 +316,32 @@ export const dpc_create = async (req, res, next) => {
 
 ///////////////////////////////////////// new surgery
               let find_ = await prisma.surgery.findMany({
-                where: { AND: [
-                  {recept_main: item_receipt_obj},
-                  {dpc:dpc_6}
-                ]
+                where: { 
+                  recept_main: item_receipt_obj,
                 },
               })
 
               if (find_.length > 0) {
                     //found t1
-                    sur_2 = find_[0].code.toString()
-                    clr = 'Purple? '+find_[0].k_code+ ' [2層]'
+
+                    let have_dpc=0
+
+                    for(let x=0; x<find_.length; x++){
+                      if(dpc_6==find_[x].dpc){
+                          sur_2 = find_[x].code.toString()
+                          clr = 'Purple? '+sur_2+'  '+find_[x].k_code+ ' [2層]'
+                          have_dpc=1
+                      }
+                    }
+ 
+                    if (have_dpc == 0) {
+                      sur_2 = '97'
+                      clr = 'Purple?  97 KKK1 [2層] Others Surgery'
+                    } 
+
+
+
+
                     //need validate
               }
 ////////////////////////////////////////
@@ -347,7 +362,7 @@ export const dpc_create = async (req, res, next) => {
                                     }
                                     //found t1
                                     temp_tre1_1 = find_[0].corres_code.toString()
-                                    clr = 'Blue? '+find_[0].dpc_6digit+ ' [処置1]'
+                                    clr = 'Blue? '+temp_tre1_1+' '+find_[0].dpc_6digit+ ' [処置1]'
 
 
                                     let code_arr=dpc_disease_classi[0]?.codes.split(",")
@@ -369,6 +384,7 @@ export const dpc_create = async (req, res, next) => {
                                           
                                           if(col_sur_2xx.includes(this_temp_tre1_1)){
                                             temp_tre1_1=this_temp_tre1_1
+                                            clr = 'Blue? '+temp_tre1_1+' '+find_[x].dpc_6digit+ ' [処置1]'
                                             //console.log('fund',this_temp_tre1_1)
                                             //accepted=true
                                           }                                        
@@ -426,7 +442,7 @@ export const dpc_create = async (req, res, next) => {
 
                         //found t2
                         temp_tre2_1 = find_[0].corres_code.toString()
-                        clr = 'Brown? '+find_[0].code+ ' [処置2]'
+                        clr = 'Brown? '+temp_tre2_1+' '+find_[0].code+ ' [処置2]'
                       } else {
 
                         let itm = items_obj[m]
@@ -1458,6 +1474,45 @@ export const dpc_list = async (req, res, next) => {
     } catch (error) {
       
     }
+
+
+    console.log({
+      //patient_code:300366,
+      ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
+      ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
+      ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},
+      ...sur_2? { OR:[{sur_2: sur_2},{s_sur_2: sur_2}] }   : {},
+      ...tre1_1?{ OR:[{tre1_1: tre1_1 },{s_tre1_1: tre1_1}]}   : {},
+      ...tre2_1?{ OR:[{tre2_1: tre2_1 },{s_tre2_1: tre2_1 }]}  : {},
+      ...sec_1? { OR:[{sec_1: sec_1 },{s_sec_1: sec_1}]}   : {},
+      ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},
+
+      ...id?{id:id}:{},
+
+      ...date_type=='admission_date'?{ admission_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
+      ...date_type=='discharge_date'?{ discharge_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
+      ...date_type=='date_of_birth'?{ date_of_birth: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
+      ...patient_code? { patient_code: parseInt(patient_code) } : {},
+
+      ...typeDisPatient=='all-active-patient'? { discharge_date: null } : {},
+      ...typeDisPatient=='dis-patient'? { discharge_date:  {
+        not: null,
+      }, } : {},
+
+
+
+
+         ...hospitalization_days>-1? { 
+            admission_date:d2,
+            discharge_date: null,
+         } : {},
+
+
+
+      hospital_id: req.body?.hospital_id,
+      ...is_verified == 1 ? { is_verified: 1 } : {},
+      ...is_verified == 0 ? { is_verified: 0 } : {},
+    })
 
     let result_ = await prisma.dpc_generate.findMany({
       ...response.list_paginate(req),

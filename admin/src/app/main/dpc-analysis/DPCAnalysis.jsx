@@ -41,7 +41,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import {format} from 'date-fns';
- 
+import { useSearchParams } from 'react-router-dom';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -96,6 +96,17 @@ function DPCAnalysis() {
 		console.log(data);
 	}
 
+
+	const queryParameters = new URLSearchParams(window.location.search)
+	const gethospitalization_days = queryParameters.get("hospitalization-days")
+	const getType = queryParameters.get("type")
+
+	const searchId = queryParameters.get("query")
+	const cpage = queryParameters.get("page") || 0  
+
+	console.log('nowwwww',cpage)
+
+
 	const [loading, setLoading] = useState(true);
 
     const [data, setData] = useState([]);
@@ -123,8 +134,9 @@ function DPCAnalysis() {
 	const [c_verified, setCverified] = useState(0);
 	const [c_n_verified, setCNverified] = useState(0);
 
-	const [pageP, setPageP] = useState(0);
+	const [pageP, setPageP] = useState(cpage);
 	const [rowP, setRowP] = useState(10);
+
 	const [total_data, setTotal_data] = useState(0);
 
 	const [is_verified, setIs_verified] = useState(null);
@@ -160,9 +172,9 @@ const [dpcPattern, setDpcPattern] = useState('XXXXXX X X XX X X X X');
 const [typeDisPatient, setTypeDisPatient] = useState(null);
 ///////////////////////////////////
 
-const queryParameters = new URLSearchParams(window.location.search)
-const gethospitalization_days = queryParameters.get("hospitalization-days")
-const getType = queryParameters.get("type")
+
+
+ 
 
 const [ signal, setSignal]  =useState('45');
 
@@ -255,19 +267,35 @@ const [ signal, setSignal]  =useState('45');
 
 			let id=null
 
-			let gets=window.location.search
-			let getsarr=gets.split('=')
-			if(getsarr?.length>1){
-				id=parseInt(getsarr[1])
-			  console.log('cccccc', getsarr[1])
+			let queryParameters = new URLSearchParams(window.location.search)
+			let query=queryParameters.get('query');
+
+			if(query){
+				id=parseInt(query)
 			 // setdata_id(getsarr[1])
 			}
 
 				console.log(typeDisPatient,'typeDisPatient')
- 
-			 
+
+				 
+                let page=queryParameters.get('page');
 				let skip=rowP*pageP
 				let take=rowP
+
+				if(page){
+					skip=rowP*page
+					take=rowP
+					setPageP(page)
+				}  
+				console.log('bbbb',page, pageP, rowP,id)
+
+				if(dpcPattern != 'XXXXXX X X XX X X X X'){
+					skip=0
+					setPageP(0)
+					console.log(dpcPattern,'dpcPattern',skip)
+				}
+
+
 				let filter={
 					...range_start?{range_start:range_start}:{},
 					...range_end?{range_end:range_end}:{},
@@ -551,8 +579,15 @@ async function deleteAll(hospital_id) {
 
 
 	useEffect(() => { 
-		//console.log(hospitalized_days,'hospitalized_days')
-		server(hospital);  
+		setPageP(cpage);  
+ 	}, [cpage]);
+
+	
+	useEffect(() => { 
+ 		//
+		if(pageP >-1){
+			server(hospital);  
+		}
 	
 	}, [pageP, rowP, is_verified, range_start, range_end, date_type , patient_code, dpcPattern,typeDisPatient, hospitalized_days, loading_]);
 
@@ -580,17 +615,29 @@ async function deleteAll(hospital_id) {
 	}
 
 	///here from
-	useEffect(() => {  
-		
-		console.log(single_patient,'fffffffffff')
-
-	   }, [single_patient]);
+	/*useEffect(() => {  
+		setPageP(cpage)
+	   }, [cpage]);*/
 
 
 		
 	function closePa(){
 		console.log('9999999999', pageP)
-		window.history.pushState('hospital', 'hospital', '/hospital/dpc-analysis');
+		let queryParameters = new URLSearchParams(window.location.search)
+		let page=queryParameters.get('page') || 0;
+
+ 
+
+		let hospitalization=queryParameters.get('hospitalization-days')
+		let urls='?page='+page
+		
+		if(hospitalization){
+		  urls=urls+'&hospitalization-days='+hospitalization
+		}
+
+
+
+		window.history.pushState('hospital', 'hospital', '/hospital/dpc-analysis'+urls);
 		settest(true)
  	//	setsingle_patient([])	
 		//let hospital={id:hospital_id}
@@ -630,7 +677,7 @@ async function deleteAll(hospital_id) {
 					</p>					
 
  
- {/*pageP*/} 
+  
 						{test==false ?
 
 						<Drawer single_patient={single_patient} keyup={keyup} signal={signal} closePa={closePa} className="hidden"verify={verify}/> 
