@@ -88,12 +88,14 @@ export const remove = (data,res) => {
 };
 
 export const error = (error,res,next) => {
-  try {   
+  try {  
+    let str= error.toString()
+      console.log(str,'error')
       next(error)
       let message="Something Went Wrong"
       //log_report(error)
       return res.status(200).json({
-        success:'error', message:message
+        success:'error', message:str 
       });
      }catch(error){
        return false

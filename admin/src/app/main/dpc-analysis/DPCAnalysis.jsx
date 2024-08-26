@@ -726,13 +726,13 @@ async function deleteAll(hospital_id) {
 
 									<Button size="small" variant="" style={{ 'border': '1px' }}
 
-onClick={() => {
-	if (window.confirm(t('Are you sure to continue?'))) {
-		deleteAll(hospital.id)
-		window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-		
-	}
-}}
+									onClick={() => {
+										if (window.confirm(t('Are you sure to continue?'))) {
+											deleteAll(hospital.id)
+											window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+											
+										}
+									}}
 
 
 

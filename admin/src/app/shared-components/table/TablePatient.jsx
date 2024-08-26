@@ -22,19 +22,96 @@ import CorporateFare from '@mui/icons-material/CorporateFare';
 import Grid from '@mui/material/Grid';
 import {createdAt} from '../../helpers/timeHelpers';
 import { useTheme } from '../../context/ThemeContext';
+import {   useState } from 'react';
 
 
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
 export default function TablePatient(props) {
 	const { hospital, toggleHospital } = useTheme();
-  function calculateHospitalizationDays(admissionDate) {
-    let clock=createdAt()
-    const admission = new Date(admissionDate);
-    const discharge = new Date(clock);
-    const differenceInTime = discharge.getTime() - admission.getTime();
-    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-    return parseInt(differenceInDays);
+
+  function dateToExcelSerial(date) {
+    
+    // Excel's start date (January 1, 1900)
+    const excelStartDate = new Date(Date.UTC(1900, 0, 1));
+    
+    // Calculate the difference in milliseconds
+    const diffInMillis = date - excelStartDate;
+    
+    // Convert milliseconds to days (1 day = 24 * 60 * 60 * 1000 milliseconds)
+    const diffInDays = Math.floor(diffInMillis / (24 * 60 * 60 * 1000));
+    console.log('vvvvvv444',date,excelStartDate)
+    // Excel serial number starts from 1 for January 1, 1900
+    return diffInDays + 2; // Adding 2 because January 1, 1900 is serial number 1, and there is a leap year bug (Feb 29, 1900)
+  }
+
+  function excelSL(serial){
+    const utcDays = Math.floor(serial - 25569);
+    const utcValue = utcDays * 86400;
+    const dateInfo = new Date(utcValue * 1000);
+  
+    const fractionalDay = serial - Math.floor(serial) + 0.0000001;
+  
+    let totalSeconds = Math.floor(86400 * fractionalDay);
+  
+    let seconds = totalSeconds % 60;
+  
+    totalSeconds -= seconds;
+  
+    let hours = Math.floor(totalSeconds / (60 * 60));
+    let minutes = Math.floor(totalSeconds / 60) % 60;   
+
+    var year    = dateInfo.getFullYear()  
+    var month   = dateInfo.getMonth()+1
+    var day     = dateInfo.getDate()
+
+    if(month.toString().length == 1) {
+        month = '0'+month;
+   }
+   if(day.toString().length == 1) {
+        day = '0'+day;
+   }   
+
+    return  year+'/'+month+'/'+day;
+  }
+
+
+  function calculateHospitalizationDays(admissionDate,discharge_date,dates) {
+
+          try {
+                    const admission = new Date(admissionDate);
+                    let today = null
+
+                    if(discharge_date){
+                      let dates_obj=[]
+                      let latest_date=null
+
+                      if(dates){dates_obj=JSON.parse(dates)}
+                      latest_date=dates_obj[dates_obj?.length-1]
+
+                      let date_latest=excelSL(latest_date)
+
+                      const x = new Date(date_latest);
+                      const y = new Date(discharge_date);
+
+                     // console.log('vvvvvv',date_latest,discharge_date)
+
+                      if(x>y){
+                        today=new Date()
+                      }else{
+                        today=new Date(discharge_date)
+                      }
+
+                      }else{
+                        today=new Date();
+                      }
+
+                    const differenceInTime = today.getTime() - admission.getTime();
+                    const differenceInDays = differenceInTime / (1000 * 3600 * 24)+1;
+                    return parseInt(differenceInDays);    
+          } catch (error) {
+            return 0; 
+          }
   }
 
 
@@ -274,9 +351,19 @@ export default function TablePatient(props) {
       PatientDpcMeasure(data,hospital.id)
     }, [data,hospital]);
      
-    
+    const [bgColor, setBgColor] = useState('white');
+    const handleTableClick = () => {
+      if(bgColor=='aquamarine'){
+        setBgColor('white'); 
+      }else{
+        setBgColor('aquamarine'); 
+      }
+     // Change this color as needed
+    };
+
     return ( 
-    <table  className={`dpc dpc-table p-10 mt-2    transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
+    <table  style={{ backgroundColor: bgColor, borderCollapse: 'collapse', width: '100%' }}
+        onClick={handleTableClick} className={`dpc dpc-table p-10 mt-2    transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
        
 
         <tr>
@@ -286,7 +373,7 @@ export default function TablePatient(props) {
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('病棟', null, data.ward, null)}</td>
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院日', null, data.admission_date, null)}</td>
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('退院', '予定日', data.discharge_date, null)}</td>
-            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '日数', calculateHospitalizationDays(data.admission_date), null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '日数', calculateHospitalizationDays(data.admission_date_gap,data.discharge_date,data.arr_date), null)}</td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('今期', '患者数', PatientDpcMeasureData?.res1, null)}</td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('過去', '患者数', PatientDpcMeasureData?.res2, null)}</td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '期間Ⅱ', PatientDpcMeasureData?.res3, null)}</td>

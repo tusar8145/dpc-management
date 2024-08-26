@@ -327,6 +327,7 @@ amount_obj		  String?
 ward 			      String?
 icd_code 		    String
 admission_date 	String	
+admission_date_gap String
 discharge_date  String?	
 treatment_date 	String?	
 date_of_birth 	String?	

@@ -263,13 +263,14 @@ function DataUpload() {
 								var cal_per = parseInt((done / len) * 100)
 								setProgress(cal_per)
  
+								console.log(final_data,'final_data')
 								const response = await axios.post(apiConfig.PatientDpcCreate, final_data);
 								final_data = []
 								operation_count = 0
 
 								if(response.data.success=='error'){
 									console.log('responsezz')
-									dispatch(showMessage({  message: t('Invalid file'), autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
+									dispatch(showMessage({  message: t('Invalid file')+'. '+response.data.message, autoHideDuration: 2000, anchorOrigin: {  vertical: 'top',  horizontal: 'right' }, variant: response.data.success }))    
 									setser_error(true)
 								}
 

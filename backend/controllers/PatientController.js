@@ -42,7 +42,8 @@ export const dashboard_count = async (req, res, next) => {
   let d2=timeStable(created_at(3))
   let d3=timeStable(created_at(7))
 
-// console.log(d2,'d2')
+  console.log(d2,'d2')
+  console.log(d3,'d3')
 
   try {
  
@@ -50,7 +51,7 @@ export const dashboard_count = async (req, res, next) => {
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
-        admission_date: d2,
+        admission_date_gap: d2,
       }
     });
 
@@ -60,7 +61,7 @@ export const dashboard_count = async (req, res, next) => {
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
-        admission_date: d3,
+        admission_date_gap: d3,
       }
     });
 
@@ -102,7 +103,8 @@ export const dashboard_count = async (req, res, next) => {
 export const dpc_create = async (req, res, next) => {
   try {
 
-    function calculateAge(birthdate) {
+  
+  function calculateAge(birthdate, patient_code) {
       if (!birthdate) {
           throw new Error('Birthdate is required');
       }
@@ -112,7 +114,7 @@ export const dpc_create = async (req, res, next) => {
       
       // Validate the birthdate
       if (isNaN(birthDateObj.getTime())) {
-          throw new Error('Invalid birthdate format');
+          throw new Error('Invalid birthdate format. Patient:')+patient_code;
       }
       
       const yearDifference = today.getFullYear() - birthDateObj.getFullYear();
@@ -134,35 +136,98 @@ export const dpc_create = async (req, res, next) => {
   
       return age + fractionOfYear;
   }
+
+
   function removeDuplicates(arr) {
     return arr.filter((item,
         index) => arr.indexOf(item) === index);
-}
+  }
 
-    function calculateHospitalizationDays(admissionDate, dischargeDate) {
-      const admission = new Date(admissionDate);
-      const discharge = new Date(dischargeDate);
-      const differenceInTime = discharge.getTime() - admission.getTime();
-      const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-      return differenceInDays;
+  function calculateHospitalizationDays(admissionDate, dischargeDate) {
+    const admission = new Date(admissionDate);
+    const discharge = new Date(dischargeDate);
+    const differenceInTime = discharge.getTime() - admission.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    return differenceInDays;
+  }
+
+  function code_filter(code_arr,first_items,index_start,index_end){   
+    let col_sur_1=[]
+    
+    for (let i=0; i<code_arr.length; i++){
+        let item=code_arr[i]
+        let item_10=item.substring(index_start, index_end)
+
+        //console.log('item_10=',item_10, ' first_items=',first_items)
+        
+        if(item_10.toUpperCase()==first_items.toUpperCase()){
+            let sur_1=item.substring(index_end, index_end+1)
+            col_sur_1.push(sur_1)
+        }
     }
+    return col_sur_1
+  }
 
-    function code_filter(code_arr,first_items,index_start,index_end){   
-      let col_sur_1=[]
-      
-      for (let i=0; i<code_arr.length; i++){
-          let item=code_arr[i]
-          let item_10=item.substring(index_start, index_end)
+  function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+  
+    return `${year}/${month}/${day}`;
+  }
 
-          //console.log('item_10=',item_10, ' first_items=',first_items)
-          
-          if(item_10.toUpperCase()==first_items.toUpperCase()){
-              let sur_1=item.substring(index_end, index_end+1)
-              col_sur_1.push(sur_1)
-          }
-      }
-      return col_sur_1
-    }
+
+  function excelSL(serial){
+    const utcDays = Math.floor(serial - 25569);
+    const utcValue = utcDays * 86400;
+    const dateInfo = new Date(utcValue * 1000);
+  
+    const fractionalDay = serial - Math.floor(serial) + 0.0000001;
+  
+    let totalSeconds = Math.floor(86400 * fractionalDay);
+  
+    let seconds = totalSeconds % 60;
+  
+    totalSeconds -= seconds;
+  
+    let hours = Math.floor(totalSeconds / (60 * 60));
+    let minutes = Math.floor(totalSeconds / 60) % 60;   
+
+    var year    = dateInfo.getFullYear()  
+    var month   = dateInfo.getMonth()+1
+    var day     = dateInfo.getDate()
+
+    if(month.toString().length == 1) {
+        month = '0'+month;
+   }
+   if(day.toString().length == 1) {
+        day = '0'+day;
+   }   
+
+    return  year+'/'+month+'/'+day;
+  }
+
+
+  function dateToExcelSerial(date) {
+    // Excel's start date (January 1, 1900)
+    const excelStartDate = new Date(Date.UTC(1900, 0, 1));
+    
+    // Calculate the difference in milliseconds
+    const diffInMillis = date - excelStartDate;
+    
+    // Convert milliseconds to days (1 day = 24 * 60 * 60 * 1000 milliseconds)
+    const diffInDays = Math.floor(diffInMillis / (24 * 60 * 60 * 1000));
+    
+    // Excel serial number starts from 1 for January 1, 1900
+    return diffInDays + 2; // Adding 2 because January 1, 1900 is serial number 1, and there is a leap year bug (Feb 29, 1900)
+  }
+
+  function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
 
     let req_data_all = req.body
  
@@ -171,9 +236,14 @@ export const dpc_create = async (req, res, next) => {
 
       let color_obj=[]
       let hospitalization_days = null
+      let gap_treatment = 0
+
+
+
 
       //incomming
       let first_loop_collect = req_data_all[x].first_loop_collect
+      if(!first_loop_collect.patient_code){ response.create([], res) }
 
       let admissionDate = first_loop_collect?.admission_date;
       let dischargeDate = first_loop_collect?.discharge_date;
@@ -186,15 +256,13 @@ export const dpc_create = async (req, res, next) => {
       let date_obj = req_data_all[x].date_obj
       let dept_obj = req_data_all[x].dept_obj
       let disease_obj = req_data_all[x].disease_obj
-      //new
       let treno_obj = req_data_all[x].treno_obj
       let icd_obj = req_data_all[x].icd_obj
       
 
       let icd = first_loop_collect.icd_code
 
-      let uid_ = first_loop_collect.patient_code.toString() + '' + first_loop_collect?.admission_date.replaceAll("/", "") + '' + first_loop_collect.hospital_id.toString()
-      let uid = parseInt(uid_)
+
 
       //declar
       let dpc_6 = ""
@@ -218,7 +286,7 @@ export const dpc_create = async (req, res, next) => {
       }
 
 
-      //regular
+      //Query 1 icd -> dpc
       let dpc = await prisma.icd_dpc.findMany({
         where: {
           icd: icd ,
@@ -243,6 +311,187 @@ export const dpc_create = async (req, res, next) => {
           }        
       }
 
+
+      //let uid_ = first_loop_collect.patient_code.toString() + '' + first_loop_collect?.admission_date.replaceAll("/", "") + '' + first_loop_collect.hospital_id.toString()
+      let uid_ = dpc_6 +''+ first_loop_collect.patient_code.toString() + '' + first_loop_collect.hospital_id.toString()
+      let uid = parseInt(uid_)
+
+
+      //search for old
+      const ufind_ = await prisma.dpc_generate.findUnique({
+        where: {
+          uid: uid,
+        },
+        select: {
+          id: true,
+          dpc_6: true,
+          and_1: true,
+          age_1: true,
+          sur_2: true,
+          tre1_1: true,
+          tre2_1: true,
+          sec_1: true,
+          sco_1: true,
+
+          s_dpc_6: true,
+          s_and_1: true,
+          s_age_1: true,
+          s_sur_2: true,
+          s_tre1_1: true,
+          s_tre2_1: true,
+          s_sec_1: true,
+          s_sco_1: true,
+
+          arr_doctor: true,
+          arr_receipt: true,
+          arr_date: true,
+          arr_name: true,
+          arr_amount: true,
+          arr_dept: true,
+          arr_disease: true,
+          arr_treno:true,
+          arr_icd:true,
+          arr_color:true,
+          admission_date:true,
+        }
+      })
+ 
+        let k_arr_doctor=[]
+        let k_arr_receipt=[]
+        let k_arr_date=[]
+        let k_arr_name=[]
+        let k_arr_amount=[]
+        let k_arr_dept=[]
+        let k_arr_disease=[]
+        let k_arr_treno=[]
+        let k_arr_icd=[]
+
+
+
+
+      if(ufind_){
+        admissionDate=ufind_.admission_date
+        k_arr_doctor=JSON.parse(ufind_.arr_doctor)
+        k_arr_receipt=JSON.parse(ufind_.arr_receipt)
+        k_arr_date=JSON.parse(ufind_.arr_date)
+        k_arr_name=JSON.parse(ufind_.arr_name)
+        k_arr_amount=JSON.parse(ufind_.arr_amount)
+        k_arr_dept=JSON.parse(ufind_.arr_dept)
+        k_arr_disease=JSON.parse(ufind_.arr_disease)
+        k_arr_treno=JSON.parse(ufind_.arr_treno)
+        k_arr_icd=JSON.parse(ufind_.arr_icd)
+      }
+
+
+      let j_arr_doctor=k_arr_doctor.concat(doctor_obj); 
+      let j_arr_receipt=k_arr_receipt.concat(receipt_obj);  
+      let j_arr_date= k_arr_date.concat(date_obj);  
+      let j_arr_name= k_arr_name.concat(items_obj);  
+      let j_arr_amount= k_arr_amount.concat(amount_obj);  
+      let j_arr_dept= k_arr_dept.concat(dept_obj);  
+      let j_arr_disease= k_arr_disease.concat(disease_obj);  
+      let j_arr_treno= k_arr_treno.concat(treno_obj);  
+      let j_arr_icd= k_arr_icd.concat(icd_obj);  
+ 
+
+        let new_arr_doctor=[]
+        let new_arr_receipt=[]
+        let new_arr_date=[]
+        let new_arr_name=[]
+        let new_arr_amount=[]
+        let new_arr_dept=[]
+        let new_arr_disease=[]
+        let new_arr_treno=[]
+        let new_arr_icd=[]
+
+
+        let trackOld = []
+        {
+          j_arr_date.map((date, index) => {
+              let temp = j_arr_doctor[index] + '' + j_arr_receipt[index] + '' + date + '' + j_arr_name[index] + '' + j_arr_amount[index] + '' + j_arr_dept[index] + '' + j_arr_disease[index] + '' + j_arr_treno[index] + '' + j_arr_icd[index]
+
+              if (trackOld.includes(temp)) {
+                  // console.log(temp,'temp')
+
+              } else {
+                new_arr_doctor.push(j_arr_doctor[index])
+                new_arr_receipt.push(j_arr_receipt[index])
+                new_arr_date.push(date)
+                new_arr_name.push(j_arr_name[index])
+                new_arr_amount.push(j_arr_amount[index])
+                new_arr_dept.push(j_arr_dept[index])
+                new_arr_disease.push(j_arr_disease[index])
+                new_arr_treno.push(j_arr_treno[index])
+                new_arr_icd.push(j_arr_icd[index])
+                trackOld.push(temp)
+              }
+          }
+          )
+        }
+
+
+
+        receipt_obj = new_arr_receipt
+        items_obj = new_arr_name
+        amount_obj = new_arr_amount
+        doctor_obj = new_arr_doctor
+        date_obj = new_arr_date
+        dept_obj = new_arr_dept
+        disease_obj = new_arr_disease
+        treno_obj = new_arr_treno
+        icd_obj = new_arr_icd
+
+        
+
+let startDate = new Date(admissionDate); //
+let endDate = new Date(excelSL(date_obj[date_obj.length - 1])); //
+
+ console.log('start=',admissionDate, 'end=',excelSL(date_obj[date_obj.length - 1]), 'date obj=',date_obj,' endDateExcel='+endDate, ' '+date_obj[date_obj.length - 1] )
+ // Loop from startDate to endDate
+for (let date = new Date(addDays(startDate,1)); date <= addDays(endDate,1); date.setDate(date.getDate() + 1)) {
+    console.log('org=', date, 'calculated=',excelSL(dateToExcelSerial(date)) )
+    if(date_obj.includes(dateToExcelSerial(date))){
+       console.log('------------ok',dateToExcelSerial(date))
+    }else{
+      console.log('------------no',dateToExcelSerial(date))
+      gap_treatment++ 
+    }
+}
+
+
+
+if(dischargeDate){
+   let latest_date=date_obj[date_obj?.length-1]
+
+    let date_latest=excelSL(latest_date)
+
+    const x = new Date(date_latest);
+    const y = new Date(dischargeDate);
+
+    console.log('vvvvvv',date_latest,dischargeDate)
+
+    if(x>y){
+      
+    }else{
+      gap_treatment=0
+    }
+
+  }else{
+    gap_treatment=0
+  }
+
+ 
+
+
+
+
+
+ let admissionDateGap =  formatDate(addDays(admissionDate, gap_treatment));
+
+
+  //console.log(gap_treatment, admissionDateGap,'gap_treatment')
+ 
+ 
       let dpc_disease_classi = await prisma.dpc_disease_classi.findMany({
         where: {
           dpc_6: dpc_6,
@@ -260,12 +509,6 @@ export const dpc_create = async (req, res, next) => {
       })
 
  
-
-
-
-      //Query 1 icd -> dpc
-
- 
       //Query Layer 3
       let temp_tre1_1 = 'X'
       let temp_tre2_1 = 'X'
@@ -275,9 +518,7 @@ export const dpc_create = async (req, res, next) => {
       
       ////////////////////////////////////////////////////////////////////////////////////////////////
 
-
       //have multi code feature?
-
       let haveMultiT2  = await prisma.treatment_2.findMany({
         where: {
           AND: [
@@ -297,17 +538,9 @@ export const dpc_create = async (req, res, next) => {
       .join(',');
 
 
-
-
       for (let m = 0; m < receipt_obj.length; m++) {
         let item_receipt_obj = receipt_obj[m]
         let clr = 'black'
-
-
-
-
-
-
 
 
         if (item_receipt_obj) {
@@ -338,9 +571,6 @@ export const dpc_create = async (req, res, next) => {
                       sur_2 = '97'
                       clr = 'Purple?  97 KKK1 [2層] Others Surgery'
                     } 
-
-
-
 
                     //need validate
               }
@@ -396,15 +626,8 @@ export const dpc_create = async (req, res, next) => {
                       
 
                     } else {
-                      /* let find_ =  await prisma.treatment_2.findMany({
-                        where: {
-                          recept_main:  item_receipt_obj ,
-                        },
-                      })*/
-
+ 
                       let itmx = items_obj[m]
-
-
 
                       let find_ = null
 
@@ -438,8 +661,6 @@ export const dpc_create = async (req, res, next) => {
                           }
                         }
 
-
-
                         //found t2
                         temp_tre2_1 = find_[0].corres_code.toString()
                         clr = 'Brown? '+temp_tre2_1+' '+find_[0].code+ ' [処置2]'
@@ -465,21 +686,14 @@ export const dpc_create = async (req, res, next) => {
               }
 
 
-
-
-
         }
 
         color_obj.push(clr)
       }
 
 
-    
-
-
-      //
-      let temp_arrr=resultString.split(',')
-  console.log(temp_tre2_1,'temp_tre2_111111111111',resultString)
+ 
+  let temp_arrr=resultString.split(',')
 
   if(resultString){
       for(let x=0; x<temp_arrr?.length; x++){
@@ -496,14 +710,7 @@ export const dpc_create = async (req, res, next) => {
       }    
   }
 
-
-   console.log(temp_tre2_1,'temp_tre2_2222222222222')
-
       //////////////////////////////////////////////////////////////////////////////
-
-      //if (temp_tre1_1 == null) {  temp_tre1_1 = 'X'  } if (temp_tre2_1 == null) {  temp_tre2_1 = 'X'  } if (temp_sec_1 == null) {  temp_sec_1 = 'X' }
-      //--------------------------------------------------- L.4/5/6
-
 
       if(dpc_disease_classi?.length>0){
         let dpc_disease_classi_first=dpc_disease_classi[0]
@@ -522,7 +729,7 @@ export const dpc_create = async (req, res, next) => {
 
         //age hisab
 
-        const age = calculateAge(first_loop_collect?.date_of_birth);
+        const age = calculateAge(first_loop_collect?.date_of_birth, first_loop_collect.patient_code);
 
    
 
@@ -584,14 +791,7 @@ export const dpc_create = async (req, res, next) => {
                 }
               }
           }
-
-
         } 
-
-        // temp_tre1_1 = 'X'
-        // 
-        // temp_tre2_1 = 'X'
-        // temp_sec_1 = 'X'
 
         let code_arr=dpc_disease_classi_first.codes.split(",")
  
@@ -607,7 +807,7 @@ export const dpc_create = async (req, res, next) => {
         }else{
           //validate
             if(col_sur_1.includes(temp_tre1_1)){
-              console.log('found here')
+              //console.log('found here')
               
             }else{
               if(col_sur_1.includes('0')){
@@ -669,10 +869,7 @@ export const dpc_create = async (req, res, next) => {
         
             //validate
   
-            
-  
           }
- 
       }
 
 
@@ -682,17 +879,6 @@ export const dpc_create = async (req, res, next) => {
 
 
       let data = {
-        "hospital_id": first_loop_collect.hospital_id,
-        "patient_code": first_loop_collect.patient_code,
-        "doctor": first_loop_collect.doctor,
-        "ward": first_loop_collect.ward,
-        "icd_code": first_loop_collect.icd_code,
-        "admission_date": first_loop_collect?.admission_date?.toString(),
-        "discharge_date": first_loop_collect?.discharge_date?.toString(),
-        "treatment_date": first_loop_collect?.treatment_date?.toString(),
-        "date_of_birth": first_loop_collect?.date_of_birth?.toString(),
-
-
         arr_doctor: JSON.stringify(doctor_obj),
         arr_receipt: JSON.stringify(receipt_obj),
         arr_date: JSON.stringify(date_obj),
@@ -729,204 +915,39 @@ export const dpc_create = async (req, res, next) => {
         "s_sco_1": null,
 
         "hospitalization_days": hospitalization_days,
+        "is_verified":0,
+        "discharge_date": first_loop_collect?.discharge_date?.toString(), //letest 
+        "admission_date_gap":admissionDateGap
+      }
+
+
+      let data_create = {
+
+        "hospital_id": first_loop_collect.hospital_id,
+        "patient_code": first_loop_collect.patient_code,
+        "doctor": first_loop_collect.doctor,
+        "ward": first_loop_collect.ward,
+        "icd_code": first_loop_collect.icd_code,
+        "admission_date": first_loop_collect?.admission_date?.toString(), //first one
+        "treatment_date": first_loop_collect?.treatment_date?.toString(),
+        "date_of_birth": first_loop_collect?.date_of_birth?.toString(),
 
         "verified_by": null,
         "verified_at": "",
         "created_by": user_id
+
       }
 
-
       /*---------------------------------------------------------CRUD-----------------------------------------------*/
-
-      //find uid
-
-      //yes? upnade
-      // what actually update! dpc code
-
-      const find_ = await prisma.dpc_generate.findUnique({
-        where: {
-          uid: uid,
-        },
-        select: {
-          id: true,
-          dpc_6: true,
-          and_1: true,
-          age_1: true,
-          sur_2: true,
-          tre1_1: true,
-          tre2_1: true,
-          sec_1: true,
-          sco_1: true,
-
-          s_dpc_6: true,
-          s_and_1: true,
-          s_age_1: true,
-          s_sur_2: true,
-          s_tre1_1: true,
-          s_tre2_1: true,
-          s_sec_1: true,
-          s_sco_1: true,
-
-          arr_doctor: true,
-          arr_receipt: true,
-          arr_date: true,
-          arr_name: true,
-          arr_amount: true,
-          arr_dept: true,
-          arr_disease: true,
-          arr_color:true,
-          //new
-          arr_treno:true,
-          arr_icd:true,
-
-        }
-      })
-
-
+ 
 
       //update please
-      if (find_) {
-
-
-
-        /*Start Analysis previous arrays*/
-        //this admission date found?
-        //admissionDate
-       
-
-        let j_arr_doctor=null
-        let j_arr_receipt=null
-        let j_arr_date=null
-        let j_arr_name=null
-        let j_arr_amount=null
-        let j_arr_dept=null
-        let j_arr_disease=null
-        let j_arr_color=null
-
-        //new
-        let j_arr_treno=null
-        let j_arr_icd=null
-
-        try {
-          let k_arr_doctor=JSON.parse(find_.arr_doctor)
-          let k_arr_receipt=JSON.parse(find_.arr_receipt)
-          let k_arr_date=JSON.parse(find_.arr_date)
-          let k_arr_name=JSON.parse(find_.arr_name)
-          let k_arr_amount=JSON.parse(find_.arr_amount)
-          let k_arr_dept=JSON.parse(find_.arr_dept)
-          let k_arr_disease=JSON.parse(find_.arr_disease)
-          let k_arr_color=JSON.parse(find_.arr_color)
-
-          //new
-          let k_arr_treno=JSON.parse(find_.arr_treno)
-          let k_arr_icd=JSON.parse(find_.arr_icd)
-
-  
-          let new_arr_doctor=[]
-          let new_arr_receipt=[]
-          let new_arr_date=[]
-          let new_arr_name=[]
-          let new_arr_amount=[]
-          let new_arr_dept=[]
-          let new_arr_disease=[]
-          let new_arr_color=[]
-          //new
-          let new_arr_treno=[]
-          let new_arr_icd=[]
-  
-  
-          {
-            k_arr_date.map((date, index) => {
-  
-              if (date == treatmentDate) {
-                //old data not carry
-  
-              }else{
-                new_arr_doctor.push(k_arr_doctor[index])
-                new_arr_receipt.push(k_arr_receipt[index])
-                new_arr_date.push(date)
-                new_arr_name.push(k_arr_name[index])
-                new_arr_amount.push(k_arr_amount[index])
-                new_arr_dept.push(k_arr_dept[index])
-                new_arr_disease.push(k_arr_disease[index])
-                new_arr_color.push(k_arr_color[index])
-                //new
-                new_arr_treno.push(k_arr_treno[index])
-                new_arr_icd.push(k_arr_icd[index])
-              }
-  
-            }
-            )
-          }
-  
-  
-          /*End  Analysis previous arrays*/
-   
-          //join old and new data
-  
-  
-  
-          if(new_arr_doctor?.length>0){
-            j_arr_doctor=JSON.stringify(new_arr_doctor).slice(0, -1)+','+JSON.stringify(doctor_obj).slice(1);
-            j_arr_receipt=JSON.stringify(new_arr_receipt).slice(0, -1)+','+JSON.stringify(receipt_obj).slice(1);
-            j_arr_date=JSON.stringify(new_arr_date).slice(0, -1)+','+JSON.stringify(date_obj).slice(1);
-            j_arr_name=JSON.stringify(new_arr_name).slice(0, -1)+','+JSON.stringify(items_obj).slice(1);
-            j_arr_amount=JSON.stringify(new_arr_amount).slice(0, -1)+','+JSON.stringify(amount_obj).slice(1);
-            j_arr_dept=JSON.stringify(new_arr_dept).slice(0, -1)+','+JSON.stringify(dept_obj).slice(1);
-            j_arr_disease=JSON.stringify(new_arr_disease).slice(0, -1)+','+JSON.stringify(disease_obj).slice(1);
-            j_arr_color=JSON.stringify(new_arr_color).slice(0, -1)+','+JSON.stringify(color_obj).slice(1);
-            //new
-            j_arr_treno=JSON.stringify(new_arr_treno).slice(0, -1)+','+JSON.stringify(treno_obj).slice(1);
-            j_arr_icd=JSON.stringify(new_arr_icd).slice(0, -1)+','+JSON.stringify(icd_obj).slice(1);
-
-          }else{
-            j_arr_doctor=JSON.stringify(doctor_obj);
-            j_arr_receipt=JSON.stringify(receipt_obj);
-            j_arr_date=JSON.stringify(date_obj);
-            j_arr_name=JSON.stringify(items_obj);
-            j_arr_amount=JSON.stringify(amount_obj);
-            j_arr_dept=JSON.stringify(dept_obj);
-            j_arr_disease=JSON.stringify(disease_obj);
-            j_arr_color=JSON.stringify(color_obj);
-            //new
-            j_arr_treno=JSON.stringify(treno_obj);
-            j_arr_icd=JSON.stringify(icd_obj);
-          }
-  
-        } catch (error) {
-          
-        }
-
-
-
-        let update_req_data = {
-
-          ...temp_tre1_1 ? { "tre1_1": temp_tre1_1, } : {},
-          ...temp_tre2_1 ? { "tre2_1": temp_tre2_1, } : {},
-          ...temp_sec_1  ? { "sec_1": temp_sec_1, } : {},
-
-          arr_doctor: j_arr_doctor,
-          arr_receipt: j_arr_receipt,
-          arr_date: j_arr_date,
-          arr_name: j_arr_name,
-          arr_amount: j_arr_amount,
-          arr_dept: j_arr_dept,
-          arr_disease: j_arr_disease,
-          arr_color: j_arr_color,
-          //new
-          arr_treno: j_arr_treno,
-          arr_icd: j_arr_icd,
-
-          ...first_loop_collect.discharge_date ? { "discharge_date": first_loop_collect?.discharge_date?.toString(), } : {},
-          ...hospitalization_days ? { "hospitalization_days": hospitalization_days, } : {},
-
-        }
-
+      if (ufind_) {
         const updateUser = await prisma.dpc_generate.update({
           where: {
-            id: find_.id,
+            id: ufind_.id,
           },
-          data: update_req_data,
+          data: data,
         })
       }
 
@@ -935,6 +956,7 @@ export const dpc_create = async (req, res, next) => {
         let cre_ = await prisma.dpc_generate.create({
           data: {
             ...data,
+            ...data_create,
             uid: uid,
           },
         })
@@ -947,6 +969,8 @@ export const dpc_create = async (req, res, next) => {
     response.error(error, res, next)
   }
 };
+
+
 
 
 
@@ -1447,7 +1471,7 @@ export const dpc_list = async (req, res, next) => {
     let d1=timeStable(created_at()) || null
     let d2=timeStable(created_at(hospitalization_days)) || null
      
-    //console.log('x',d2)
+    console.log('x',d2)
 
     let dpc_6 = null
     let and_1 = null
@@ -1476,43 +1500,7 @@ export const dpc_list = async (req, res, next) => {
     }
 
 
-    console.log({
-      //patient_code:300366,
-      ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
-      ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
-      ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},
-      ...sur_2? { OR:[{sur_2: sur_2},{s_sur_2: sur_2}] }   : {},
-      ...tre1_1?{ OR:[{tre1_1: tre1_1 },{s_tre1_1: tre1_1}]}   : {},
-      ...tre2_1?{ OR:[{tre2_1: tre2_1 },{s_tre2_1: tre2_1 }]}  : {},
-      ...sec_1? { OR:[{sec_1: sec_1 },{s_sec_1: sec_1}]}   : {},
-      ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},
-
-      ...id?{id:id}:{},
-
-      ...date_type=='admission_date'?{ admission_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
-      ...date_type=='discharge_date'?{ discharge_date: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
-      ...date_type=='date_of_birth'?{ date_of_birth: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
-      ...patient_code? { patient_code: parseInt(patient_code) } : {},
-
-      ...typeDisPatient=='all-active-patient'? { discharge_date: null } : {},
-      ...typeDisPatient=='dis-patient'? { discharge_date:  {
-        not: null,
-      }, } : {},
-
-
-
-
-         ...hospitalization_days>-1? { 
-            admission_date:d2,
-            discharge_date: null,
-         } : {},
-
-
-
-      hospital_id: req.body?.hospital_id,
-      ...is_verified == 1 ? { is_verified: 1 } : {},
-      ...is_verified == 0 ? { is_verified: 0 } : {},
-    })
+    console.log( )
 
     let result_ = await prisma.dpc_generate.findMany({
       ...response.list_paginate(req),
@@ -1543,7 +1531,7 @@ export const dpc_list = async (req, res, next) => {
 
 
            ...hospitalization_days>-1? { 
-              admission_date:d2,
+              admission_date_gap:d2,
               discharge_date: null,
            } : {},
 
@@ -1564,6 +1552,7 @@ export const dpc_list = async (req, res, next) => {
         "ward": true,
         "icd_code": true,
         "admission_date": true,
+        "admission_date_gap": true,
         "discharge_date": true,
         "treatment_date": true,
         "date_of_birth": true,
@@ -1615,8 +1604,7 @@ export const dpc_list = async (req, res, next) => {
       }
     })
 
-
-   // console.log(JSON.stringify(result_[0].dpc_disease_classi))
+ 
 
     const groupBy = await prisma.dpc_generate.groupBy({
       by: ['is_verified'],
@@ -1647,7 +1635,7 @@ export const dpc_list = async (req, res, next) => {
         }, } : {},
 
         ...hospitalization_days>-1? { 
-          admission_date: d2,
+          admission_date_gap: d2,
           discharge_date: null,
        } : {},
 
@@ -1655,8 +1643,7 @@ export const dpc_list = async (req, res, next) => {
       }
     })
 
- 
- 
+  
     response.list({ list: result_, count: groupBy }, res)
   } catch (error) {
     response.error(error, res, next)
