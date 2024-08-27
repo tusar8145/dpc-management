@@ -161,6 +161,7 @@ function DPCAnalysis() {
 	const [data_id, setdata_id] = useState(null);
 
 	const [test, settest] = useState(true);
+	
 
 //////////////////Filter//////////////////
 const [range_start, setrange_start] = useState('');
@@ -262,6 +263,15 @@ const [ signal, setSignal]  =useState('45');
 
 	/*-----------start common function shareable------------*/
 	async function server(hospital) {
+
+		const queryParameters = new URLSearchParams(window.location.search)
+		const gethospitalization_days = queryParameters.get("hospitalization-days")
+
+		if(gethospitalization_days){
+			if(!hospitalized_days){
+				return true;
+			}
+		}
  
 		try {
 

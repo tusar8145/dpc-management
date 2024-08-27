@@ -39,8 +39,8 @@ export const dashboard_count = async (req, res, next) => {
 
 
   let d1=timeStable(created_at())
-  let d2=timeStable(created_at(3))
-  let d3=timeStable(created_at(7))
+  let d2=timeStable(created_at(2))
+  let d3=timeStable(created_at(6))
 
   console.log(d2,'d2')
   console.log(d3,'d3')
@@ -1328,7 +1328,13 @@ export const dpc_update_code = async (req, res, next) => {
 
 
 export const dpc_migrate = async (req, res, next) => {
-  try {
+
+
+
+  
+  try {/*
+ 
+    
     //console.log(req.body['key'])
 
     String.prototype.replaceAt = function(index, replacement) {
@@ -1376,11 +1382,24 @@ export const dpc_migrate = async (req, res, next) => {
             });
         }
       }
-    }
+    }*/
 
 
  
-    response.update([], res)
+ 
+ 
+let hh=[]
+ for(let i=0; i< ggd?.length; i++){
+  if(parseInt(ggd[i])>0){
+    hh.push(parseInt(ggd[i]))
+  }else{
+  }
+ }
+
+
+
+ 
+    response.list(hh, res)
   } catch (error) {
     response.error(error, res, next)
   }
@@ -1467,11 +1486,14 @@ export const dpc_list = async (req, res, next) => {
     var typeDisPatient=req.body.filter.typeDisPatient
     var id=req.body.filter?.id
 
+    if(hospitalization_days>0){
+      hospitalization_days=hospitalization_days-1
+    }
 
     let d1=timeStable(created_at()) || null
     let d2=timeStable(created_at(hospitalization_days)) || null
      
-    console.log('x',d2)
+    console.log('xxx',d2)
 
     let dpc_6 = null
     let and_1 = null
