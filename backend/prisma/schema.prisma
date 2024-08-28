@@ -499,3 +499,25 @@ model dpc_disease_classi {
   childs dpc_disease_classi[] @relation("dpc_disease_classi2")
   parents dpc_disease_classi? @relation("dpc_disease_classi2", fields: [parent_id], references: [id])
 }
+
+
+model secondary_injury_new {
+  id         Int         @id @default(autoincrement())
+
+  dpc_6  String?    @unique 
+  codes String?   @db.MediumText()
+  receipt                   Int
+
+  parent_id                Int?
+  hospital_id              Int?   
+
+  created_at                   DateTime? @default(now()) 
+  created_by                   Int            
+  updated_at                   DateTime? @default(now()) 
+  updated_by                   Int?
+
+
+  //hospital hospitals? @relation("dpc_disease_classi", fields: [hospital_id], references: [id])
+  childs secondary_injury_new[] @relation("dpc_disease_classi2x")
+  parents secondary_injury_new? @relation("dpc_disease_classi2x", fields: [parent_id], references: [id])
+}

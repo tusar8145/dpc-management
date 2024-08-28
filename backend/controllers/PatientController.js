@@ -666,20 +666,28 @@ if(dischargeDate){
                         clr = 'Brown? '+temp_tre2_1+' '+find_[0].code+ ' [処置2]'
                       } else {
 
-                        let itm = items_obj[m]
-                        if (itm) {
-                          let find_ = await prisma.secondary_injury.findMany({
-                            where: {
-                              drug_name: { equals: itm },
-                            },
-                          })
-                          if (find_.length > 0) {
-                            //found t3
-                            clr = 'Green? '+find_[0].disease_name+ ' [副傷病]'
-                            temp_sec_1 = '1'
-                          } else {
+                       
+                        if (item_receipt_obj) {
 
-                          }
+                          let itm=item_receipt_obj.toString()
+
+                            let find_ = await prisma.secondary_injury_new.findMany({
+                              where: {
+                                dpc_6:dpc_6,
+                                codes: { contains: itm },
+                                 
+                              },
+                            })
+                     
+                          if (find_?.length > 0) {
+                              console.log(dpc_6,itm,'--------------------------')
+                              //found t3
+                              clr = 'Green? 1  [副傷病]'
+                              temp_sec_1 = '1'
+                            } else {
+                    
+                            } 
+
                         }
                       }
                     }                
@@ -844,8 +852,20 @@ if(dischargeDate){
 
  
           let col_temp_sec_1 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1+temp_tre2_1,0,12)
+
           
-          if(temp_sec_1=='X'){ //no    1 value
+
+          if(temp_sec_1=='1'){
+
+            if(col_temp_sec_1.includes('1')){
+              temp_sec_1='1'
+            }else if(col_temp_sec_1.includes('x')){
+              temp_sec_1='X'
+            }else if(col_temp_sec_1.includes('0')){
+              temp_sec_1='0'
+            }
+
+          }else if(temp_sec_1=='X'){ //no    1 value
             if(col_temp_sec_1.includes('0')){
               temp_sec_1='0'
             }else if(col_temp_sec_1.includes('x')){
@@ -1386,20 +1406,32 @@ export const dpc_migrate = async (req, res, next) => {
 
 
  
+      let itm = '620009117'
+      let dpc = '070085'
+
+      if (itm) {
+        let find_ = await prisma.secondary_injury_new.findMany({
+          where: {
+            dpc_6:dpc,
+            codes: { contains: itm },
+             
+          },
+        })
  
+      if (find_?.length > 0) {
+          //found t3
+          clr = 'Green? 1  [副傷病]'
+          temp_sec_1 = '1'
+        } else {
+
+        } 
+      }
  
-let hh=[]
- for(let i=0; i< ggd?.length; i++){
-  if(parseInt(ggd[i])>0){
-    hh.push(parseInt(ggd[i]))
-  }else{
-  }
- }
 
 
 
  
-    response.list(hh, res)
+    response.list([], res)
   } catch (error) {
     response.error(error, res, next)
   }
