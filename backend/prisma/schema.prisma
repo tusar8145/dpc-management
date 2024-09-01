@@ -504,7 +504,8 @@ model dpc_disease_classi {
 model secondary_injury_new {
   id         Int         @id @default(autoincrement())
 
-  dpc_6  String?    @unique 
+  dpc_6  String?     
+  batch_code String?   @db.MediumText()
   codes String?   @db.MediumText()
   receipt                   Int
 
@@ -521,3 +522,22 @@ model secondary_injury_new {
   childs secondary_injury_new[] @relation("dpc_disease_classi2x")
   parents secondary_injury_new? @relation("dpc_disease_classi2x", fields: [parent_id], references: [id])
 }
+
+
+
+model surgery_k {
+  id         Int         @id @default(autoincrement())
+
+  receipt  Int?     
+  name String?   
+  name_kana String?    
+  score    Int?
+  k_code    String?
+
+
+  created_at                   DateTime? @default(now()) 
+  created_by                   Int            
+  updated_at                   DateTime? @default(now()) 
+  updated_by                   Int?
+}
+ 

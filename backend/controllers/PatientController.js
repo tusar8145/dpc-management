@@ -548,32 +548,115 @@ if(dischargeDate){
           item_receipt_obj=parseInt(item_receipt_obj)
 
 ///////////////////////////////////////// new surgery
+            let have_allk=0
               let find_ = await prisma.surgery.findMany({
                 where: { 
                   recept_main: item_receipt_obj,
                 },
               })
 
+
+              if (find_.length > 0) {
+
+              }else{
+                //find on all key
+                find_ = await prisma.surgery_k.findMany({
+                  where: { 
+                    receipt: item_receipt_obj,
+                  },
+
+                })
+
+                if (find_.length > 0) {
+                  have_allk=1
+                }
+  
+
+              }
+
+
+
+
+
               if (find_.length > 0) {
                     //found t1
 
-                    let have_dpc=0
+                    if(have_allk==0){
+                        let have_dpc=0
 
-                    for(let x=0; x<find_.length; x++){
-                      if(dpc_6==find_[x].dpc){
-                          sur_2 = find_[x].code.toString()
-                          clr = 'Purple? '+sur_2+'  '+find_[x].k_code+ ' [2層]'
-                          have_dpc=1
-                      }
+                        for(let x=0; x<find_.length; x++){
+                          if(dpc_6==find_[x].dpc){
+                              sur_2 = find_[x].code.toString()
+                              clr = 'Purple? '+sur_2+'  '+find_[x].k_code+ ' [2層]'
+                              have_dpc=1
+                          }
+                        }
+                        
+    
+                        if (have_dpc == 0) {
+                          sur_2 = '97'
+                          clr = 'Purple?  97 KKK1 [手術]'
+                        }                       
+                    }else{
+                      //have_allk==1
+                              sur_2 = '97'
+                              clr = 'Purple? '+sur_2+'  '+find_[0].k_code+ ' [2層]'
+
                     }
- 
-                    if (have_dpc == 0) {
-                      sur_2 = '97'
-                      clr = 'Purple?  97 KKK1 [2層] Others Surgery'
-                    } 
+
+
+
+
+
+
+                    //also seaarch on treatment 1
+                    find_ = await prisma.treatment_1.findMany({
+                      where: {
+                        AND: [
+                          { recept_main: item_receipt_obj },
+                          { dpc_6digit: dpc_6 }
+                        ]
+                      },
+                    })
+
+
+
+                                    if (find_.length > 0) {
+                                      if(dpc_disease_classi?.length>0){ 
+                                      }
+                                      //found t1
+                                      temp_tre1_1 = find_[0].corres_code.toString()
+                                     // clr = clr+' | '+
+                                      let t1_carry=temp_tre1_1+' '+find_[0].dpc_6digit+ ' [処置1]'
+
+                                      let code_arr=dpc_disease_classi[0]?.codes.split(",")
+                                      let col_sur_2xx = code_filter(code_arr,dpc_6+and_1+age_1+sur_2,0,10)
+                                      col_sur_2xx=removeDuplicates(col_sur_2xx);
+                                      let accepted=false
+                                      for(let x=0; x<find_?.length; x++){
+                                        if(accepted==false){
+                                            let this_temp_tre1_1 = find_[x].corres_code.toString()
+
+                                            if(col_sur_2xx.includes(this_temp_tre1_1)){
+                                              temp_tre1_1=this_temp_tre1_1
+                                              //clr = clr+' | '+
+                                              t1_carry=temp_tre1_1+' '+find_[x].dpc_6digit+ ' [処置1]'
+                                              //console.log('fund',this_temp_tre1_1)
+                                              //accepted=true
+                                            }                                        
+                                        }
+                                      }
+                                      clr = clr+' ↪︎ '+t1_carry
+                                    }
+
+
 
                     //need validate
               }
+
+
+
+
 ////////////////////////////////////////
               else{
                       find_ = await prisma.treatment_1.findMany({
@@ -681,8 +764,23 @@ if(dischargeDate){
                      
                           if (find_?.length > 0) {
                               console.log(dpc_6,itm,'--------------------------')
+
+
+
+                              let f_val=""
+                              try {
+                                let arr_t1=find_[0].codes.split(itm)
+                                let arr_t2=arr_t1[0].split('#')
+                                f_val=arr_t2[1].split(',')[0]
+                              } catch (error) {
+                                
+                              }
+
+
+
+
                               //found t3
-                              clr = 'Green? 1  [副傷病]'
+                              clr = 'Green? 1 '+f_val+'  [副傷病]'
                               temp_sec_1 = '1'
                             } else {
                     
