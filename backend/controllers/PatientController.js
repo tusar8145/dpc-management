@@ -82,11 +82,19 @@ export const dashboard_count = async (req, res, next) => {
       }
     });
 
+    const total_verified_count = await prisma.dpc_generate.count({
+      where: {
+        hospital_id: req.body?.hospital_id,
+        is_verified:1,
+      }
+    });
+
     let result_ = {
       total_3_hospitalized_count: total_3_hospitalized_count,
       total_7_hospitalized_count: total_7_hospitalized_count,
       total_hospitalized_count: total_hospitalized_count,
-      total_discharge_count: total_discharge_count
+      total_discharge_count: total_discharge_count,
+      total_verified_count:total_verified_count
     }
 
 
@@ -1983,9 +1991,32 @@ export const dpc_measure = async (req, res, next) => {
     let res2=0
     let res3=0
 
+    //get current cccpm
+    let temp1 = await prisma.ccpm.findMany({
+      where: {
+        dpc: dpc_code,
+      },
+    })
+
+    let ccpm_grop=temp1[0]?.ccpm_group
+   
+    //all dpc of this grop
+    let temp2 = await prisma.ccpm.findMany({
+      where: {
+        ccpm_group: ccpm_grop,
+      },select:{dpc:true}
+    })
+
+    let dpc_array=[]
+    for(let i=0; i<temp2?.length;i++){
+      dpc_array.push(temp2[i].dpc)
+    }
+
+ console.log(dpc_array,'dpc_array')
+
     res1 = await prisma.dpc_generate.aggregate({
       where: {
-        dpc_code: dpc_code,
+        dpc_code: {in: dpc_array},
         hospital_id:req.body.hospital_id
       },
       _count: {
@@ -2004,7 +2035,7 @@ export const dpc_measure = async (req, res, next) => {
 
     if(res3.length==0){error=1}
 
-    let result={res1:res1._count.id,res2:0,res3:res3[0]?.period_2 || '',error:error }
+    let result={temp1:temp2,  res1:res1._count.id,  res2:res1._count.id,  res3:res3[0]?.period_2 || '', error:error }
 
     //console.log(dpc_code,'dpc_code',res3.length)
 

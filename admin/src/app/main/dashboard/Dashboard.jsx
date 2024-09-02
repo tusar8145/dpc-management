@@ -100,8 +100,9 @@ function Dashboard() {
 	const [count7th, setCount7th] = useState(0);
 	const [countAll, setCountAll] = useState(0);
 	const [countDischarged, setCountDischarged] = useState(0);
-	const [countWithC, setCountWithC] = useState(0);
 
+	const [countWithC, setCountWithC] = useState(0);
+	//setCountVerified
 
 	async function dashboardCount(){
 		let data = await axios.post(apiConfig.countAdminGroup, {});
@@ -131,7 +132,8 @@ function Dashboard() {
 		setCount7th(getData.total_7_hospitalized_count)
 		setCountAll(getData.total_hospitalized_count)
 		setCountDischarged(getData.total_discharge_count)
- 
+		setCountWithC(getData.total_verified_count)
+		
 	}
 	 
 	useEffect(() => {  
