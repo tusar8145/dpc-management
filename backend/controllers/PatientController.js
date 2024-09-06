@@ -466,6 +466,7 @@ for (let date = new Date(addDays(startDate,1)); date <= addDays(endDate,1); date
     }
 }
 
+console.log('gap_treatment',gap_treatment)
 
 
 if(dischargeDate){
@@ -595,7 +596,7 @@ if(dischargeDate){
                         for(let x=0; x<find_.length; x++){
                           if(dpc_6==find_[x].dpc){
                               sur_2 = find_[x].code.toString()
-                              clr = 'Purple? '+sur_2+'  '+find_[x].k_code+ ' [2層]'
+                              clr = 'Purple? '+sur_2+'  '+find_[x].k_code+ ' [手術]'
                               have_dpc=1
                           }
                         }
@@ -608,7 +609,7 @@ if(dischargeDate){
                     }else{
                       //have_allk==1
                               sur_2 = '97'
-                              clr = 'Purple? '+sur_2+'  '+find_[0].k_code+ ' [2層]'
+                              clr = 'Purple? '+sur_2+'  '+find_[0].k_code+ ' [手術]'
 
                     }
 
@@ -863,6 +864,9 @@ if(dischargeDate){
                if (age >= 15 && age < 165 ) { and_1 = "2" }
              }
            }
+          //client req
+          and_1=='0'
+
         } 
 
  
@@ -1999,30 +2003,37 @@ export const dpc_measure = async (req, res, next) => {
     })
 
     let ccpm_grop=temp1[0]?.ccpm_group
-   
-    //all dpc of this grop
-    let temp2 = await prisma.ccpm.findMany({
-      where: {
-        ccpm_group: ccpm_grop,
-      },select:{dpc:true}
-    })
 
-    let dpc_array=[]
-    for(let i=0; i<temp2?.length;i++){
-      dpc_array.push(temp2[i].dpc)
+    if(ccpm_grop){
+       //all dpc of this grop
+        let temp2 = await prisma.ccpm.findMany({
+          where: {
+            ccpm_group: ccpm_grop,
+          },select:{dpc:true}
+        })
+
+        let dpc_array=[]
+          for(let i=0; i<temp2?.length;i++){
+            dpc_array.push(temp2[i].dpc)
+          }   
+          
+          res1 = await prisma.dpc_generate.aggregate({
+          where: {
+            dpc_code: {in: dpc_array},
+            hospital_id:req.body.hospital_id
+          },
+          _count: {
+            id: true,
+          },
+        })        
+   
     }
 
- console.log(dpc_array,'dpc_array')
-
-    res1 = await prisma.dpc_generate.aggregate({
-      where: {
-        dpc_code: {in: dpc_array},
-        hospital_id:req.body.hospital_id
-      },
-      _count: {
-        id: true,
-      },
-    })
+    //if(dpc_code=='130060XX97X41X'){
+      //console.log(dpc_array,'dpc_array')
+      
+      //console.log(temp2,'ccpm_grop')
+    //} // console.log(dpc_code,'dpc_code')
 
     let error=0
 
@@ -2035,7 +2046,7 @@ export const dpc_measure = async (req, res, next) => {
 
     if(res3.length==0){error=1}
 
-    let result={temp1:temp2,  res1:res1._count.id,  res2:res1._count.id,  res3:res3[0]?.period_2 || '', error:error }
+    let result={ res1:res1?._count?.id,  res2:0,  res3:res3[0]?.period_2 || '', error:error }
 
     //console.log(dpc_code,'dpc_code',res3.length)
 

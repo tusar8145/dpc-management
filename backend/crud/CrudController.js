@@ -320,14 +320,26 @@ export const remove_all =  async (req, res, next) => {
 }; 
 
 export const test =  async (req, res, next) => {
-    try {   
+    try {    
 
 
+        const post = await prisma.post.create({
+            data: {
+              title: 'My First Post',
+              content: 'This is the content of my first post.',
+              comments: {
+                create: [
+                  { text: 'Great post!' },
+                  { text: 'Thanks for sharing.' },
+                  { text: 'Very informative.' },
+                ],
+              },
+            },
+          });
 
-let clock=created_at()
+ /*let clock= created_at ()
 
 console.log(clock)
-
 
 
         var range_start=req.body.filter.range_start
@@ -361,7 +373,7 @@ console.log(clock)
             }
           })
 
-       /* let hospital_id=req.body.hospital_id
+       let hospital_id=req.body.hospital_id
         const findMany = await prisma.test.findMany({
             where: {
                 OR: [
@@ -392,7 +404,7 @@ console.log(clock)
         })*/
 
         return res.status(200).json({
-            success:true,  findMany:findMany
+            success:true,  findMany:post
         }); 
 
     }catch(error){
