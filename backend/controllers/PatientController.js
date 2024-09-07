@@ -67,13 +67,17 @@ export const dashboard_count = async (req, res, next) => {
     });
 
 
+    
     const total_hospitalized_count = await prisma.dpc_generate.count({
       where: {
         hospital_id: req.body?.hospital_id,
-        discharge_date: null,
-        temp_same_date:1
+        OR:[ 
+          {AND:[{NOT:{discharge_date: null}, }, {temp_same_date:0 },]},
+          {AND:[{discharge_date: null, }, {temp_same_date:1 },]}
+        ],
       }
     });
+
 
     const total_discharge_count = await prisma.dpc_generate.count({
       where: {
@@ -322,52 +326,92 @@ export const dpc_create = async (req, res, next) => {
           }        
       }
 
+        let same_code_calculation=0
+      //check same patient withing 7 days
+      const last_same_patient = await prisma.dpc_generate.findMany({
+        where: {
+          patient_code: first_loop_collect.patient_code,
+          //NOT: { discharge_date: null },
+          //NOT: { admission_date: first_loop_collect?.admission_date }
+        },
+        orderBy: {
+          id: 'desc',
+        },
+        take: 1,
+        select: {  
+          id: true,          
+          admission_date:true,
+          discharge_date:true,
+        }})
 
-      //let uid_ = first_loop_collect.patient_code.toString() + '' + first_loop_collect?.admission_date.replaceAll("/", "") + '' + first_loop_collect.hospital_id.toString()
-      let uid_ = dpc_6 +''+ first_loop_collect.patient_code.toString() + '' + first_loop_collect.hospital_id.toString()
+        if(last_same_patient?.length>0){
+
+          // for patient already discharged
+          if(last_same_patient[0].discharge_date){
+            let diss_new=calculateHospitalizationDays(last_same_patient[0].discharge_date, first_loop_collect?.admission_date)
+            if(diss_new<7){same_code_calculation=1}
+          }else{
+            //continuous patient
+            same_code_calculation=1
+          }
+ 
+          //console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', last_same_patient, diss_new)
+       
+        }
+
+
+
+
+      let uid_ = first_loop_collect.patient_code.toString() + '' + first_loop_collect?.admission_date.replaceAll("/", "") + '' + first_loop_collect.hospital_id.toString()
+      //let uid_ = dpc_6 +''+ first_loop_collect.patient_code.toString() + '' + first_loop_collect.hospital_id.toString()
       let uid = parseInt(uid_)
 
       
       //search for old
-      const ufind_ = await prisma.dpc_generate.findUnique({
-        where: {
-          uid: uid,
-        },
-        select: {
-          id: true,
-          dpc_6: true,
-          and_1: true,
-          age_1: true,
-          sur_2: true,
-          tre1_1: true,
-          tre2_1: true,
-          sec_1: true,
-          sco_1: true,
+      let ufind_ = null
 
-          s_dpc_6: true,
-          s_and_1: true,
-          s_age_1: true,
-          s_sur_2: true,
-          s_tre1_1: true,
-          s_tre2_1: true,
-          s_sec_1: true,
-          s_sco_1: true,
+      if(same_code_calculation==1){
+            ufind_=await prisma.dpc_generate.findUnique({
+              where: {
+                id: last_same_patient[0].id,
+              },
+              select: {
+                id: true,
+                dpc_6: true,
+                and_1: true,
+                age_1: true,
+                sur_2: true,
+                tre1_1: true,
+                tre2_1: true,
+                sec_1: true,
+                sco_1: true,
 
-          arr_doctor: true,
-          arr_receipt: true,
-          arr_date: true,
-          arr_name: true,
-          arr_amount: true,
-          arr_dept: true,
-          arr_disease: true,
-          arr_treno:true,
-          arr_icd:true,
-          arr_color:true,
-          admission_date:true,
-          discharge_date:true,
-          is_verified:true,
-        }
-      })
+                s_dpc_6: true,
+                s_and_1: true,
+                s_age_1: true,
+                s_sur_2: true,
+                s_tre1_1: true,
+                s_tre2_1: true,
+                s_sec_1: true,
+                s_sco_1: true,
+
+                arr_doctor: true,
+                arr_receipt: true,
+                arr_date: true,
+                arr_name: true,
+                arr_amount: true,
+                arr_dept: true,
+                arr_disease: true,
+                arr_treno:true,
+                arr_icd:true,
+                arr_color:true,
+                admission_date:true,
+                discharge_date:true,
+                is_verified:true,
+              }
+            })
+      }
+
  
         let k_arr_doctor=[]
         let k_arr_receipt=[]
