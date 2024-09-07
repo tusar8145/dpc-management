@@ -71,6 +71,7 @@ export const dashboard_count = async (req, res, next) => {
       where: {
         hospital_id: req.body?.hospital_id,
         discharge_date: null,
+        temp_same_date:1
       }
     });
 
@@ -87,7 +88,7 @@ export const dashboard_count = async (req, res, next) => {
     const total_verified_count = await prisma.dpc_generate.count({
       where: {
         hospital_id: req.body?.hospital_id,
-        is_verified:1,
+        temp_is_changed:1,
       }
     });
 
@@ -364,6 +365,7 @@ export const dpc_create = async (req, res, next) => {
           arr_color:true,
           admission_date:true,
           discharge_date:true,
+          is_verified:true,
         }
       })
  
@@ -1028,6 +1030,21 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
       if(first_loop_collect?.discharge_date){
           if(first_loop_collect?.discharge_date!=ufind_?.discharge_date){temp_same_date=1} 
       }
+
+      let temp_is_changed=0;
+
+      //nothing change
+      if(ufind_?.sur_2==sur_2  && ufind_?.tre1_1==temp_tre1_1  && ufind_?.tre2_1==temp_tre2_1  && ufind_?.sec_1==temp_sec_1  && ufind_?.sco_1==temp_sco_1 ){
+       
+      }else{
+        //changed
+        if(ufind_?.is_verified==1){
+          temp_is_changed=1
+        }
+      }
+
+      console.log(ufind_?.sur_2,sur_2,ufind_?.tre1_1,temp_tre1_1,ufind_?.tre2_1,temp_tre2_1,ufind_?.sec_1,temp_sec_1,ufind_?.sco_1,temp_sco_1,'=========',ufind_?.is_verified, temp_is_changed)
+      
  
 
       let data = {
@@ -1067,10 +1084,11 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         "s_sco_1": null,
 
         "hospitalization_days": hospitalization_days,
-        "is_verified":0,
+        //"is_verified":0,
         "discharge_date": first_loop_collect?.discharge_date?.toString(), //letest 
         "admission_date_gap":admissionDateGap,
-        "temp_same_date":temp_same_date
+        "temp_same_date":temp_same_date,
+        "temp_is_changed":temp_is_changed
       }
 
       console.log(first_loop_collect?.discharge_date,'----------------------------------------')
