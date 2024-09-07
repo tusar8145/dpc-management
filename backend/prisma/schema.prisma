@@ -393,6 +393,8 @@ arr_temp String? @db.Text
   dpc_disease_classi dpc_disease_classi? @relation("icd_dpcx", fields: [dpc_6], references: [dpc_6]) 
   dpc_disease_classi2 dpc_disease_classi? @relation("icd_dpcx2", fields: [s_dpc_6], references: [dpc_6]) 
 
+  temp_same_date Int?
+
 }
 
 

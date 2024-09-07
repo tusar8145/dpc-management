@@ -18,6 +18,7 @@ import * as response from "../helpers/Response.js";
 import { registration } from './UserController.js';
 import { create } from '../crud/CrudController.js';
 import axios from 'axios';
+import moment from 'moment'; 
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -79,6 +80,7 @@ export const dashboard_count = async (req, res, next) => {
         discharge_date: {
           not: null,
         },
+        temp_same_date:1
       }
     });
 
@@ -324,7 +326,7 @@ export const dpc_create = async (req, res, next) => {
       let uid_ = dpc_6 +''+ first_loop_collect.patient_code.toString() + '' + first_loop_collect.hospital_id.toString()
       let uid = parseInt(uid_)
 
-
+      
       //search for old
       const ufind_ = await prisma.dpc_generate.findUnique({
         where: {
@@ -361,6 +363,7 @@ export const dpc_create = async (req, res, next) => {
           arr_icd:true,
           arr_color:true,
           admission_date:true,
+          discharge_date:true,
         }
       })
  
@@ -379,6 +382,8 @@ export const dpc_create = async (req, res, next) => {
 
       if(ufind_){
         admissionDate=ufind_.admission_date
+        dischargeDate = ufind_.discharge_date;
+
         k_arr_doctor=JSON.parse(ufind_.arr_doctor)
         k_arr_receipt=JSON.parse(ufind_.arr_receipt)
         k_arr_date=JSON.parse(ufind_.arr_date)
@@ -456,13 +461,27 @@ let endDate = new Date(excelSL(date_obj[date_obj.length - 1])); //
 
  console.log('start=',admissionDate, 'end=',excelSL(date_obj[date_obj.length - 1]), 'date obj=',date_obj,' endDateExcel='+endDate, ' '+date_obj[date_obj.length - 1] )
  // Loop from startDate to endDate
+
+
 for (let date = new Date(addDays(startDate,1)); date <= addDays(endDate,1); date.setDate(date.getDate() + 1)) {
     console.log('org=', date, 'calculated=',excelSL(dateToExcelSerial(date)) )
     if(date_obj.includes(dateToExcelSerial(date))){
-       console.log('------------ok',dateToExcelSerial(date))
+       console.log('------------ok1',dateToExcelSerial(date),' dis ', dischargeDate )
     }else{
-      console.log('------------no',dateToExcelSerial(date))
-      gap_treatment++ 
+ 
+      //const date1 = moment(date);
+      //const date2 = moment(dischargeDate);
+      //console.log('======================================================',date1,date2)
+      // Difference in days
+      //const diffDays = date2.diff(date1, 'days');
+ 
+      //console.log(' = date / dis ', new Date(date), new Date(dischargeDate),  dischargeDate, diffDays )
+      if (new Date(date) <= new Date(addDays(dischargeDate,1))) {
+          console.log('------------ok2',dateToExcelSerial(date),' dis ',  dischargeDate )
+      }else{
+          console.log('------------no3',dateToExcelSerial(date),)
+          gap_treatment++ 
+      }
     }
 }
 
@@ -495,9 +514,11 @@ if(dischargeDate){
 
 
 
- let admissionDateGap =  formatDate(addDays(admissionDate, gap_treatment));
-
-
+let admissionDateGap =  formatDate(addDays(admissionDate, gap_treatment));
+let temp_same_date =0
+if(admissionDateGap==admissionDate){temp_same_date=1}else{
+  temp_same_date=0
+}
   //console.log(gap_treatment, admissionDateGap,'gap_treatment')
  
  
@@ -1003,10 +1024,11 @@ if(dischargeDate){
       }
 
 
-
-
-
-
+      //new discharge date comming
+      if(first_loop_collect?.discharge_date){
+          if(first_loop_collect?.discharge_date!=ufind_?.discharge_date){temp_same_date=1} 
+      }
+ 
 
       let data = {
         arr_doctor: JSON.stringify(doctor_obj),
@@ -1047,9 +1069,11 @@ if(dischargeDate){
         "hospitalization_days": hospitalization_days,
         "is_verified":0,
         "discharge_date": first_loop_collect?.discharge_date?.toString(), //letest 
-        "admission_date_gap":admissionDateGap
+        "admission_date_gap":admissionDateGap,
+        "temp_same_date":temp_same_date
       }
 
+      console.log(first_loop_collect?.discharge_date,'----------------------------------------')
 
       let data_create = {
 

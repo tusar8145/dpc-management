@@ -106,7 +106,7 @@ const locale = {
 
 	'3rd Day':'3日目',
 	'7th Day':'7日目',
-	'All  Patients':'すべての患者',
+	'All  Patients':'入院患者',
 	'Discharged Patient':'退院した患者',
 	'With Changes':'変更あり',
  
