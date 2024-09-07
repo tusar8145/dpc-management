@@ -67,7 +67,7 @@ export const dashboard_count = async (req, res, next) => {
     });
 
 
-    
+
     const total_hospitalized_count = await prisma.dpc_generate.count({
       where: {
         hospital_id: req.body?.hospital_id,
@@ -331,6 +331,7 @@ export const dpc_create = async (req, res, next) => {
       const last_same_patient = await prisma.dpc_generate.findMany({
         where: {
           patient_code: first_loop_collect.patient_code,
+          hospital_id:first_loop_collect.hospital_id
           //NOT: { discharge_date: null },
           //NOT: { admission_date: first_loop_collect?.admission_date }
         },
@@ -1159,6 +1160,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
       //update please
       if (ufind_) {
+        console.log('====================================================================================vvvvvvvvvvvvvvv')
         const updateUser = await prisma.dpc_generate.update({
           where: {
             id: ufind_.id,
@@ -1169,6 +1171,8 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
       //create
       else {
+        console.log('1====================================================================================vvvvvvvvvvvvvvv',uid)
+
         let cre_ = await prisma.dpc_generate.create({
           data: {
             ...data,
@@ -1176,6 +1180,9 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
             uid: uid,
           },
         })
+
+        console.log('jjjjjjjjjjjjjjjjjjjjjjjjjjj', cre_)
+
       }
     }
 
