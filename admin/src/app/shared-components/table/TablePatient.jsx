@@ -24,6 +24,8 @@ import {createdAt} from '../../helpers/timeHelpers';
 import { useTheme } from '../../context/ThemeContext';
 import {   useState } from 'react';
 
+import InfoIcon from '@mui/icons-material/Info';
+ import Tooltip from '@mui/material/Tooltip';
 
 const DPCEditModal = lazy(() => import('../modal/DPCEditModal'));
 
@@ -211,6 +213,7 @@ export default function TablePatient(props) {
       if(getd?.res1>0 && getd.error!=1){  res.res1=getd.res1   }else{res.res1='未'}
       if(getd?.res2>0 && getd.error!=1){  res.res2=getd.res2   }else{res.res2='未'}
       if(getd?.res3>0 && getd.error!=1){  res.res3=getd.res3   }else{res.res3=''}
+      res.ccpm=getd.ccpm
       res.error=getd?.error
 
     
@@ -372,9 +375,31 @@ export default function TablePatient(props) {
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('名前', null, data.doctor, null)}</td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('病棟', null, data.ward, null)}</td>
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院日', null, data.admission_date, null)}</td>
-            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('退院', '予定日', data.discharge_date, null)}</td>
+            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular') + (data.temp_is_changed==1?'  line-through   ':'')}>
+              {part3('退院', '予定日', data.discharge_date, null)}  
+            </td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '日数', calculateHospitalizationDays(data.admission_date_gap,data.discharge_date,data.arr_date), null)}</td>
-            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('今期', '患者数', PatientDpcMeasureData?.res1, null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}> 
+<div class="flex justify-between ...">
+  <div>
+    {part3('今期', '患者数', PatientDpcMeasureData?.res1, null)}
+  </div>
+  <div className='cursor-pointer'>
+    
+    {PatientDpcMeasureData?.ccpm &&
+
+                  <Tooltip title={PatientDpcMeasureData?.ccpm}>
+                     
+                      <InfoIcon />
+                    
+                  </Tooltip>
+    }
+
+  </div>
+</div>
+
+
+            </td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('過去', '患者数', PatientDpcMeasureData?.res2, null)}</td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '期間Ⅱ', PatientDpcMeasureData?.res3, null)}</td>
             <td className={" width_button text-center border-right-zero "} style={{"border-bottom":"0px"}} rowSpan={2}>

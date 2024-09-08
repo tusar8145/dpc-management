@@ -211,9 +211,9 @@ function Dashboard() {
 											<motion.div variants={item}>
 												<SummaryWidget count={countDischarged}  view={1}  type={'dis-patient'} color={'coral'}  title={t('Discharged Patient')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
-
+											 
 											<motion.div variants={item}>
-												<SummaryWidget count={countWithC}  view={1}  color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
+												<SummaryWidget count={countWithC}  view={1}    type={'all-changed'}  color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 										</motion.div>
 					}

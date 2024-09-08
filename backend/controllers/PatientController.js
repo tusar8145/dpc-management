@@ -96,6 +96,8 @@ export const dashboard_count = async (req, res, next) => {
       }
     });
 
+
+
     let result_ = {
       total_3_hospitalized_count: total_3_hospitalized_count,
       total_7_hospitalized_count: total_7_hospitalized_count,
@@ -1779,12 +1781,25 @@ export const dpc_list = async (req, res, next) => {
         ...date_type=='date_of_birth'?{ date_of_birth: { ...(range_end ? { lte: range_end } : {}),  ...(range_start ? { gte: range_start } : {}),},}:{},
         ...patient_code? { patient_code: parseInt(patient_code) } : {},
 
-        ...typeDisPatient=='all-active-patient'? { discharge_date: null } : {},
-        ...typeDisPatient=='dis-patient'? { discharge_date:  {
-          not: null,
-        }, } : {},
+
+        ...typeDisPatient == 'all-active-patient' ? {
+          OR: [
+            { AND: [{ NOT: { discharge_date: null }, }, { temp_same_date: 0 },] },
+            { AND: [{ discharge_date: null, }, { temp_same_date: 1 },] }
+          ],
+        } : {},
+
+        ...typeDisPatient == 'dis-patient' ? {
+          discharge_date: {
+            not: null,
+          },
+          temp_same_date: 1
+        } : {},
 
 
+        ...typeDisPatient == 'all-changed' ? {
+          temp_is_changed: 1,
+        } : {},
 
 
            ...hospitalization_days>-1? { 
@@ -1858,6 +1873,8 @@ export const dpc_list = async (req, res, next) => {
         dpc_disease_classi:true,
         dpc_disease_classi2:true,
 
+        temp_is_changed:true
+
       }
     })
 
@@ -1886,10 +1903,26 @@ export const dpc_list = async (req, res, next) => {
         ...patient_code? { patient_code: parseInt(patient_code) } : {},
 
 
-        ...typeDisPatient=='all-active-patient'? { discharge_date: null } : {},
-        ...typeDisPatient=='dis-patient'? { discharge_date:  {
-          not: null,
-        }, } : {},
+        ...typeDisPatient == 'all-active-patient' ? {
+          OR: [
+            { AND: [{ NOT: { discharge_date: null }, }, { temp_same_date: 0 },] },
+            { AND: [{ discharge_date: null, }, { temp_same_date: 1 },] }
+          ],
+        } : {},
+
+        ...typeDisPatient == 'dis-patient' ? {
+          discharge_date: {
+            not: null,
+          },
+          temp_same_date: 1
+        } : {},
+
+
+        ...typeDisPatient == 'all-changed' ? {
+          temp_is_changed: 1,
+        } : {},
+
+
 
         ...hospitalization_days>-1? { 
           admission_date_gap: d2,
@@ -2087,6 +2120,7 @@ export const dpc_measure = async (req, res, next) => {
     let res1=0
     let res2=0
     let res3=0
+    let result1=null
 
     //get current cccpm
     let temp1 = await prisma.ccpm.findMany({
@@ -2096,6 +2130,8 @@ export const dpc_measure = async (req, res, next) => {
     })
 
     let ccpm_grop=temp1[0]?.ccpm_group
+
+    console.log('xxxxxx',ccpm_grop)
 
     if(ccpm_grop){
        //all dpc of this grop
@@ -2120,6 +2156,17 @@ export const dpc_measure = async (req, res, next) => {
           },
         })        
    
+    }else{
+        res1 = await prisma.dpc_generate.aggregate({
+        where: {
+          dpc_code: dpc_code,
+        },
+        _count: {
+          id: true,
+        },
+      })
+
+
     }
 
     //if(dpc_code=='130060XX97X41X'){
@@ -2139,9 +2186,11 @@ export const dpc_measure = async (req, res, next) => {
 
     if(res3.length==0){error=1}
 
-    let result={ res1:res1?._count?.id,  res2:0,  res3:res3[0]?.period_2 || '', error:error }
+     //result1=res1?._count?.id
 
-    //console.log(dpc_code,'dpc_code',res3.length)
+    let result={ res1:res1?._count?.id,  res2:0,  res3:res3[0]?.hos_days_2 || '', error:error , ccpm:ccpm_grop || ""}
+
+   console.log(result)
 
     response.list(result, res)
   } catch (error) {
