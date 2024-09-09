@@ -254,9 +254,10 @@ export const dpc_create = async (req, res, next) => {
       let color_obj=[]
       let hospitalization_days = null
       let gap_treatment = 0
-
-
-
+      let remember_k=null
+      let remember_recpt=[]
+      let remember_k_value=null
+      let non_97_k_corres=null
 
       //incomming
       let first_loop_collect = req_data_all[x].first_loop_collect
@@ -634,6 +635,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                 },
               })
 
+             
 
               if (find_.length > 0) {
 
@@ -663,13 +665,61 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                     if(have_allk==0){
                         let have_dpc=0
 
+                        let satisfy=[]
+                        let temp_carry=''
                         for(let x=0; x<find_.length; x++){
                           if(dpc_6==find_[x].dpc){
                               sur_2 = find_[x].code.toString()
                               clr = 'Purple? '+sur_2+'  '+find_[x].k_code+ ' [手術]'
+                              temp_carry=sur_2+'  '+find_[x].k_code
                               have_dpc=1
+                              satisfy=find_[x]
                           }
                         }
+
+                        //check all satisfy
+                        if(dpc_6=='060060'){console.log('cccccccccc1111',satisfy)}
+
+                        let satisfy_allow=1
+                        let but2=''
+                        let but3=''
+                        
+                        if(satisfy?.k_code_2){
+                          //rule k_code_2
+                          if(satisfy?.recept_main_2){
+                            let temp1=0
+                            for (let x = 0; x < receipt_obj.length; x++) {
+                              if(receipt_obj[x]==satisfy.recept_main_2){
+                                temp1=1
+                                but2=' + '+satisfy.k_code_2
+                                remember_recpt.push(receipt_obj[x])
+                              }
+                            }
+                            if(temp1==0){satisfy_allow=0} 
+                          }
+
+                          //rule k_code_3
+                          if(satisfy?.recept_main_3){
+                            let temp1=0
+                            for (let x = 0; x < receipt_obj.length; x++) {
+                              if(receipt_obj[x]==satisfy.recept_main_3){
+                                temp1=1
+                                but3=' + '+satisfy.k_code_3
+                                remember_recpt.push(receipt_obj[x])
+                              }
+                            }
+                            if(temp1==0){satisfy_allow=0}
+                          }
+
+                          if(satisfy_allow==1){  clr = 'Purple? '+temp_carry+but2+but3+ ' [手術]'; 
+                            remember_k= clr
+                            remember_k_value=sur_2
+                            console.log('xweeeeee',remember_k)
+                          
+                          }
+                        }
+
+                        
                         
     
                         if (have_dpc == 0) {
@@ -680,11 +730,25 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                       //have_allk==1
                               sur_2 = '97'
                               clr = 'Purple? '+sur_2+'  '+find_[0].k_code+ ' [手術]'
-
                     }
 
+ 
 
+                 if (remember_recpt.includes(item_receipt_obj)) {
+                      // found element
+                      sur_2=remember_k_value
+                      clr=remember_k
+                  }
 
+                  if(sur_2 != '97'){  non_97_k_corres=sur_2  }
+
+                  
+                  //final surgery
+                  if(sur_2 == '97'){
+                    if(non_97_k_corres){
+                      sur_2 = non_97_k_corres
+                    }
+                  }
 
 
 
@@ -706,7 +770,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                                       //found t1
                                       temp_tre1_1 = find_[0].corres_code.toString()
                                      // clr = clr+' | '+
-                                      let t1_carry=temp_tre1_1+' '+find_[0].dpc_6digit+ ' [処置1]'
+                                      let t1_carry=temp_tre1_1+' '+find_[0].k_code	+ ' [処置1]'
 
                                       let code_arr=dpc_disease_classi[0]?.codes.split(",")
                                       let col_sur_2xx = code_filter(code_arr,dpc_6+and_1+age_1+sur_2,0,10)
@@ -719,7 +783,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                                             if(col_sur_2xx.includes(this_temp_tre1_1)){
                                               temp_tre1_1=this_temp_tre1_1
                                               //clr = clr+' | '+
-                                              t1_carry=temp_tre1_1+' '+find_[x].dpc_6digit+ ' [処置1]'
+                                              t1_carry=temp_tre1_1+' '+find_[x].k_code	+ ' [処置1]'
                                               //console.log('fund',this_temp_tre1_1)
                                               //accepted=true
                                             }                                        
@@ -754,7 +818,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                                     }
                                     //found t1
                                     temp_tre1_1 = find_[0].corres_code.toString()
-                                    clr = 'Blue? '+temp_tre1_1+' '+find_[0].dpc_6digit+ ' [処置1]'
+                                    clr = 'Blue? '+temp_tre1_1+' '+find_[0].k_code	+ ' [処置1]'
 
 
                                     let code_arr=dpc_disease_classi[0]?.codes.split(",")
@@ -776,7 +840,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                                           
                                           if(col_sur_2xx.includes(this_temp_tre1_1)){
                                             temp_tre1_1=this_temp_tre1_1
-                                            clr = 'Blue? '+temp_tre1_1+' '+find_[x].dpc_6digit+ ' [処置1]'
+                                            clr = 'Blue? '+temp_tre1_1+' '+find_[x].k_code	+ ' [処置1]'
                                             //console.log('fund',this_temp_tre1_1)
                                             //accepted=true
                                           }                                        
@@ -1090,7 +1154,12 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         }
       }
 
-      console.log(ufind_?.sur_2,sur_2,ufind_?.tre1_1,temp_tre1_1,ufind_?.tre2_1,temp_tre2_1,ufind_?.sec_1,temp_sec_1,ufind_?.sco_1,temp_sco_1,'=========',ufind_?.is_verified, temp_is_changed)
+      //same file entry
+      if(ufind_?.is_verified==1 && ufind_?.discharge_date==dischargeDate && temp_is_changed==0){
+        temp_is_changed=1
+      }
+
+      console.log('=========iiiiiiiiiiiiii',ufind_?.is_verified, ufind_?.discharge_date,dischargeDate,  temp_is_changed)
       
  
 
