@@ -988,7 +988,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         if(Arr_and_1?.length==1){ //always x
           //default value X
         }else if(Arr_and_1?.length>1){   
-           for(let c=0; c<Arr_and_1.length;c++){
+           /*for(let c=0; c<Arr_and_1.length;c++){
              let temp1=Arr_and_1[c]
              if(temp1=='0'){
                 //dependency
@@ -997,7 +997,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
              }else if(temp1=='2'){
                if (age >= 15 && age < 165 ) { and_1 = "2" }
              }
-           }
+           }*/
           //client req
           and_1=='0'
 
@@ -1155,9 +1155,23 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
       }
 
       //same file entry
-      if(ufind_?.is_verified==1 && ufind_?.discharge_date==dischargeDate && temp_is_changed==0){
-        temp_is_changed=1
+
+     
+
+     
+      var date1 = endDate
+      var date2 = new Date(dischargeDate);
+      var diffDays = date2.getDate() - date1.getDate();
+
+
+      if(ufind_?.is_verified==1 && diffDays ==0 && temp_is_changed==0){
+        //temp_is_changed=1
       }
+
+
+      console.log(diffDays, '==================j============', ufind_?.is_verified, ufind_?.discharge_date, dischargeDate, temp_is_changed)
+
+
 
       console.log('=========iiiiiiiiiiiiii',ufind_?.is_verified, ufind_?.discharge_date,dischargeDate,  temp_is_changed)
       
@@ -1814,21 +1828,30 @@ export const dpc_list = async (req, res, next) => {
    
     try {
        const myArray = dpcPattern.split(" ");
-      if(myArray[0]!='XXXXXX'){ dpc_6 = myArray[0]}else{}
-      if(myArray[1]!='X'){ and_1 = myArray[1]}else{}
-      if(myArray[2]!='X'){ age_1 = myArray[2]}else{}
-      if(myArray[3]!='XX'){ sur_2 = myArray[3]}else{}
-      if(myArray[4]!='X'){ tre1_1 = myArray[4]}else{}
-      if(myArray[5]!='X'){ tre2_1 = myArray[5]}else{}
-      if(myArray[6]!='X'){ sec_1 = myArray[6]}else{}
-      if(myArray[7]!='X'){ sco_1 = myArray[7]}else{}
+      if(myArray[0]!='XXXXXX'){ dpc_6 = myArray[0].toLowerCase();}else{}
+      if(myArray[1]!='X'){ and_1 = myArray[1].toLowerCase();}else{}
+      if(myArray[2]!='X'){ age_1 = myArray[2].toLowerCase();}else{}
+      if(myArray[3]!='XX'){ sur_2 = myArray[3].toLowerCase();}else{}
+      if(myArray[4]!='X'){ tre1_1 = myArray[4].toLowerCase();}else{}
+      if(myArray[5]!='X'){ tre2_1 = myArray[5].toLowerCase();}else{}
+      if(myArray[6]!='X'){ sec_1 = myArray[6].toLowerCase();}else{}
+      if(myArray[7]!='X'){ sco_1 = myArray[7].toLowerCase();}else{}
 
     } catch (error) {
       
     }
 
 
-    console.log( )
+    console.log({
+      //patient_code:300366,
+      ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
+      ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
+      ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},
+      ...sur_2? { OR:[{sur_2: sur_2},{s_sur_2: sur_2}] }   : {},
+      ...tre1_1?{ OR:[{tre1_1: tre1_1 },{s_tre1_1: tre1_1}]}   : {},
+      ...tre2_1?{ OR:[{tre2_1: tre2_1 },{s_tre2_1: tre2_1 }]}  : {},
+      ...sec_1? { OR:[{sec_1: sec_1 },{s_sec_1: sec_1}]}   : {},
+      ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},},'jjjjjjjjjjjjj' )
 
     let result_ = await prisma.dpc_generate.findMany({
       ...response.list_paginate(req),
