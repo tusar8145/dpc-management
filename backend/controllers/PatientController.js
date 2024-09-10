@@ -999,7 +999,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
              }
            }*/
           //client req
-          and_1=='0'
+          and_1='0'
 
         } 
 
@@ -1048,6 +1048,30 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         let code_arr=dpc_disease_classi_first.codes.split(",")
  
         //////////////////////////////////////////////////////////// 
+
+        let col_and_1 = code_filter(code_arr,dpc_6,0,6)
+          //validate
+            if(col_and_1.includes(and_1)){
+              //console.log('found here')
+              
+            }else{
+              if(col_and_1.includes('0')){
+                and_1='0'
+              }else {
+                and_1=col_and_1[0]
+              }
+            }
+    
+            let col_age_1 = code_filter(code_arr,dpc_6+''+and_1,0,7)
+            //validate
+              if(col_age_1.includes(age_1)){
+                //console.log('found here')
+                
+              }else{
+                  age_1=col_age_1[0]
+              }
+              ///////////////////////////////////////////////////////////////////////
+
         let col_sur_1 = code_filter(code_arr,dpc_6+''+and_1+''+age_1+''+sur_2,0,10)
    
         if(temp_tre1_1=='X'){ //no surgery 1 value
@@ -1813,7 +1837,7 @@ export const dpc_list = async (req, res, next) => {
     let d1=timeStable(created_at()) || null
     let d2=timeStable(created_at(hospitalization_days)) || null
      
-    console.log('xxx',d2)
+    console.log('xxxdpcPattern',dpcPattern)
 
     let dpc_6 = null
     let and_1 = null
@@ -1842,29 +1866,40 @@ export const dpc_list = async (req, res, next) => {
     }
 
 
-    console.log({
-      //patient_code:300366,
-      ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
-      ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
+    console.log(dpc_6,sur_2,tre1_1,'jjjjjjjjjjjjj' )
+
+
+   /* console.log({...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
+      ...and_1? {and_1: and_1} : {},
       ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},
       ...sur_2? { OR:[{sur_2: sur_2},{s_sur_2: sur_2}] }   : {},
-      ...tre1_1?{ OR:[{tre1_1: tre1_1 },{s_tre1_1: tre1_1}]}   : {},
+      ...tre1_1?{ tre1_1: tre1_1}   : {},
       ...tre2_1?{ OR:[{tre2_1: tre2_1 },{s_tre2_1: tre2_1 }]}  : {},
       ...sec_1? { OR:[{sec_1: sec_1 },{s_sec_1: sec_1}]}   : {},
-      ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},},'jjjjjjjjjjjjj' )
+      ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},})*/
+
 
     let result_ = await prisma.dpc_generate.findMany({
       ...response.list_paginate(req),
       where: {
         //patient_code:300366,
-        ...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
+        /*...dpc_6? { OR:[{dpc_6: dpc_6 },{s_dpc_6: dpc_6}]}   : {},
         ...and_1? { OR:[{and_1: and_1 },{s_and_1: and_1}]}   : {},
         ...age_1? { OR:[{age_1: age_1 },{s_age_1: age_1}]}   : {},
         ...sur_2? { OR:[{sur_2: sur_2},{s_sur_2: sur_2}] }   : {},
         ...tre1_1?{ OR:[{tre1_1: tre1_1 },{s_tre1_1: tre1_1}]}   : {},
         ...tre2_1?{ OR:[{tre2_1: tre2_1 },{s_tre2_1: tre2_1 }]}  : {},
         ...sec_1? { OR:[{sec_1: sec_1 },{s_sec_1: sec_1}]}   : {},
-        ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},
+        ...sco_1? { OR:[{sco_1: sco_1 },{s_sco_1: sco_1}]}   : {},*/
+
+        ...dpc_6? {dpc_6: dpc_6 }   : {},
+        ...and_1? {and_1: and_1 }   : {},
+        ...age_1? {age_1: age_1 }   : {},
+        ...sur_2? {sur_2: sur_2}   : {},
+        ...tre1_1?{tre1_1: tre1_1 }   : {},
+        ...tre2_1?{tre2_1: tre2_1 }  : {},
+        ...sec_1? {sec_1: sec_1 }   : {},
+        ...sco_1? {sco_1: sco_1 }   : {},
 
         ...id?{id:id}:{},
 
