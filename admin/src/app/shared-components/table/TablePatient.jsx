@@ -122,6 +122,8 @@ export default function TablePatient(props) {
     const [edit, setEdit] = React.useState(0);
     const [judge, setJudge] = React.useState(0);
 
+    const [line, setLine] = React.useState(false);
+
     const [PatientDpcMeasureData, setPatientDpcMeasureData] = React.useState([]);
 
     const [dpc_current, setdpc_current] = React.useState(null);
@@ -364,6 +366,38 @@ export default function TablePatient(props) {
      // Change this color as needed
     };
 
+
+    useEffect(() => {
+
+      if(data.discharge_date && data.arr_date){
+
+        let latest_date=null
+        let dates_obj=null
+        let dates=data.arr_date
+        if(dates){dates_obj=JSON.parse(dates)}
+        latest_date=dates_obj[dates_obj?.length-1]
+
+        let date_latest=excelSL(latest_date)
+ 
+            var date1 = new Date(date_latest)
+            var date2 = new Date(data.discharge_date);
+
+            if(date1>date2){
+                console.log('vvvvvvvvvvvv',  date1, date2 )
+                setLine(true)
+            }
+
+           // var diffDays = date2.getDate() - date1.getDate();  
+            
+           // setLine(diffDays)
+            
+      }
+     
+
+      
+ 
+    }, [data.discharge_date && data.arr_date]);
+
     return ( 
     <table  style={{ backgroundColor: bgColor, borderCollapse: 'collapse', width: '100%' }}
         onClick={handleTableClick} className={`dpc dpc-table p-10 mt-2    transition ease-in-out   bg-white hover:-translate-y-1 hover:scale-104 hover:bg-white-50 duration-300 ${props.basic ==1 ? 'bgblanchedalmond' : ''}`} >
@@ -375,7 +409,9 @@ export default function TablePatient(props) {
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('名前', null, data.doctor, null)}</td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('病棟', null, data.ward, null)}</td>
             <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院日', null, data.admission_date, null)}</td>
-            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular') + (data.temp_is_changed==1?'  line-through   ':'')}>
+            <td className={"width_double  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular') + (line==true?'  line-through   ':'')}
+            >  
+     
               {part3('退院', '予定日', data.discharge_date, null)}  
             </td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '日数', calculateHospitalizationDays(data.admission_date_gap,data.discharge_date,data.arr_date), null)}</td>
