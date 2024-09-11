@@ -169,7 +169,7 @@ const [range_end, setrange_end] = useState('');
 const [date_type, setDateType] = useState('admission_date');
 const [patient_code, setPatientCode] = useState(null);
 const [hospitalized_days, setHospitalized] = useState('');
-const [dpcPattern, setDpcPattern] = useState('XXXXXX X X XX X X X X');
+const [dpcPattern, setDpcPattern] = useState('XXXXXX|X|X|XX|X|X|X|X');
 const [typeDisPatient, setTypeDisPatient] = useState(null);
 ///////////////////////////////////
 
@@ -299,7 +299,7 @@ const [ signal, setSignal]  =useState('45');
 				}  
 				console.log('bbbb',page, pageP, rowP,id)
 
-				if(dpcPattern != 'XXXXXX X X XX X X X X'){
+				if(dpcPattern != 'XXXXXX|X|X|XX|X|X|X|X'){
 					skip=0
 					setPageP(0)
 					console.log(dpcPattern,'dpcPattern',skip)

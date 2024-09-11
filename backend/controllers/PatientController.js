@@ -612,10 +612,14 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         }
       })
 
- 
+      
       let resultString = haveMultiT2
       .map(item => `${item.recept_main}=${item.corres_code}`)
       .join(',');
+
+      let resultStringCarry=resultString
+
+      console.log('<<<<<<<<<<>>>>>>>>>>>>>', resultString)
 
 
       for (let m = 0; m < receipt_obj.length; m++) {
@@ -879,13 +883,20 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                           console.log(dpc_6,find_)
                         }
 
+                        console.log('<<<<<<<<<<>>>>>>>>>>>>>1find_', find_)
                         //new
                         for(let h=0; h<find_?.length; h++){
-                          if(find_[h].corres_code=="" ){
+                          //if(find_[h].corres_code=="" ){
                             let batch=find_[h]?.code
+                            console.log('<<<<<<<<<<>>>>>>>>>>>>>1batch', batch)
                             resultString = resultString.replaceAll(batch,'');
-                          }
+                          //}
                         }
+
+                        console.log('<<<<<<<<<<>>>>>>>>>>>>>1', resultString)
+
+
+
 
                         //found t2
                         temp_tre2_1 = find_[0].corres_code.toString()
@@ -944,20 +955,66 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
  
   let temp_arrr=resultString.split(',')
 
-  if(resultString){
-      for(let x=0; x<temp_arrr?.length; x++){
-          let temp_arrr_first=temp_arrr[x].split('=')
-          
-            let have_res=1
-            let temp_arrr_second=temp_arrr_first[0].split('+')
-            for(let y=0; y<temp_arrr_second?.length; y++){
-                let itm=temp_arrr_second[y]
-                if(itm>0){have_res=0}
-            }
-            console.log('have_res=',have_res,'==',temp_arrr?.length)
-            if(have_res==1){temp_tre2_1=temp_arrr_first[1]}
-      }    
-  }
+  console.log('<<<<<<<<<<oooo',temp_arrr)
+
+      if (resultString) {
+        for (let x = 0; x < temp_arrr?.length; x++) {
+          let temp_arrr_first = temp_arrr[x].split('=')
+
+          let have_res = 1
+          let temp_arrr_second = temp_arrr_first[0].split('+')
+          for (let y = 0; y < temp_arrr_second?.length; y++) {
+            let itm = temp_arrr_second[y]
+            if (itm > 0) { have_res = 0 }
+            console.log('<<<<<<<<<<ooooitm', itm)
+
+          }
+          console.log('have_res=', have_res, '==', temp_arrr?.length)
+          if (have_res == 1) {
+            temp_tre2_1 = temp_arrr_first[1]
+
+                        //resultStringCarry
+                        console.log(color_obj, 'color_objcolor_obj')
+
+                        let tempg = []
+
+                        for (let g = 0; g < color_obj?.length; g++) {
+
+                          let item_now = color_obj[g]
+
+                          const substring = "[処置2]";
+
+                          let resultStringCarryArray = resultStringCarry.split('=')
+
+                          if (item_now.includes(substring)) {
+                            //treatment 2 file
+                            if (resultStringCarryArray?.length > 0) {
+                              let firstpart = resultStringCarryArray[0]
+                              let resultStringCarryfirstpartArray = firstpart.split('+')
+
+                              for (let k = 0; k < resultStringCarryfirstpartArray?.length; k++) {
+                                let getfirst = resultStringCarryfirstpartArray[k]
+
+                                console.log('------------------p', getfirst)
+
+                                if (item_now.includes(getfirst + ' [処置2]')) { 
+
+                                  item_now='Brown? '+resultStringCarryArray[1]+' '+resultStringCarryArray[0]+' [処置2]'
+                                }
+                                
+                              }                            
+                            }
+                          }
+
+
+                        tempg.push(item_now)
+                        }
+
+                        color_obj = tempg
+
+          }
+        }
+      }
 
       //////////////////////////////////////////////////////////////////////////////
 
@@ -1851,7 +1908,7 @@ export const dpc_list = async (req, res, next) => {
 
    
     try {
-       const myArray = dpcPattern.split(" ");
+       const myArray = dpcPattern.split("|");
       if(myArray[0]!='XXXXXX'){ dpc_6 = myArray[0].toLowerCase();}else{}
       if(myArray[1]!='X'){ and_1 = myArray[1].toLowerCase();}else{}
       if(myArray[2]!='X'){ age_1 = myArray[2].toLowerCase();}else{}
