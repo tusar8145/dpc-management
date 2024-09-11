@@ -612,6 +612,8 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         }
       })
 
+      console.log('<<<<<<<<<<>>>>>>>>>>>>>xyz', haveMultiT2)
+
       
       let resultString = haveMultiT2
       .map(item => `${item.recept_main}=${item.corres_code}`)
@@ -619,7 +621,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
       let resultStringCarry=resultString
 
-      console.log('<<<<<<<<<<>>>>>>>>>>>>>', resultString)
+      console.log('<<<<<<<<<<>>>>>>>>>>>>>x', resultString)
 
 
       for (let m = 0; m < receipt_obj.length; m++) {
@@ -952,15 +954,17 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
       }
 
 
- 
+ let this_res_str=null
   let temp_arrr=resultString.split(',')
 
   console.log('<<<<<<<<<<oooo',temp_arrr)
 
+  let myarrayok=resultStringCarry.split(',')
+
       if (resultString) {
         for (let x = 0; x < temp_arrr?.length; x++) {
           let temp_arrr_first = temp_arrr[x].split('=')
-
+          this_res_str=myarrayok[x]
           let have_res = 1
           let temp_arrr_second = temp_arrr_first[0].split('+')
           for (let y = 0; y < temp_arrr_second?.length; y++) {
@@ -984,7 +988,9 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
                           const substring = "[処置2]";
 
-                          let resultStringCarryArray = resultStringCarry.split('=')
+                          console.log('jhbgdfjgh', resultStringCarry, this_res_str)
+
+                          let resultStringCarryArray = this_res_str.split('=')
 
                           if (item_now.includes(substring)) {
                             //treatment 2 file
