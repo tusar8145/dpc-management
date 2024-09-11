@@ -437,7 +437,19 @@ export default function TablePatient(props) {
 
             </td>
             <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('過去', '患者数', PatientDpcMeasureData?.res2, null)}</td>
-            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>{part3('入院', '期間Ⅱ', PatientDpcMeasureData?.res3, null)}</td>
+            <td className={"width_single  " + (PatientDpcMeasureData?.error==1 ? 'new_t_color_incomplete' : 'new_t_color_regular')}>
+            {PatientDpcMeasureData?.res3?
+            part3('入院', '期間Ⅱ', PatientDpcMeasureData?.res3, null) :
+
+            <>
+            出来高
+            </>
+          
+             }
+
+            {}
+            
+            </td>
             <td className={" width_button text-center border-right-zero "} style={{"border-bottom":"0px"}} rowSpan={2}>
             <div class="flex justify-between ...">
 
