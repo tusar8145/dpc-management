@@ -624,6 +624,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
       console.log('<<<<<<<<<<>>>>>>>>>>>>>x', resultString)
 
 
+      let batch_treatment_2_holder=[]
       for (let m = 0; m < receipt_obj.length; m++) {
         let item_receipt_obj = receipt_obj[m]
         let clr = 'black'
@@ -873,77 +874,61 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
                           },
                         })
-
-                     
-
-
                       }
 
                       if (find_?.length > 0) {
 
-                        if(dpc_6=='050130'){
-                          console.log(dpc_6,find_)
-                        }
 
-                        console.log('<<<<<<<<<<>>>>>>>>>>>>>1find_', find_)
+
                         //new
                         for(let h=0; h<find_?.length; h++){
                           //if(find_[h].corres_code=="" ){
                             let batch=find_[h]?.code
-                            console.log('<<<<<<<<<<>>>>>>>>>>>>>1batch', batch)
+
+                            if(batch=='0264' && h==0){
+                              batch_treatment_2_holder.push(item_receipt_obj)
+                            }
+
                             resultString = resultString.replaceAll(batch,'');
                           //}
                         }
 
-                        console.log('<<<<<<<<<<>>>>>>>>>>>>>1', resultString)
-
-
-
-
                         //found t2
                         temp_tre2_1 = find_[0].corres_code.toString()
                         clr = 'Brown? '+temp_tre2_1+' '+find_[0].code+ ' [処置2]'
-                      } else {
-
+                        
+                      } else {//secondary injury
                        
-                        if (item_receipt_obj) {
+                                if (item_receipt_obj) {
 
-                          let itm=item_receipt_obj.toString()
+                                  let itm = item_receipt_obj.toString()
 
-                            let find_ = await prisma.secondary_injury_new.findMany({
-                              where: {
-                                dpc_6:dpc_6,
-                                codes: { contains: itm },
-                                 
-                              },
-                            })
-                     
-                          if (find_?.length > 0) {
-                              console.log(dpc_6,itm,'--------------------------')
+                                  let find_ = await prisma.secondary_injury_new.findMany({
+                                    where: {
+                                      dpc_6: dpc_6,
+                                      codes: { contains: itm },
 
+                                    },
+                                  })
 
+                                  if (find_?.length > 0) {
 
-                              let f_val=""
-                              try {
-                                let arr_t1=find_[0].codes.split(itm)
-                                let arr_t2=arr_t1[0].split('#')
+                                    let f_val = ""
+                                    try {
+                                      let arr_t1 = find_[0].codes.split(itm)
+                                      let arr_t2 = arr_t1[0].split('#')
+                                      f_val = arr_t2[arr_t2.length - 1].split(',')[0]
+                                    } catch (error) {
 
-                                f_val=arr_t2[arr_t2.length-1].split(',')[0]
-                              } catch (error) {
-                                
-                              }
+                                    }
 
+                                    //found t3
+                                    clr = 'Green? 1 ' + f_val + '  [副傷病]'
+                                    temp_sec_1 = '1'
+                                  } else {
 
-
-
-                              //found t3
-                              clr = 'Green? 1 '+f_val+'  [副傷病]'
-                              temp_sec_1 = '1'
-                            } else {
-                    
-                            } 
-
-                        }
+                                  }
+                                }
                       }
                     }                
               }
@@ -955,11 +940,36 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
       }
 
 
- let this_res_str=null
+
+       
+      //static rule
+      if (batch_treatment_2_holder?.length > 0) {
+        /*batch_treatment_2_holder = batch_treatment_2_holder.filter(function (item, pos) {
+          return batch_treatment_2_holder.indexOf(item) == pos;
+        })*/
+
+        if(batch_treatment_2_holder?.length > 1){
+          let clrx=   'Brown? 2 0264×'+batch_treatment_2_holder.length+' [処置2]'
+          temp_tre2_1='2'
+          //modify clr 
+                    let tempg = []
+                      for (let g = 0; g < color_obj?.length; g++) {
+                        let item_now = color_obj[g]
+                        const substring = "0264 [処置2]";
+                        if (item_now.includes(substring)) {
+                           item_now=clrx
+                        }
+                      tempg.push(item_now)
+                      }
+                      color_obj = tempg
+        }
+        console.log(batch_treatment_2_holder, 'batch_treatment_2_holder')
+      }
+
+
+
+  let this_res_str=null
   let temp_arrr=resultString.split(',')
-
-  console.log('<<<<<<<<<<oooo',temp_arrr)
-
   let myarrayok=resultStringCarry.split(',')
 
       if (resultString) {
@@ -971,16 +981,11 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
           for (let y = 0; y < temp_arrr_second?.length; y++) {
             let itm = temp_arrr_second[y]
             if (itm > 0) { have_res = 0 }
-            console.log('<<<<<<<<<<ooooitm', itm)
-
           }
-          console.log('have_res=', have_res, '==', temp_arrr?.length)
           if (have_res == 1) {
             temp_tre2_1 = temp_arrr_first[1]
 
                         //resultStringCarry
-                        console.log(color_obj, 'color_objcolor_obj')
-
                         let tempg = []
 
                         for (let g = 0; g < color_obj?.length; g++) {
