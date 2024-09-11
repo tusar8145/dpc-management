@@ -927,7 +927,8 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                               try {
                                 let arr_t1=find_[0].codes.split(itm)
                                 let arr_t2=arr_t1[0].split('#')
-                                f_val=arr_t2[1].split(',')[0]
+
+                                f_val=arr_t2[arr_t2.length-1].split(',')[0]
                               } catch (error) {
                                 
                               }
