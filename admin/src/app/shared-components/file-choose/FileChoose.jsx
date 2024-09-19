@@ -30,6 +30,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';			
 import Papa from 'papaparse';
 
+ import ButtonGroup from '@mui/material/ButtonGroup';
+ 
+
 i18next.addResourceBundle('en', 'shared-components', en);
 i18next.addResourceBundle('ja', 'shared-components', ja);
 
@@ -78,6 +81,8 @@ function FileChoose(props) {
 
     const [line1, setLine1] = React.useState(null);
     const [line2, setLine2] = React.useState(null);
+    const [sheetlist, setsheetlist] = React.useState([]);
+    const [selectedSheet, setselectedSheet] = React.useState(null);
 
     useEffect(() => {  setProgress(props.progress)  }, [props.progress]);
     useEffect(() => {   setData([])  }, [props.resetComponents]);
@@ -95,158 +100,193 @@ function FileChoose(props) {
     }
 
 
-    const readUploadFile = (e) => { e.preventDefault(); 
-        try {
-              setLoading(true)
-              if (e.target.files) { 
-             const reader = new FileReader(); 
-
- const file = e.target.files[0];
-                 const fileExt = file.name.split('.').pop();
-
-            reader.onload = (e) => { 
-                let json =[]
-
-               
-
-                 /*if(fileExt!='csv'){
-                        Papa.parse(file, {
-                          header: true,
-                          dynamicTyping: true,
-                          complete: (results) => {
-                            json=results.data
-                            console.log(json,'7773')
-                            setLoading(false)
-                            setMessage(Object.keys(json).length+" "+t("items found!") || "none")                     
-                            setData(json)
-                            fileInputRef.current.value = '';
-                          },
-                          error: (error) => {
-                            console.error('Error parsing CSV:', error);
-                          }
-                        });
-                 }else{*/
-             
-                      const data = e.target.result; 
-                      const workbook = XLSX.read(data, { type: "array" }); 
-                      const sheetName = workbook.SheetNames[0]; 
-                    
-                      const worksheet = workbook.Sheets[sheetName];
-                        json = XLSX.utils.sheet_to_json(worksheet); 
-                        console.log(json,'777')
-                      setLoading(false)
-                      setMessage(Object.keys(json).length+" "+t("items found!") || "none")                     
-                      setData(json)
-                      fileInputRef.current.value = '';
-                 //}
-                 
-    
-
-
-
-
-
-
-
-
- 
-
-                  
- 
-
-try {
-    setLine1(JSON.stringify(json[0]))
-
-
-    const arr = [];
-    const arr_all = [];
-    const arr_all_value = [];
-    const arr_used = [];
-
-    let json1=json[1]
-    let json1_str=""
-    let t_keyConfig=props.keyConfig
-
-    for (let z in json1) {
-      arr_all.push(z);
-      arr_all_value.push(json1[z]);
-      let this_str=""
-      for(let h=0; h<t_keyConfig.length; h++){
-        let keycon=t_keyConfig[h]
-
-        const keyconSplit = keycon.xlsx.split("<+>");
-          for(let x=0; x<keyconSplit.length; x++){
-
-              if(keyconSplit[x] != '<auto>'){
-                  if(keyconSplit[x]==z){
-                        this_str='<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid gray; margin-right:7px; margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+ z +'</span>'+ " : "+'<span style="color:blue">'+ t(keycon.header) +'<span style="color:gray; font-size:10px;"> '+json1[z]+' </span></span></span>'                                    
-                        arr.push(z);
-                      }
-              }else{
-
-              }						
-          }
-      }
-
-      json1_str=json1_str+this_str
-   }
-
-
-   for(let h=0; h<t_keyConfig.length; h++){
-    let keycon=t_keyConfig[h]
-    let this_str=""
-    const keyconSplit = keycon.xlsx.split("<+>");
-      for(let x=0; x<keyconSplit.length; x++){
-              console.log(keyconSplit[x],'check')
-          if(arr.includes(keyconSplit[x])==true){
-          }else{
-            if(keyconSplit[x] != '<auto>'){
-                  this_str='<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid red; margin-right:7px;  margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+ keyconSplit[x] +'</span>'+ " : "+'<span style="color:red">'+ t('Not Found') +'</span></span>'                                    
-            }
-          }
-      }
-      json1_str=json1_str+this_str
-  }
-
-
-
-  for(let h=0; h<arr_all.length; h++){
-    let ttt=arr_all[h]
-    let this_str=""
-    if(arr.includes(ttt)==true){
-
-    }else{ 
-            this_str='<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid red; margin-right:7px;  margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">'+ ttt +'</span>'+ " : "+'<span style="color:orange">'+ t('Not Used') +'</span><span style="color:gray; font-size:10px;"> '+arr_all_value[h]+' </span></span>'                                    
+    const readUploadFile2 = (e) => {
+        console.log('9999999999999999999999999999999')
     }
 
-      json1_str=json1_str+this_str
-  }
+
+  const readUploadFile = (e) => {
+    e.preventDefault();    
+    //readUploadFile2(e)
+    try {
+      setLoading(true)
+      if (e.target.files) {
+        const reader = new FileReader();
+
+        const file = e.target.files[0];
+        const fileExt = file.name.split('.').pop();
+
+        reader.onload = (e) => {
+          let json = []
 
 
-   setLine2(json1_str)
+
+          /*if(fileExt!='csv'){
+                 Papa.parse(file, {
+                   header: true,
+                   dynamicTyping: true,
+                   complete: (results) => {
+                     json=results.data
+                     console.log(json,'7773')
+                     setLoading(false)
+                     setMessage(Object.keys(json).length+" "+t("items found!") || "none")                     
+                     setData(json)
+                     fileInputRef.current.value = '';
+                   },
+                   error: (error) => {
+                     console.error('Error parsing CSV:', error);
+                   }
+                 });
+          }else{*/
+
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetList = workbook.SheetNames;
+
+          let sheetName = null
+          if (selectedSheet == null) {
+            sheetName = workbook.SheetNames[0];
+          } else {
+            sheetName = selectedSheet;
+          }
+
+          let text = sheetName;
+
+          if (sheetList?.length > 1) {
 
 
-} catch (error) {
-  
-}
+
+            let person = prompt("Select sheetname:", sheetName);
+            if (person == null || person == "") {
+
+             } else {
+              if(sheetList.includes(person)){
+                      text = person;
+              }
+            } 
+          }
 
 
 
- 
 
-                    props.sendDataToParent(json);
+          setsheetlist(sheetList)
 
-                  }; 
-                  reader.readAsArrayBuffer(e.target.files[0]);
-                 
+          const worksheet = workbook.Sheets[text];
+          json = XLSX.utils.sheet_to_json(worksheet);
+          console.log(json, '777')
+          setLoading(false)
+          setMessage(Object.keys(json).length + " " + t("items found!") || "none")
+          setData(json)
+          fileInputRef.current.value = '';
+          //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          try {
+            setLine1(JSON.stringify(json[0]))
+
+
+            const arr = [];
+            const arr_all = [];
+            const arr_all_value = [];
+            const arr_used = [];
+
+            let json1 = json[1]
+            let json1_str = ""
+            let t_keyConfig = props.keyConfig
+
+            for (let z in json1) {
+              arr_all.push(z);
+              arr_all_value.push(json1[z]);
+              let this_str = ""
+              for (let h = 0; h < t_keyConfig.length; h++) {
+                let keycon = t_keyConfig[h]
+
+                const keyconSplit = keycon.xlsx.split("<+>");
+                for (let x = 0; x < keyconSplit.length; x++) {
+
+                  if (keyconSplit[x] != '<auto>') {
+                    if (keyconSplit[x] == z) {
+                      this_str = '<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid gray; margin-right:7px; margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">' + z + '</span>' + " : " + '<span style="color:blue">' + t(keycon.header) + '<span style="color:gray; font-size:10px;"> ' + json1[z] + ' </span></span></span>'
+                      arr.push(z);
+                    }
+                  } else {
+
+                  }
+                }
+              }
+
+              json1_str = json1_str + this_str
             }
-        }
-        catch(err) {
-            setMessage(t("No data found!"))
-            console.log('errro',err)
-            setLoading(false)
-        }
+
+
+            for (let h = 0; h < t_keyConfig.length; h++) {
+              let keycon = t_keyConfig[h]
+              let this_str = ""
+              const keyconSplit = keycon.xlsx.split("<+>");
+              for (let x = 0; x < keyconSplit.length; x++) {
+                console.log(keyconSplit[x], 'check')
+                if (arr.includes(keyconSplit[x]) == true) {
+                } else {
+                  if (keyconSplit[x] != '<auto>') {
+                    this_str = '<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid red; margin-right:7px;  margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">' + keyconSplit[x] + '</span>' + " : " + '<span style="color:red">' + t('Not Found') + '</span></span>'
+                  }
+                }
+              }
+              json1_str = json1_str + this_str
+            }
+
+
+
+            for (let h = 0; h < arr_all.length; h++) {
+              let ttt = arr_all[h]
+              let this_str = ""
+              if (arr.includes(ttt) == true) {
+
+              } else {
+                this_str = '<span style="border-radius: 5px;  padding: 5px; line-height: 40px; border:1px solid red; margin-right:7px;  margin-bottom:5px; padding-right:3px; padding-left:3px"><span style="color:green; font-weight:bold">' + ttt + '</span>' + " : " + '<span style="color:orange">' + t('Not Used') + '</span><span style="color:gray; font-size:10px;"> ' + arr_all_value[h] + ' </span></span>'
+              }
+
+              json1_str = json1_str + this_str
+            }
+
+
+            setLine2(json1_str)
+
+
+          } catch (error) {
+
+          }
+
+
+
+
+
+          props.sendDataToParent(json);
+
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);
+
       }
+    }
+    catch (err) {
+      setMessage(t("No data found!"))
+      console.log('errro', err)
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="">
@@ -268,6 +308,8 @@ try {
             </Button>
           </div>
         </motion.span>}
+
+ 
 
         <motion.span
           initial={{ y: -20 }}
@@ -309,7 +351,15 @@ try {
           </div>
         </motion.span>
 
+ 
 
+<div variant="contained" aria-label="Basic button group" className="flex flex-wrap mt-10">
+{sheetlist.map((_item) => (
+  <div 		onClick={() => {
+    setselectedSheet(_item)
+  }} className="p-4 border-2 border-red-400 cursor-pointer m-5">{_item}</div>
+))}
+</div>
 
         {line1&& props.disableBack!=true && 
             <>

@@ -623,6 +623,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
       console.log('<<<<<<<<<<>>>>>>>>>>>>>x', resultString)
 
+      let mul_tre_2_collector=[]
 
       let batch_treatment_2_holder=[]
       for (let m = 0; m < receipt_obj.length; m++) {
@@ -669,11 +670,12 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
               if (find_.length > 0) {
                     //found t1
 
-                    if(have_allk==0){
+                    if(have_allk==0){  //main surgery
                         let have_dpc=0
 
                         let satisfy=[]
                         let temp_carry=''
+                        let collectRowSurgery=[]
                         for(let x=0; x<find_.length; x++){
                           if(dpc_6==find_[x].dpc){
                               sur_2 = find_[x].code.toString()
@@ -681,11 +683,76 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                               temp_carry=sur_2+'  '+find_[x].k_code
                               have_dpc=1
                               satisfy=find_[x]
+                              collectRowSurgery.push(find_[x])
                           }
                         }
 
+
+                        //special case
+                        let final_surgery=null
+                        if(collectRowSurgery?.length>1){
+                          //console.log(collectRowSurgery,'collectRowSurgery')
+                          //check which is appropriate
+                            for(let z=0; z<collectRowSurgery?.length; z++){
+                              let itemx=collectRowSurgery[z]
+                               
+                              console.log('cccccccccc1111final_surgery',itemx.recept_main_2,itemx.recept_main_3 )
+
+                              let flag_recept_main_2=0
+                              let flag_recept_main_3=0
+                              if(itemx.recept_main_2){
+                                //check must have 
+                                  for (let x = 0; x < receipt_obj.length; x++) {
+                                    if(receipt_obj[x]==itemx.recept_main_2){
+                                      flag_recept_main_2=1
+                                    }
+                                  }
+                              }
+                              if(itemx.recept_main_3){
+                                //check must have 
+                                for (let x = 0; x < receipt_obj.length; x++) {
+                                  if(receipt_obj[x]==itemx.recept_main_3){
+                                    flag_recept_main_3=1
+                                  }
+                                }
+                              }
+
+                              if(itemx.recept_main_2 && itemx.recept_main_3){
+                                if(flag_recept_main_2==1 && flag_recept_main_3==1){
+                                  final_surgery=itemx.code
+                                }
+                              }else if(itemx.recept_main_2){
+                                if(flag_recept_main_2==1){
+                                  final_surgery=itemx.code
+                                }
+                              }else if(itemx.recept_main_3){
+                                if(flag_recept_main_3==1){
+                                  final_surgery=itemx.code
+                                }
+                              }else{
+                                final_surgery=itemx.code
+                              }
+                            }
+                        }
+                        if(final_surgery!=null){
+                          let yy =clr.split(' ')
+                          let newclr=''
+                          for(let c=0; c<yy?.length; c++){
+                                if (c==1){
+                                  newclr=newclr+' '+final_surgery
+                                }else{
+                                  newclr= newclr+' '+yy[c]
+                                }
+                          }
+                          clr = newclr
+                          sur_2=final_surgery
+                        }
+
+
+
+
                         //check all satisfy
-                        if(dpc_6=='060060'){console.log('cccccccccc1111',satisfy)}
+                         console.log('cccccccccc1111final_surgery',final_surgery) 
 
                         let satisfy_allow=1
                         let but2=''
@@ -896,7 +963,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                         //found t2
                         temp_tre2_1 = find_[0].corres_code.toString()
                         clr = 'Brown? '+temp_tre2_1+' '+find_[0].code+ ' [処置2]'
-                        
+                        mul_tre_2_collector.push(temp_tre2_1)
                       } else {//secondary injury
                        
                                 if (item_receipt_obj) {
@@ -951,6 +1018,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
         if(batch_treatment_2_holder?.length > 1){
           let clrx=   'Brown? 2 0264×'+batch_treatment_2_holder.length+' [処置2]'
           temp_tre2_1='2'
+          mul_tre_2_collector.push(temp_tre2_1)
           //modify clr 
                     let tempg = []
                       for (let g = 0; g < color_obj?.length; g++) {
@@ -984,7 +1052,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
           }
           if (have_res == 1) {
             temp_tre2_1 = temp_arrr_first[1]
-
+            mul_tre_2_collector.push(temp_tre2_1)
                         //resultStringCarry
                         let tempg = []
 
@@ -1012,6 +1080,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                                 if (item_now.includes(getfirst + ' [処置2]')) { 
 
                                   item_now='Brown? '+resultStringCarryArray[1]+' '+resultStringCarryArray[0]+' [処置2]'
+                                  
                                 }
                                 
                               }                            
@@ -1027,6 +1096,9 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
           }
         }
       }
+
+  
+      
 
       //////////////////////////////////////////////////////////////////////////////
 
@@ -1165,7 +1237,7 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
         /////////////////////////////////////////////////////////////
         let col_sur_2 = code_filter(code_arr,dpc_6+and_1+age_1+sur_2+temp_tre1_1,0,11)
-         
+        
         if(temp_tre2_1=='X'){ //no surgery 1 value
             if(col_sur_2.includes('0')){
               temp_tre2_1='0'
@@ -1227,6 +1299,64 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
             //validate
   
           }
+
+         
+      }
+
+      let selected_tre2=null
+      let big_score=0
+      let selected_scorer=null
+      if(mul_tre_2_collector?.length>0){
+        console.log('dpcx',mul_tre_2_collector)
+        //find volumn calculation
+            for(let v=0; v<mul_tre_2_collector?.length; v++){
+              let new_dpc=dpc_6+and_1+age_1+sur_2+temp_tre1_1+mul_tre_2_collector[v]
+               
+             
+
+              let dpcx = await prisma.days_score.findMany({
+                where: {
+                  receipt: { contains: new_dpc }
+                },
+              })
+
+
+              if(dpcx?.length>0){
+
+                if(big_score<dpcx[0].hos_score_1){
+                  big_score=dpcx[0].hos_score_1
+                  selected_scorer=mul_tre_2_collector[v]
+                }
+
+
+                    console.log(dpcx[0].hos_days_1,'dpcx')
+                    if(dpcx[0].hos_days_1=='出来高算定'){
+                      if(selected_tre2==null){
+                        selected_tre2=mul_tre_2_collector[v]
+                      }
+                      if(selected_tre2<mul_tre_2_collector[v]){
+                        selected_tre2=mul_tre_2_collector[v]
+                      }
+                    }
+                    
+              }
+
+            } 
+
+            if(selected_tre2){}else{
+              if(selected_scorer){
+                   temp_tre2_1=selected_scorer
+              }
+            }  
+      }
+
+
+
+
+      if(selected_tre2){   
+        if(selected_tre2 !=temp_tre2_1){
+            temp_tre2_1=selected_tre2
+        }
       }
 
 
