@@ -43,14 +43,18 @@ function Treatment1() {
 	let keyConfig=[
 			{name:'corres_code', type:'String', header:'Correspondence code', edit:1, validate:{required:1}, xlsx:'対応ｺｰﾄﾞ'},
 			{name:'dpc_6digit', type:'String', header:'DPC first 6 digits', edit:1, validate:{required:1},	     xlsx:'first 6 digits'},
-			{name:'k_code', type:'String', header:'K Code', edit:1, validate:{required:0},          xlsx:'__EMPTY' },
-
 			{name:'name', type:'String', header:'Name', edit:1, validate:{required:1},						 xlsx:'処置等（１）'},
+			
+			{name:'k_code', type:'String', header:'K Code', edit:1, validate:{required:0},          xlsx:'__EMPTY' },
 			{name:'recept_main', type:'Integer', header:'Receipt code', edit:1, validate:{required:1},		  xlsx:'__EMPTY_1'},
+
+			{name:'k_code_2', type:'String', header:'K Code', edit:1, validate:{required:0},          xlsx:'__EMPTY_3' },
+			{name:'recept_main_2', type:'String', header:'Receipt code', edit:1, validate:{required:0},		  xlsx:'__EMPTY_4'},
+
 			{name:'receipt', type:'Integer', header:'ID',edit:0, validate:{required:0},						 xlsx:'<auto>'}
 	]
 
-
+	
 	const { t } = useTranslation('shared-components');
 
 	function onSubmit(data) {

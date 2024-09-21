@@ -217,8 +217,12 @@ model treatment_1 {
   dpc_6digit                   String
   name                         String
   recept_main                 Int?
+  recept_main_2                 String?
+
   receipt                      Int    
   k_code                       String
+  k_code_2                     String?
+
 
   hospital_id                  Int?
   parent_id                    Int?

@@ -626,6 +626,19 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
       let mul_tre_2_collector=[]
 
       let batch_treatment_2_holder=[]
+
+
+      let multi_treatment_1_remember_rec=null
+      let multi_treatment_1_remember_corres=null
+      let multi_treatment_1_remember_clr=null
+
+
+      let surgery_final_remember_clr=null
+      let surgery_final_remember_corres=null
+      let surgery_final_k_code_2_remember_recept=null
+      let surgery_final_k_code_3_remember_recept=null
+
+
       for (let m = 0; m < receipt_obj.length; m++) {
         let item_receipt_obj = receipt_obj[m]
         let clr = 'black'
@@ -690,8 +703,15 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
                         //special case
                         let final_surgery=null
+                        let final_k_code_2=null
+                        let final_k_code_3=null
+                        let final_recept_main_2=null
+                        let final_recept_main_3=null              	
+	
+	
+	
                         if(collectRowSurgery?.length>1){
-                          //console.log(collectRowSurgery,'collectRowSurgery')
+                          console.log(collectRowSurgery,'collectRowSurgery')
                           //check which is appropriate
                             for(let z=0; z<collectRowSurgery?.length; z++){
                               let itemx=collectRowSurgery[z]
@@ -717,23 +737,36 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                                 }
                               }
 
+                              console.log('cccccccccc1111final_surgeryflag_recept_main_3',flag_recept_main_2,flag_recept_main_3)
+                              
+
                               if(itemx.recept_main_2 && itemx.recept_main_3){
                                 if(flag_recept_main_2==1 && flag_recept_main_3==1){
                                   final_surgery=itemx.code
                                 }
-                              }else if(itemx.recept_main_2){
+                              }else if(itemx.recept_main_2){ //here
                                 if(flag_recept_main_2==1){
                                   final_surgery=itemx.code
+                                  final_k_code_2=itemx.k_code_2
+                                  final_recept_main_2=itemx.recept_main_2   
                                 }
                               }else if(itemx.recept_main_3){
                                 if(flag_recept_main_3==1){
                                   final_surgery=itemx.code
+                                  final_k_code_3=itemx.k_code_3
+                                  final_recept_main_3=itemx.recept_main_3   
                                 }
                               }else{
                                 final_surgery=itemx.code
                               }
                             }
+                            console.log('cccccccccc1111final_surgeryfinal_surgery',final_surgery)
+
                         }
+
+                        console.log('cccccccccccccccccccccccccc',final_surgery, final_k_code_2, final_recept_main_2)
+
+
                         if(final_surgery!=null){
                           let yy =clr.split(' ')
                           let newclr=''
@@ -749,10 +782,24 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                         }
 
 
+                        if(final_k_code_2){
+                          clr=clr.split(' [手術]')[0]+'+'+final_k_code_2+'  [手術]'
+                          surgery_final_remember_clr=clr
+                          surgery_final_remember_corres=sur_2
+                          surgery_final_k_code_2_remember_recept=final_recept_main_2                 
+                        }
+
+                        if(final_k_code_3){
+                          clr=clr.split(' [手術]')[0]+'+'+final_k_code_2+'+'+final_k_code_3+'  [手術]'
+                          surgery_final_remember_clr=clr
+                          surgery_final_remember_corres=sur_2
+                          surgery_final_k_code_2_remember_recept=final_recept_main_2  
+                          surgery_final_k_code_3_remember_recept=final_recept_main_3
+                        }
 
 
                         //check all satisfy
-                         console.log('cccccccccc1111final_surgery',final_surgery) 
+                        console.log('cccccccccc1111final_surgery',final_surgery) 
 
                         let satisfy_allow=1
                         let but2=''
@@ -799,7 +846,27 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                         if (have_dpc == 0) {
                           sur_2 = '97'
                           clr = 'Purple?  97 KKK1 [手術]'
-                        }                       
+                        }
+                        
+                        if(surgery_final_k_code_2_remember_recept==item_receipt_obj){
+                          sur_2 = surgery_final_remember_corres
+                          clr = surgery_final_remember_clr
+                        }
+                        if(surgery_final_k_code_3_remember_recept==item_receipt_obj){
+                          sur_2 = surgery_final_remember_corres
+                          clr = surgery_final_remember_clr
+                        }
+
+                    //multiple surgery 2
+
+
+
+
+
+
+
+
+
                     }else{
                       //have_allk==1
                               sur_2 = '97'
@@ -826,17 +893,17 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
 
 
-                    //also seaarch on treatment 1
-                    find_ = await prisma.treatment_1.findMany({
-                      where: {
-                        AND: [
-                          { recept_main: item_receipt_obj },
-                          { dpc_6digit: dpc_6 }
-                        ]
-                      },
-                    })
 
-
+                                    //same code reffer as treatment 2 and surgery code----------------------------- 
+                                    //also seaarch on treatment 1
+                                    find_ = await prisma.treatment_1.findMany({
+                                      where: {
+                                        AND: [
+                                          { recept_main: item_receipt_obj },
+                                          { dpc_6digit: dpc_6 }
+                                        ]
+                                      },
+                                    })
 
                                     if (find_.length > 0) {
                                       if(dpc_disease_classi?.length>0){ 
@@ -875,7 +942,9 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
 
 ////////////////////////////////////////
-              else{
+
+
+              else{   //start treatment 1------------------------------------------------
                       find_ = await prisma.treatment_1.findMany({
                       where: {
                         AND: [
@@ -885,7 +954,15 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
                       },
                     })
 
-                    if (find_.length > 0) {
+
+
+                    if(multi_treatment_1_remember_rec==item_receipt_obj){
+                          temp_tre1_1 = multi_treatment_1_remember_corres
+                          clr = multi_treatment_1_remember_clr
+                    }
+
+                    if (find_.length > 0) {  //treatment 1 conditions -------------------
+                      
 
                                     if(dpc_disease_classi?.length>0){
                                           
@@ -897,31 +974,66 @@ if(admissionDateGap==admissionDate){temp_same_date=1}else{
 
                                     let code_arr=dpc_disease_classi[0]?.codes.split(",")
                                    
-                                    let col_sur_2xx = code_filter(code_arr,dpc_6+and_1+age_1+sur_2,0,10)
-
-             
+                                    let col_sur_2xx = code_filter(code_arr,dpc_6+and_1+age_1+sur_2,0,10)        
                                     col_sur_2xx=removeDuplicates(col_sur_2xx);
 
                                     // console.log(temp_tre1_1,col_sur_2xx,'code_arr')
 
-                                    let accepted=false
-                                    for(let x=0; x<find_?.length; x++){
-                                      if(accepted==false){
-                                          let this_temp_tre1_1 = find_[x].corres_code.toString()
+                                    let accepted = false
+                                    for (let x = 0; x < find_?.length; x++) {
+                                      if (accepted == false) {
+                                        let this_temp_tre1_1 = find_[x].corres_code.toString()
 
-                                          //console.log('<======',col_sur_2xx,this_temp_tre1_1,'========>')
+                                        //console.log('<======',col_sur_2xx,this_temp_tre1_1,'========>')
 
-                                          
-                                          if(col_sur_2xx.includes(this_temp_tre1_1)){
-                                            temp_tre1_1=this_temp_tre1_1
-                                            clr = 'Blue? '+temp_tre1_1+' '+find_[x].k_code	+ ' [処置1]'
-                                            //console.log('fund',this_temp_tre1_1)
-                                            //accepted=true
-                                          }                                        
+                                        if (col_sur_2xx.includes(this_temp_tre1_1)) {
+                                          temp_tre1_1 = this_temp_tre1_1
+                                          clr = 'Blue? ' + temp_tre1_1 + ' ' + find_[x].k_code + ' [処置1]'
+                                          //console.log('fund',this_temp_tre1_1)
+                                          //accepted=true
+                                        }
                                       }
                                     }
  
-                      //need validate
+                                    //need validate
+
+                                    //have receipt 2?????????
+
+
+
+                                    let recept_main_2=[]
+                                    for (let y = 0; y < find_?.length; y++) {
+                                          if(find_[y].k_code_2){
+                                              recept_main_2.push(find_[y].recept_main_2)
+                                          }
+                                    }
+
+
+                                    for (let y = 0; y < find_?.length; y++) {
+                                      if (find_[y].k_code_2) {
+                                        for (let x = 0; x < receipt_obj.length; x++) {
+                                          if (recept_main_2.includes(receipt_obj[x].toString())) {
+                                              //multi_treatment_1_remember.push(receipt_obj[x])
+                                              temp_tre1_1 = find_[y].corres_code
+                                              clr = 'Blue? ' + temp_tre1_1 + ' ' + find_[y].k_code + '+' + find_[y].k_code_2 + ' [処置1]'
+                                              multi_treatment_1_remember_rec=parseInt(receipt_obj[x])
+                                              multi_treatment_1_remember_clr=clr
+                                              multi_treatment_1_remember_corres=temp_tre1_1
+                                          }
+                                        }
+                                      }
+                                    }
+
+
+
+
+
+
+                              
+
+
+
+                                    
 
                       
 
