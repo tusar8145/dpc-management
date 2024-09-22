@@ -26,17 +26,30 @@ import Paper from '@mui/material/Paper';
 import Close from '@mui/icons-material/Close';
 import '../../../styles/table-html.css';
 import { lazy } from 'react';
-
+import {  useWindowHeight,
+} from '@react-hook/window-size'
 const TablePatient = lazy(() => import('../../shared-components/table/TablePatient'));
 
 export default function TemporaryDrawer(props) {
   const [newval, setnewval] = useState('');
   const [single_patient_rec, setSinglePatientRec] = useState([]);
   const [nTable, setnTable] = useState([]);
+  const onlyHeight = useWindowHeight()
+  const [newheight, setnewheight] = useState(0);
+
+  
+
+
+  useEffect(() => {
+    let xx=onlyHeight
+    let yy=parseInt(xx)-(parseInt(xx)*(30/100))
+    setnewheight(yy)
+  }, [onlyHeight]);
+
 
 
   const [state, setState] = React.useState({
-    top: false,
+    top: false, 
     left: false,
     bottom: false,
     right: false,
@@ -176,6 +189,10 @@ function  excelSerialNumberToJSDate  (serial)  {
     localStorage.removeItem("ld");
   }
 
+ 
+ 
+  //console.log(size.get(),'?????????????????????????'); 
+
   return (<div class=" ">
  
 
@@ -220,9 +237,10 @@ function  excelSerialNumberToJSDate  (serial)  {
 
             <br/>
 
-            <div class="gridx">
-            <div class="grid-containerx">
+        
 
+            <div class="gridx">
+            <div class="grid-containerx" style={{height:newheight+"px"}}>
               <table className='scrollable'>
                 <tr style={{"border":"0px"}}>
                 <th className='width_single text-center bg-[#6d8fccf0] text-white mb-10' colSpan={5} style={{"border":"0px"}}>

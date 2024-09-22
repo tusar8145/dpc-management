@@ -164,16 +164,16 @@ const locale = {
 
 	'DPC first 6 digits':'DPCの最初の６桁',
 
-	'Author*':'著者*',
+	'Author*':'宛先',
 	'Write Subject*':'件名を記入*',
-	'Write Question*':'問題を書く*',
-	'Submit New Issue':'新しい問題を提出する',
+	'Write Question*':'メッセージ',
+	'Submit New Issue':'メッセージを送信',
 	'Write Reply*':'問題への返信を書く*',
 	'Submit Reply':'返信を送信',
 
 	'View All':'すべて表示',
-	'View Seen':'見たものを見る',
-	'View Pending':'保留中の表示',
+	'View Seen':'協議中を表示',
+	'View Pending':'保留中を表示',
 	'View Solved':'解決済みを表示',
 	'Mark as Seen':'協議中としてマーク',
 	'Mark as Solved':'解決済みとしてマーク',
@@ -181,7 +181,7 @@ const locale = {
 
 	'Last Reply':'最後の返信',
 
-	'Subject':'本題',
+	'Subject':'件名',
 	'Created':'作成者',
 	'Status':'状態',
 	'Reply':'コメント',
@@ -240,7 +240,7 @@ const locale = {
 	'Code':'ｺｰﾄﾞ',
 
 	'This field is required *':'この項目は必須です *',
- 
+	'Sender':'送信者',
 };
 export default locale;
 

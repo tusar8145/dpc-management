@@ -67,3 +67,48 @@ table.simple.borderless tbody tr td{
 table.simple.borderless thead tr th{
     border: none;
 }
+
+
+
+
+#smoothscroll table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0 auto;
+    border: 1px solid #eee;
+}
+
+#smoothscroll thead {
+    background-color: #fff;
+    box-shadow: inset 0px -1px 0px #eee, 
+                0px 5px 5px -5px rgba(0,0,0,.1);
+    position: relative;
+}
+#smoothscroll thead tr {
+    display: block;
+    position: relative;
+}
+
+#smoothscroll td:nth-child(1), 
+th:nth-child(1){
+    min-width: 200px;
+}
+#smoothscroll td:nth-child(2),
+#smoothscroll th:nth-child(2) {
+    min-width: 200px;
+}
+
+#smoothscroll th, td {
+    padding: 5px;
+    text-align: left;
+}
+
+#smoothscroll tbody {
+    display: block;
+    overflow: auto;
+    width: 100%;
+    
+}
+#smoothscroll tbody tr:nth-child(2n) {
+    background-color: #dddddd;
+}
