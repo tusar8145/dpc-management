@@ -366,21 +366,19 @@ function Issue() {
   
   
   let userz=""
+  let all_user=""
   let access_users =  get_[i].access_users
   let access_users_array =  access_users.split(',')
 
 
   
   let staffx= await getallstaff()
-  if(access_users_array?.length>1){
+  for(let y=1;y<access_users_array?.length-1;y++){
 	for(let c=0;c<staffx?.length;c++){
-		if(staffx[c].id==parseInt(access_users_array[1])){
-			userz=staffx[c].title
-		}
+		//if(staffx[c].id==parseInt(access_users_array[1])){ userz=staffx[c].title.split('(')[0] }
+		if(staffx[c].id==parseInt(access_users_array[y])){ all_user=all_user+', '+staffx[c].title.split('(')[0] }
 	}
   }
-
-  //console.log('??????????????', access_users_array,staffx, userz)
 
 
   
@@ -396,14 +394,15 @@ function Issue() {
 						is_solved: get_[i].is_solved,
 						creator_: get_[i].creator_?.name,
 						...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-						created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
+						created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+all_user.slice(1), 
 						created_time:timeBeauty(get_[i].created),
 						
 						reply_time:timeBeauty(get_[i].status_date),
 						reply_by: get_[i]?.reply_by_?.name, 
 						status_date: timeBeauty(get_[i].replied), 
 						reply_count: get_[i]?._count?.issues_reply || 0,
-						address:user
+						address:user,
+						all_user:all_user
 				  }
 				  my_json.push(x_data);
 				  console.log(x_data,'x_data')
@@ -458,17 +457,17 @@ function Issue() {
 
 
 	let userz=""
+	let all_user=""
 	let access_users =  get_[i].access_users
 	let access_users_array =  access_users.split(',')
   
   
 	
 	let staffx= await getallstaff()
-	if(access_users_array?.length>1){
+	for(let y=1;y<access_users_array?.length-1;y++){
 	  for(let c=0;c<staffx?.length;c++){
-		  if(staffx[c].id==parseInt(access_users_array[1])){
-			  userz=staffx[c].title
-		  }
+		  //if(staffx[c].id==parseInt(access_users_array[1])){ userz=staffx[c].title.split('(')[0] }
+		  if(staffx[c].id==parseInt(access_users_array[y])){ all_user=all_user+', '+staffx[c].title.split('(')[0] }
 	  }
 	}
   
@@ -485,12 +484,13 @@ function Issue() {
 								is_solved: get_[i].is_solved,
 								creator_: get_[i].creator_?.name,
 								...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-								created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
+								created: timeBeauty(get_[i].created)+'    '+ get_[i].creator_?.name+' -> '+all_user.slice(1), 
 								created_time:timeBeauty(get_[i].created),  
 								reply_time:timeBeauty(get_[i].status_date),
 								reply_by: get_[i]?.reply_by_?.name, 
 								status_date: timeBeauty(get_[i].replied), 
-								reply_count: get_[i]?._count?.issues_reply || 0
+								reply_count: get_[i]?._count?.issues_reply || 0,
+								all_user:all_user
 						}
 					my_json.push(x_data);
 					console.log(x_data,'x_data')
@@ -555,19 +555,19 @@ function Issue() {
 
 
 							  let userz=""
-  let access_users =  get_[i].access_users
-  let access_users_array =  access_users.split(',')
-
-
-  
-  let staffx= await getallstaff()
-  if(access_users_array?.length>1){
-	for(let c=0;c<staffx?.length;c++){
-		if(staffx[c].id==parseInt(access_users_array[1])){
-			userz=staffx[c].title
-		}
-	}
-  }
+							  let all_user=""
+							  let access_users =  get_[i].access_users
+							  let access_users_array =  access_users.split(',')
+							
+							
+							  
+							  let staffx= await getallstaff()
+							  for(let y=1;y<access_users_array?.length-1;y++){
+								for(let c=0;c<staffx?.length;c++){
+									//if(staffx[c].id==parseInt(access_users_array[1])){ userz=staffx[c].title.split('(')[0] }
+									if(staffx[c].id==parseInt(access_users_array[y])){ all_user=all_user+', '+staffx[c].title.split('(')[0] }
+								}
+							  }
 
 
 						  var x_data = {
@@ -581,12 +581,13 @@ function Issue() {
 							is_solved: get_[i].is_solved,
 							creator_: get_[i].creator_?.name,
 							...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-							created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
+							created: timeBeauty(get_[i].created)+'    '+ get_[i].creator_?.name+' -> '+all_user.slice(1), 
 							created_time:timeBeauty(get_[i].created),  
 							reply_time:timeBeauty(get_[i].status_date),
 							reply_by: get_[i]?.reply_by_?.name, 
 							status_date: timeBeauty(get_[i].replied), 
-							reply_count: get_[i]?._count?.issues_reply || 0
+							reply_count: get_[i]?._count?.issues_reply || 0,
+							all_user:all_user
 
 						  }
 						  my_json.push(x_data);
@@ -654,17 +655,17 @@ function Issue() {
 
 
 				let userz=""
+				let all_user=""
 				let access_users =  get_[i].access_users
 				let access_users_array =  access_users.split(',')
 			  
 			  
 				
 				let staffx= await getallstaff()
-				if(access_users_array?.length>1){
+				for(let y=1;y<access_users_array?.length-1;y++){
 				  for(let c=0;c<staffx?.length;c++){
-					  if(staffx[c].id==parseInt(access_users_array[1])){
-						  userz=staffx[c].title
-					  }
+					  //if(staffx[c].id==parseInt(access_users_array[1])){ userz=staffx[c].title.split('(')[0] }
+					  if(staffx[c].id==parseInt(access_users_array[y])){ all_user=all_user+', '+staffx[c].title.split('(')[0] }
 				  }
 				}
 				
@@ -679,12 +680,13 @@ function Issue() {
 									is_solved: get_[i].is_solved,
 									creator_: get_[i].creator_?.name,
 									...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-									created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
+									created: timeBeauty(get_[i].created)+'    '+ get_[i].creator_?.name+' -> '+all_user.slice(1), 
 									created_time:timeBeauty(get_[i].created),  
 									reply_time:timeBeauty(get_[i].status_date),
 									reply_by: get_[i]?.reply_by_?.name, 
 									status_date: timeBeauty(get_[i].replied), 
-									reply_count: get_[i]?._count?.issues_reply || 0
+									reply_count: get_[i]?._count?.issues_reply || 0,
+									all_user:all_user
 								}
 								my_json.push(x_data);
 								console.log(x_data,'x_data')
