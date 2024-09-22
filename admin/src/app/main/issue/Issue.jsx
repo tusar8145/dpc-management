@@ -109,6 +109,35 @@ function Issue() {
 		setStaff(new_data)
 	}
 
+
+
+	async function getallstaff(){
+		let filter = {
+			others: {hospital_id:hospital.id},
+		  }
+
+		const response = await axios.post(apiConfig.hospitalStaffManageListAssis, { filter });
+        let new_data = []
+        let get_data = response.data.data
+		console.log(get_data,'get_datasxxx')
+		for(let k=0; k<get_data.length; k++){
+			let this_=get_data[k]
+
+			if(user.uid != this_.id){
+					new_data.push({
+						title: this_.name +' ('+ t(this_.role)+')',
+						id:this_.id
+
+					})				
+			}
+
+		}
+
+		return new_data
+	}
+
+
+
 	useEffect(() => {  getstaff()  }, []);
 
  
@@ -302,10 +331,14 @@ function Issue() {
 	
 	  
   
-		await axios.post(base_url + "get_issue", firsr_page_json).then((res) => {
+		let res=await axios.post(base_url + "get_issue", firsr_page_json)//.then((res) => {
 			  console.log(res,'res')
 			  const my_json = []
 			  var get_ = res.data.result;
+
+
+
+
 			  for (var i=0; i < get_.length; i++) {
   
   
@@ -332,7 +365,24 @@ function Issue() {
   }
   
   
+  let userz=""
+  let access_users =  get_[i].access_users
+  let access_users_array =  access_users.split(',')
+
+
   
+  let staffx= await getallstaff()
+  if(access_users_array?.length>1){
+	for(let c=0;c<staffx?.length;c++){
+		if(staffx[c].id==parseInt(access_users_array[1])){
+			userz=staffx[c].title
+		}
+	}
+  }
+
+  //console.log('??????????????', access_users_array,staffx, userz)
+
+
   
   
 				  var x_data = {
@@ -346,20 +396,21 @@ function Issue() {
 						is_solved: get_[i].is_solved,
 						creator_: get_[i].creator_?.name,
 						...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-						created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name, 
+						created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
 						created_time:timeBeauty(get_[i].created),
 						
 						reply_time:timeBeauty(get_[i].status_date),
 						reply_by: get_[i]?.reply_by_?.name, 
 						status_date: timeBeauty(get_[i].replied), 
-						reply_count: get_[i]?._count?.issues_reply || 0
+						reply_count: get_[i]?._count?.issues_reply || 0,
+						address:user
 				  }
 				  my_json.push(x_data);
 				  console.log(x_data,'x_data')
 			  } 
 			setget_issues(my_json); 
 			console.log(my_json,'my_json')
-		  }).catch(function (error) { console.log(error,'res')  });    
+		 // }).catch(function (error) { console.log(error,'res')  });    
 	  };
   
   useEffect(() => {
@@ -376,7 +427,7 @@ function Issue() {
 			 is_solved:0, 
 		  } 
 	  console.log(firsr_page_json,'firsr_page_json')
-		  await axios.post(base_url + "get_issue", firsr_page_json).then((res) => {
+		 let res = await axios.post(base_url + "get_issue", firsr_page_json)//.then((res) => {
 				console.log(res,'res')
 				const my_json = []
 				var get_ = res.data.result;
@@ -404,6 +455,24 @@ function Issue() {
 	}
   
 	console.log('pppppppppp',get_[i])
+
+
+	let userz=""
+	let access_users =  get_[i].access_users
+	let access_users_array =  access_users.split(',')
+  
+  
+	
+	let staffx= await getallstaff()
+	if(access_users_array?.length>1){
+	  for(let c=0;c<staffx?.length;c++){
+		  if(staffx[c].id==parseInt(access_users_array[1])){
+			  userz=staffx[c].title
+		  }
+	  }
+	}
+  
+
   
 							var x_data = {
 								id: get_[i].id,
@@ -416,7 +485,7 @@ function Issue() {
 								is_solved: get_[i].is_solved,
 								creator_: get_[i].creator_?.name,
 								...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-								created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name, 
+								created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
 								created_time:timeBeauty(get_[i].created),  
 								reply_time:timeBeauty(get_[i].status_date),
 								reply_by: get_[i]?.reply_by_?.name, 
@@ -428,7 +497,7 @@ function Issue() {
 				} 
 			  setget_issues(my_json); 
 			  console.log(my_json,'my_json')
-			}).catch(function (error) { if (error.response) { console.log(error.response.data); } });    
+			//}).catch(function (error) { if (error.response) { console.log(error.response.data); } });    
 		};
 	
    
@@ -454,7 +523,7 @@ function Issue() {
 			
 			  
 		  
-				await axios.post(base_url + "get_issue", firsr_page_json).then((res) => {
+				let res=	await axios.post(base_url + "get_issue", firsr_page_json)//.then((res) => {
 					  console.log(res,'res')
 					  const my_json = []
 					  var get_ = res.data.result;
@@ -483,6 +552,24 @@ function Issue() {
 		  }
 		  					console.log('pppppppppp',get_[i])
 		  
+
+
+							  let userz=""
+  let access_users =  get_[i].access_users
+  let access_users_array =  access_users.split(',')
+
+
+  
+  let staffx= await getallstaff()
+  if(access_users_array?.length>1){
+	for(let c=0;c<staffx?.length;c++){
+		if(staffx[c].id==parseInt(access_users_array[1])){
+			userz=staffx[c].title
+		}
+	}
+  }
+
+
 						  var x_data = {
 							id: get_[i].id,
 							subject: get_[i].subject, 
@@ -494,7 +581,7 @@ function Issue() {
 							is_solved: get_[i].is_solved,
 							creator_: get_[i].creator_?.name,
 							...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-							created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name,
+							created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
 							created_time:timeBeauty(get_[i].created),  
 							reply_time:timeBeauty(get_[i].status_date),
 							reply_by: get_[i]?.reply_by_?.name, 
@@ -507,7 +594,7 @@ function Issue() {
 					  } 
 					setget_issues(my_json); 
 					console.log(my_json,'my_json')
-				  }).catch(function (error) { if (error.response) { console.log(error.response.data); } });  
+				//  }).catch(function (error) { if (error.response) { console.log(error.response.data); } });  
 				  
   
    
@@ -537,7 +624,7 @@ function Issue() {
 				  
 					
 				
-					  await axios.post(base_url + "get_issue", firsr_page_json).then((res) => {
+					  let res=  await axios.post(base_url + "get_issue", firsr_page_json)//.then((res) => {
 							console.log(res,'resc')
 							const my_json = []
 							var get_ = res.data.result;
@@ -564,6 +651,22 @@ function Issue() {
 				  have_new=' New ✉ found'
 				}
 				}
+
+
+				let userz=""
+				let access_users =  get_[i].access_users
+				let access_users_array =  access_users.split(',')
+			  
+			  
+				
+				let staffx= await getallstaff()
+				if(access_users_array?.length>1){
+				  for(let c=0;c<staffx?.length;c++){
+					  if(staffx[c].id==parseInt(access_users_array[1])){
+						  userz=staffx[c].title
+					  }
+				  }
+				}
 				
 								var x_data = {
 									id: get_[i].id,
@@ -576,7 +679,7 @@ function Issue() {
 									is_solved: get_[i].is_solved,
 									creator_: get_[i].creator_?.name,
 									...(get_[i].reply_by_? { reply_by_: get_[i].reply_by_?.name , } : {reply_by_:''}), 
-									created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name, 
+									created: timeBeauty(get_[i].created)+'     '+ get_[i].creator_?.name+' -> '+userz, 
 									created_time:timeBeauty(get_[i].created),  
 									reply_time:timeBeauty(get_[i].status_date),
 									reply_by: get_[i]?.reply_by_?.name, 
@@ -588,7 +691,7 @@ function Issue() {
 							} 
 						  setget_issues(my_json); 
 						  console.log(my_json,'my_json')
-						}).catch(function (error) { if (error.response) { console.log(error.response.data); } });    
+						//}).catch(function (error) { if (error.response) { console.log(error.response.data); } });    
 					};
   
   
@@ -847,6 +950,7 @@ function Issue() {
 					{/*successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
 					{failAlert != null && <ReportModal data={fail_count_list} />*/}
+				 
 
 					<div class="grid md:grid-cols-5 xs:grid-cols-1 gap-4 mb-20" >
 						<div class="col-span-2  ...">
