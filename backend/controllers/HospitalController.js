@@ -90,6 +90,7 @@ export const manage_list = async (req, res, next) => {
               "admin_phone": this_.admin.phone,
               "admin_role": this_.admin.role,
               "creator":this_.creator.name,
+              "primary_color":this_.primary_color
             })
         }
    
@@ -122,6 +123,8 @@ export const manage_create = async (req, res, next) => {
         "address": req.body.address,
         "created_at": clock,
         "created_by":user_id,
+        primary_color:req.body.primary_color,
+
         admin_id:reg
       }
 
@@ -213,7 +216,9 @@ export const manage_update = async (req, res, next) => {
     let name=req.body.admin_name
     let email=req.body.admin_email
     let phone=req.body.admin_phone
+    let primary_color=req.body.primary_color
 
+ 
     let password=null
     if(req.body.admin_password){
       password=req.body.admin_password
@@ -255,6 +260,8 @@ export const manage_update = async (req, res, next) => {
          address:h_address,
          updated_at:updated_at,
          updated_by:updated_by,
+         primary_color:primary_color,
+
       },
     });
 

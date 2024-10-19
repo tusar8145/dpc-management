@@ -48,6 +48,8 @@ function Hospital() {
 		{name:'admin_phone', type:'String', header:'Assistant Phone',edit:1, validate:{required:0}, globalF:0},
 		{name:'admin_email', type:'String', header:'Assistant Email',edit:1, validate:{required:1}, globalF:0},
 		{name:'admin_password', type:'String', header:'Assistant Password',edit:1, validate:{required:0}, globalF:0},
+		{name:'primary_color', type:'String', header:'Primary color (e.g. #155EEF)',edit:1, validate:{required:1}, globalF:1},
+
 		{name:'creator', type:'String', header:'Created By',edit:0, validate:{required:0}, globalF:0},
 		{name:'created_at', type:'String', header:'Created At',edit:0, validate:{required:0}, globalF:0},
 		{name:'updated_at', type:'String', header:'Updated At',edit:0, validate:{required:0}, globalF:0},

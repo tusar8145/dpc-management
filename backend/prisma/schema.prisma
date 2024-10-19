@@ -59,6 +59,11 @@ model hospitals {
   updated_at                   DateTime? @default(now()) 
   updated_by                   Int? 
 
+  primary_color String?
+  sub_color_1 String?
+  sub_color_2 String?
+
+
   creator admins? @relation("admin_con", fields: [created_by], references: [id])
   admin   admins    @relation(fields: [admin_id], references: [id])
   test test[] @relation("test")

@@ -158,7 +158,7 @@ export const login = async (req, res, next) => {
                 email: email,
                 password: md5(password),
             },
-            include:{hospital:{select:{logo:true, name: true, address:true, id:true}}}
+            include:{hospital:{select:{logo:true, name: true, address:true, id:true, primary_color:true, sub_color_1:true, sub_color_2:true, }}}
         });
 
         let hospital=null
@@ -179,7 +179,7 @@ export const login = async (req, res, next) => {
             let this_user = admins[0]
 
             const authorization = jwt.sign(
-                { ...admins[0],  ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id, name:hospital?.name, logo:hospital?.logo, address:hospital?.address}}:{"hospital":this_user?.hospital,}, },
+                { ...admins[0],  ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id, name:hospital?.name, logo:hospital?.logo, address:hospital?.address, primary_color:hospital?.primary_color, sub_color_1:hospital?.sub_color_1, sub_color_2:hospital?.sub_color_2, }}:{"hospital":this_user?.hospital,}, },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_VALIDITY }
             );           
@@ -209,7 +209,7 @@ export const login = async (req, res, next) => {
                             ]
                         },
                         
-                        ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id, name:hospital?.name, logo:hospital?.logo, address:hospital?.address}}:{"hospital":this_user?.hospital,},
+                        ...this_user.hospital_id?{"hospital":{id:this_user.hospital_id, name:hospital?.name, logo:hospital?.logo, address:hospital?.address, primary_color:hospital?.primary_color, sub_color_1:hospital?.sub_color_1, sub_color_2:hospital?.sub_color_2,}}:{"hospital":this_user?.hospital,},
                         "title": "hi"
                     },
                     "access_token": authorization

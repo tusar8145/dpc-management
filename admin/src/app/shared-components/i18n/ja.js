@@ -101,6 +101,7 @@ const locale = {
 	'Assistant Phone':'管理者電話番号',
 	'Assistant Email':'管理者メール',
 	'Assistant Password':'管理者パスワード',
+	'Primary color (e.g. #155EEF)':'原色 (e.g. #155EEF)',
 	'Created By':'作成者',
 	'Created At':'作成日',
 	'Updated At':'更新日',

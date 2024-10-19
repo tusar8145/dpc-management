@@ -11,8 +11,16 @@ function CommonTheme() {
     let user=User()
 	let them=localStorage.getItem("theme");
 	
-    console.log('xxxxxxx')
  
+
+	let primary_color='#ff0000'
+
+	try {
+		 primary_color=user?.hospital?.primary_color || '#ff0000'
+	} catch (error) {
+		
+	}
+
 	const userxx = useAppSelector(selectUserSettings);
 
     if(user.role == 'staff' || user.role == 'hospitalAssistant'){
@@ -38,7 +46,7 @@ function CommonTheme() {
 							"secondary": {
 								"main": "#FFD740",
 								"light": "#FFFF74",
-								"dark": "#009843",
+								"dark": primary_color,
 								"contrastText": "rgb(17, 24, 39)"
 							},
 							"background": {
@@ -65,11 +73,11 @@ function CommonTheme() {
 							"secondary": {
 								"main": "#FFD740",
 								"light": "#FFFF74",
-								"dark": "#009843",
+								"dark": primary_color,
 								"contrastText": "rgb(17, 24, 39)"
 							},
 							"background": {
-								"default": "#009843",
+								"default": primary_color,
 								"paper": "#00544a"
 							},
 							"text": {
@@ -92,7 +100,7 @@ function CommonTheme() {
 							"secondary": {
 								"main": "#FFD740",
 								"light": "#FFFF74",
-								"dark": "#009843",
+								"dark": primary_color,
 								"contrastText": "rgb(17, 24, 39)"
 							},
 							"background": {
@@ -119,11 +127,11 @@ function CommonTheme() {
 							"secondary": {
 								"main": "#FFD740",
 								"light": "#FFFF74",
-								"dark": "#009843",
+								"dark": primary_color,
 								"contrastText": "rgb(17, 24, 39)"
 							},
 							"background": {
-								"default": "#009843",
+								"default": primary_color,
 								"paper": "#00544a"
 							},
 							"text": {

@@ -630,7 +630,19 @@ function validateEmail(email) {
   return regex.test(email);
 }
 
- 
+function is_hexadecimal(str)
+{
+ let regexp = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+  
+        if (regexp.test(str))
+          {
+            return true;
+          }
+        else
+          {
+            return false;
+          }
+}
  
 
   function validateUser(params) {
@@ -676,6 +688,21 @@ function validateEmail(email) {
                   
 
 
+
+                }else if(tname[j]=='primary_color'){ 
+
+
+                  if (params[key].length > 0) {
+
+                    if (is_hexadecimal(params[key]) == true) {
+                      dynamicObject[key] = ''
+                    } else {
+                      dynamicObject[key] = t('Invalid Primary color')
+                    }
+
+                  } else {
+                    dynamicObject[key] = t('This field is Required')
+                  }
 
                 }else{
 
