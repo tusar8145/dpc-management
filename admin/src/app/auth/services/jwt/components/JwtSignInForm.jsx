@@ -44,8 +44,8 @@ function JwtSignInForm() {
 	});
 	const { isValid, dirtyFields, errors } = formState;
 	useEffect(() => {
-		setValue('email', 'admin@dpc-management.com', { shouldDirty: true, shouldValidate: true });
-		setValue('password', '12345678Ss.', { shouldDirty: true, shouldValidate: true });
+		//setValue('email', 'admin@dpc-management.com', { shouldDirty: true, shouldValidate: true });
+		//setValue('password', '12345678Ss.', { shouldDirty: true, shouldValidate: true });
 	}, [setValue]);
 
 	async function onSubmit(formData) {
