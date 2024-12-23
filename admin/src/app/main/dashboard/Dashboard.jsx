@@ -136,12 +136,17 @@ function Dashboard() {
 		
 	}
 	 
-	useEffect(() => {  
-		if(user?.role!='admin'){
-			dashboardPatientCount(hospital)
-		}else{
-			dashboardCount()
-		}
+	useEffect(() => {
+			if(hospital?.id > 0){
+				dashboardPatientCount(hospital)
+			}else{
+						if(user?.role!='admin'){
+							dashboardPatientCount(hospital)
+						}else{
+							dashboardCount()
+						}
+			}
+
 	}, [user,hospital]);
 
 
@@ -164,33 +169,9 @@ function Dashboard() {
 					{successAlert != null && <Alert severity="success">{t(successAlert)}.</Alert>}
 					{failAlert != null && <Alert severity="error">{t(failAlert)}..</Alert>}
 		
-					{user?.role=='admin' &&
-						<motion.div
-							className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
-							variants={container}
-							initial="hidden"
-							animate="show"
-						>
-							<motion.div variants={item}>
-								<SummaryWidget count={countHospital} admin={1} color={'tomato'}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
-							</motion.div>
-
-							<motion.div variants={item}>
-								<SummaryWidget count={countAdmin}  admin={1}   color={'darkcyan'}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
-							</motion.div>
-
-							<motion.div variants={item}>
-								<SummaryWidget count={countHospital}   admin={1}  color={'darkgreen'}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
-							</motion.div>
-
-							<motion.div variants={item}>
-								<SummaryWidget count={countStaff}  admin={1}   color={'blueviolet'}  title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
-							</motion.div>
-						</motion.div>
-					}
-
-					{user?.role!='admin' &&
-											<motion.div
+					{hospital?.id>0? 
+					
+								        <motion.div
 											className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
 											variants={container}
 											initial="hidden"
@@ -216,8 +197,30 @@ function Dashboard() {
 												<SummaryWidget count={countWithC}  view={1}    type={'all-changed'}  color={'burlywood'}  title={t('With Change')}  icon={'material-outline:bedtime'}/>
 											</motion.div>
 										</motion.div>
-					}
+					:
+						<motion.div
+							className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-24 w-full min-w-0 py-24"
+							variants={container}
+							initial="hidden"
+							animate="show"
+						>
+							<motion.div variants={item}>
+								<SummaryWidget count={countHospital} admin={1} color={'tomato'}   title={t('Hospitals')} icon={'material-outline:local_hospital'}/>
+							</motion.div>
 
+							<motion.div variants={item}>
+								<SummaryWidget count={countAdmin}  admin={1}   color={'darkcyan'}   title={t('Admin')}  icon={'heroicons-outline:user-circle'}/>
+							</motion.div>
+
+							<motion.div variants={item}>
+								<SummaryWidget count={countHospital}   admin={1}  color={'darkgreen'}   title={t('Hospital Assistant')}  icon={'heroicons-outline:user'}/>
+							</motion.div>
+
+							<motion.div variants={item}>
+								<SummaryWidget count={countStaff}  admin={1}   color={'blueviolet'}  title={t('Hospital Staff')}  icon={'heroicons-outline:user-group'}/>
+							</motion.div>
+						</motion.div>
+					}
 				</div>
 			}
 	/>
